@@ -1,0 +1,97 @@
+/* Reset default margins and padding */
+* {
+    font-family: "SF Pro", sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Styles for the overall layout */
+body, html {
+    width: 100%; /* Ensures the body and html are full width */
+    height: 100vh; /* Ensures the body and html fill the entire viewport height */
+    overflow: hidden; /* Prevents any overflow outside the viewport */
+}
+
+html {
+    scroll-behavior: smooth; /* Smooth Scrolling on */
+}
+
+body {
+    background-color: black; /* Black background for body */
+}
+
+/* Styles for the sidebar */
+.navbar_content {
+    width: 15%; /* Sidebar takes up 15% of the viewport width */
+    background-color: black; /* Black background */
+    height: 100vh; /* Full viewport height */
+    overflow-y: auto; /* Adds scroll bar if content overflows */
+    position: fixed; /* Keeps the sidebar fixed during scrolling */
+    transition: 0.5s; /* Smooth Transition */
+    padding-top: 50px; /* Content not sticking to the top*/
+    z-index: 1;
+    overflow-x: hidden;
+}
+
+.navbar_content a {
+    padding: 8px 8px 8px 32px; /* Basic padding + more to the left */
+    text-decoration: none; /* Get rid of the line under it */
+    font-size: 25px;
+    color: #818181; /* Light Grey for better contrast */
+    display: block;
+    transition: 0.3s; /* Smooth Transition when collapsing */
+}
+
+.navbar_content a:hover {
+    color: #f1f1f1; /* Changing color to white when hovering */
+}
+
+/* Styles for the main content container */
+.main_content {
+    margin-left: 15%; /* Offset by the width of the sidebar */
+    width: 85%; /* Remaining width */
+    display: flex;
+    flex-direction: column; /* Stacks sections vertically */
+    height: 100vh; /* Ensures it fills the viewport height */
+    overflow-y: auto; /* Allows scrolling through sections */
+}
+
+/* Styles for each section */
+.section_content {
+    min-height: 100vh; /* Each section takes minimum 100% of the viewport height */
+    width: 100%; /* Fills the available width in the main_content */
+}
+
+/* Dashboard Section Styles */
+#Dashboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: 0.5s;
+    padding-block: 50px;
+    padding-right: 32px;
+}
+
+/* Wrapper Styles inside Section */
+.dashboard_wrapper {
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    border-radius: 32px;
+    position: relative;
+}
+
+/* Style for Collapse Button */
+.collapsible {
+    width: 48px;
+    height: 48px;
+    background-color: black;
+    border-radius: 8px;
+    border: 1px solid white;
+    position: absolute;
+    top: calc(15% - 24px);
+    left: calc(-24px);
+    z-index: 1000;
+}

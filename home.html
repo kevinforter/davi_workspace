@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- meta tags & title -->
+    <meta charset="UTF-8">
+    <meta name="description" content="DAVI Project Grp 6 [Fabrice & Kevin]">
+    <meta name="generator" content="GitLab Pages">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>DAVI - Dashboard</title>
+
+    <!-- stylesheets -->
+    <link rel="stylesheet" href="public/css/home.css">
+
+    <!-- fonts -->
+
+    <!-- scripts -->
+</head>
+<body>
+<!--
+<nav class="navbar_content" id="sidebar">
+    <ul>
+        <li><a href="#Dashboard">Dashboard</a></li>
+        <li><a href="#Research">Research</a></li>
+        <li><a href="#DataSource">Data Source</a></li>
+        <li><a href="#VisualDesign">Visual Design</a></li>
+        <li><a href="#Source">Source</a></li>
+        <li><a href="#Contact">Contact</a></li>
+    </ul>
+</nav>
+-->
+<main class="main_content">
+    <section class="section_content" id="Dashboard">
+        <div class="dashboard_wrapper">
+            <button class="collapsible" onclick="funNav()">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                    <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/>
+                </svg>
+            </button>
+        </div>
+    </section>
+    <section class="section_content" id="Research"></section>
+    <section class="section_content" id="DataSource"></section>
+    <section class="section_content" id="VisualDesign"></section>
+    <section class="section_content" id="Source"></section>
+    <section class="section_content" id="Contact"></section>
+</main>
+
+<script>
+    function funNav() {
+        /*
+        document.getElementById("sidebar").style.width = "250px";
+        document.getElementById("Dashboard").style.marginLeft = "150px";
+         */
+        var sidebar = document.getElementById("sidebar");
+        var dashboard = document.getElementById("Dashboard");
+
+        sidebar.classList.toggle("in_navbar");
+        dashboard.classList.toggle("in_dashboard");
+    }
+</script>
+
+</body>
+</html>
