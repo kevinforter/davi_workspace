@@ -1,149 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Fixed Sidebar Layout</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-    </style>
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        ul {
-            list-style: none;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-        }
-
-        .grid_container {
-            display: grid;
-            grid-template-columns: 12.5% 1fr; /* Sidebar size auto to content, main content takes the rest */
-            height: 100vh; /* Full viewport height */
-            transition: grid-template-columns 0.5s ease;
-        }
-
-        .in_navbar {
-            grid-template-columns: 0 1fr;
-        }
-
-        .rotate {
-            transform: rotate(180deg);
-        }
-
-        .sidebar {
-            display: flex;
-            justify-content: center;
-            /*align-items: center;*/
-            background-color: #101010;
-            color: white;
-            height: 100vh; /* Full viewport height */
-            overflow-y: auto; /* Enables scrolling if content is taller than the viewport */
-            line-height: 40px;
-            font-weight: calc(500);
-            transition: 0.5s ease;
-        }
-
-        .main_content {
-            position: relative;
-            height: 100vh; /* Full viewport height */
-            overflow-y: auto; /* Enables scrolling */
-            display: grid;
-            grid-template-rows: repeat(3, 1fr); /* Creates three rows of equal height */
-        }
-
-        .stop-scrolling {
-            overflow-y: hidden;
-        }
-
-        .content_section {
-            position: relative;
-            display: flex;
-            align-items: center; /* Centers content vertically */
-            justify-content: center; /* Centers content horizontally */
-            border-bottom: 1px solid #ccc; /* Separates sections visually */
-            min-height: 100vh;
-        }
-
-        nav a {
-            padding: 8px 16px 8px 16px; /* Basic padding + more to the left */
-            text-decoration: none; /* Get rid of the line under it */
-            font-size: 25px;
-            color: #818181; /* Light Grey for better contrast */
-            display: block;
-            transition: 0.3s; /* Smooth Transition when collapsing */
-        }
-
-        nav a:hover {
-            color: white;
-        }
-
-        .collapsible {
-            width: 36px;
-            height: 36px;
-            background-color: #101010;
-            border-radius: 8px;
-            border: 1px solid white;
-            position: absolute;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            top: calc(100vh + 75px);
-        }
-
-        #section2 > div {
-            border-radius: 30px;
-            height: 95%;
-            width: calc(100% - 36px);
-            background-color: white;
-        }
-
-        /* Example styling for the sections */
-        #section1 {
-            background-color: #101010;
-        }
-
-        #section2 {
-            background-color: #101010;
-        }
-
-    </style>
-
-</head>
-<body>
-<div class="grid_container" id="grid_container">
-    <nav class="sidebar">
-        <div style="display: flex; flex-direction: column; gap: 100px; padding-top: 50px">
-            <div style="padding-left: 16px">
-                <svg version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
-                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                     width="116px"
-                     viewBox="0 0 2268 1664" enable-background="new 0 0 2268 1664" xml:space="preserve">
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+	<!ENTITY ns_extend "http://ns.adobe.com/Extensibility/1.0/">
+	<!ENTITY ns_ai "http://ns.adobe.com/AdobeIllustrator/10.0/">
+	<!ENTITY ns_graphs "http://ns.adobe.com/Graphs/1.0/">
+	<!ENTITY ns_vars "http://ns.adobe.com/Variables/1.0/">
+	<!ENTITY ns_imrep "http://ns.adobe.com/ImageReplacement/1.0/">
+	<!ENTITY ns_sfw "http://ns.adobe.com/SaveForWeb/1.0/">
+	<!ENTITY ns_custom "http://ns.adobe.com/GenericCustomNamespace/1.0/">
+	<!ENTITY ns_adobe_xpath "http://ns.adobe.com/XPath/1.0/">
+]>
+<svg version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px"
+	 viewBox="0 0 2268 1664" enable-background="new 0 0 2268 1664" xml:space="preserve">
 <switch>
 	<foreignObject requiredExtensions="&ns_ai;" x="0" y="0" width="1" height="1">
-		<i:pgfRef xlink:href="#adobe_illustrator_pgf">
+		<i:pgfRef  xlink:href="#adobe_illustrator_pgf">
 		</i:pgfRef>
 	</foreignObject>
-    <g i:extraneous="self">
+	<g i:extraneous="self">
 		<path fill-rule="evenodd" clip-rule="evenodd" fill="#020202" d="M1335.236,542.483c45.669-43.108,94.813-49.815,148.904-17.531
 			c4.875-12.836,9.504-25.628,16.713-37.224c25.776-41.464,62.265-67.208,110.55-76.165c34.888-6.472,67.874-0.994,99.578,14.185
 			c7.92,3.792,6.723,4.785,11.077-4.512c25.108-53.607,66.488-85.151,125.771-91.481c45.604-4.87,85.219,9.65,118.658,40.429
@@ -175,7 +50,7 @@
 			c201.272,200.734,402.131,401.883,603.135,602.887c2.355,2.356,4.679,4.747,7.066,7.071c7.961,7.75,12.102,7.756,20.173-0.169
 			c23.528-23.101,47.053-46.217,70.387-69.5c213.489-213.024,426.652-426.377,639.903-639.64
 			c7.304-7.305,14.597-14.623,21.767-22.059C1578.83,845.233,1582.102,843.425,1581.342,838.593z"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" fill="#FFFFFF" d="M1494.672,558.67c15.774-118.642,145.039-168.12,233.096-102.821
+		<path fill-rule="evenodd" clip-rule="evenodd" fill="#FFFFFF" d="M1494.672,558.67c15.774-118.642,145.039-168.12,233.096-102.821
 			c24.185-75.471,73.632-115.799,154.965-107.185c47.207,4.999,104.199,42.718,114.473,122.951c4.561,0.046,7.902-2.987,11.623-4.82
 			c40.514-19.961,87.704,2.104,98.197,45.931c2.299,9.604,1.796,19.305,0.33,28.813c-0.958,6.211,1.535,8.471,6.654,9.85
 			c3.21,0.864,6.408,1.819,9.535,2.944c55.094,19.83,91.74,73.615,90.105,132.187c-2.074,74.272-62.674,133.565-137.043,133.596
@@ -206,7 +81,7 @@
 			c-5.949,4.957-10.622,11.017-14.145,17.917c-0.597,1.17-0.764,2.634,0.414,3.683c1.192,1.061,2.51,0.665,3.556-0.222
 			c2.539-2.153,4.921-4.493,7.479-6.62c18.599-15.461,39.513-22.605,63.917-18.664
 			C1578.849,656.785,1606.99,689.264,1606.29,733.467z"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" fill="#FE0000" d="M1581.342,838.593c0.76,4.832-2.512,6.641-4.696,8.906
+		<path fill-rule="evenodd" clip-rule="evenodd" fill="#FE0000" d="M1581.342,838.593c0.76,4.832-2.512,6.641-4.696,8.906
 			c-7.17,7.436-14.463,14.754-21.767,22.059c-213.251,213.263-426.414,426.615-639.903,639.64
 			c-23.334,23.283-46.858,46.399-70.387,69.5c-8.071,7.925-12.212,7.919-20.173,0.169c-2.388-2.324-4.711-4.715-7.066-7.071
 			c-201.004-201.004-401.862-402.152-603.135-602.887c-40.103-39.996-80.218-79.986-120.425-119.882
@@ -223,29 +98,29 @@
 			c25.518,25.338,50.017,51.675,76.004,76.566c18.276,17.506,35.557,36.051,53.332,54.084c7.409,7.516,8.714,7.543,16.115,0.157
 			c28.539-28.479,57.044-56.994,85.523-85.533c7.956-7.973,7.956-8.952,0.02-16.759c-26.602-26.168-53.446-52.093-79.813-78.494
 			C971.349,1165.534,953.625,1146.528,934.463,1126.6z"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" fill="#020202" d="M981.216,343.819c7.283-4.618,13.534-8.411,19.587-12.496
+		<path fill-rule="evenodd" clip-rule="evenodd" fill="#020202" d="M981.216,343.819c7.283-4.618,13.534-8.411,19.587-12.496
 			c2.735-1.847,4.745-1.721,6.899,0.723c1.759,1.996,3.748,3.79,5.633,5.676c121.857,121.854,243.709,243.715,365.587,365.548
 			c5.65,5.649,11.836,10.787,17.232,16.66c6.446,7.015,5.073,16.894-2.436,21.549c-5.977,3.705-11.991,2.902-18.049-2.979
 			c-10.761-10.446-21.359-21.062-31.962-31.67c-118.997-119.057-237.983-238.126-356.967-357.197
 			C985.133,348.022,983.602,346.334,981.216,343.819z"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" fill="#020202" d="M912.57,387.466c6.965-4.505,13.317-8.568,19.619-12.71
+		<path fill-rule="evenodd" clip-rule="evenodd" fill="#020202" d="M912.57,387.466c6.965-4.505,13.317-8.568,19.619-12.71
 			c2.242-1.475,4.188-1.693,6.162,0.462c1.798,1.961,3.774,3.756,5.658,5.639C1051.669,488.519,1159.32,596.188,1267,703.83
 			c6.119,6.118,12.806,11.701,18.609,18.095c7.577,8.346,4.018,19.969-6.48,22.87c-4.598,1.27-8.599,0.076-12.141-2.721
 			c-2.339-1.848-4.37-4.093-6.488-6.211c-113.32-113.307-226.637-226.617-339.94-339.939
 			C918.018,393.382,915.617,390.699,912.57,387.466z"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" fill="#020202" d="M1686.613,549.798c-26.715,0.183-48.585,7.508-69.459,18.544
+		<path fill-rule="evenodd" clip-rule="evenodd" fill="#020202" d="M1686.613,549.798c-26.715,0.183-48.585,7.508-69.459,18.544
 			c-3.033,1.604-7.077,6.141-9.522,2.741c-2.817-3.917,3.375-5.481,5.72-7.549c31.784-28.038,69.06-34.148,108.383-22.567
 			c57.906,17.054,95.199,55.649,109.143,114.877c7.166,30.438,2.193,59.555-15.223,86.039c-1.824,2.774-3.836,5.462-6.043,7.938
 			c-1.633,1.834-3.156,5.641-6.059,3.739c-3.005-1.97,0.214-4.854,1.109-7.022c6.372-15.422,11.43-31.148,13.941-47.739
 			c3.837-25.354-0.154-49.33-13.3-71.158c-19.224-31.921-45.467-56.29-80.526-70.313c-5.885-2.354-11.967-4.042-18.174-5.272
 			C1699.072,550.563,1691.487,549.582,1686.613,549.798z"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" fill="#020202" d="M1606.29,733.467c0.7-44.203-27.441-76.682-70.583-83.649
+		<path fill-rule="evenodd" clip-rule="evenodd" fill="#020202" d="M1606.29,733.467c0.7-44.203-27.441-76.682-70.583-83.649
 			c-24.404-3.941-45.318,3.203-63.917,18.664c-2.559,2.127-4.94,4.467-7.479,6.62c-1.046,0.887-2.363,1.282-3.556,0.222
 			c-1.178-1.049-1.011-2.513-0.414-3.683c3.522-6.9,8.195-12.96,14.145-17.917c21.439-17.864,46.104-21.348,72.391-14.992
 			c29.622,7.161,51.101,25.423,64.673,52.254c8.438,16.68,8.848,34.631,2.169,52.396c-0.698,1.858-1.542,3.716-2.648,5.351
 			c-0.739,1.092-2.167,1.423-3.58,1.104c-1.659-0.375-1.908-1.709-1.856-3.035C1605.827,741.81,1606.119,736.823,1606.29,733.467z"
-        />
-        <path fill-rule="evenodd" clip-rule="evenodd" fill="#020202" d="M934.463,1126.6c19.162,19.929,36.886,38.935,55.239,57.313
+			/>
+		<path fill-rule="evenodd" clip-rule="evenodd" fill="#020202" d="M934.463,1126.6c19.162,19.929,36.886,38.935,55.239,57.313
 			c26.367,26.401,53.212,52.326,79.813,78.494c7.937,7.807,7.937,8.786-0.02,16.759c-28.479,28.539-56.984,57.054-85.523,85.533
 			c-7.401,7.386-8.706,7.358-16.115-0.157c-17.775-18.033-35.056-36.578-53.332-54.084c-25.987-24.892-50.486-51.229-76.004-76.566
 			c-5.577-5.538-5.761-5.581-11.592,0.343c-42.305,42.976-84.559,86.001-126.829,129.011c-1.168,1.188-2.277,2.441-3.514,3.553
@@ -260,7 +135,7 @@
 			C936.703,1125.419,935.127,1126.154,934.463,1126.6z"/>
 	</g>
 </switch>
-                    <i:pgf id="adobe_illustrator_pgf">
+<i:pgf  id="adobe_illustrator_pgf">
 	<![CDATA[
 	eJzcved3+jjQMHo/7zn5HyAkoYNtOiGht0ACAUKAJBCKKaHGwJb3w/u3X0lusnGj7HP3PmfP5pfY
 8ow0Gk3TjHRrrtbdydF6QLt9HsJ09cftbZqh+7s1EzWhx6biYrHf7hj4yFazm8igh4CtksVwj2vZ
@@ -840,93 +715,3 @@ y7/7HwL6A//01g//8vWnH//1L1//4z/5V4d++uvX//nx7esvv/z5b1//9uN/6ae3n/7y41//9ue/
 	]]>
 </i:pgf>
 </svg>
-                <h1 style="font-size: 2.25em">AVDB</h1>
-            </div>
-            <ul>
-                <li><a href="#section1">Home</a></li>
-                <li><a href="#section2">Dashboard</a></li>
-                <li><a href="#section3">Research</a></li>
-                <li><a href="#section4">Data Source</a></li>
-                <li><a href="#section5">Visual Design</a></li>
-                <li><a href="#section6">Sources</a></li>
-                <li><a href="#section7">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
-    <main class="main_content" id="main">
-        <section class="content_section" id="section1">Section 1</section>
-        <button class="collapsible" onclick="funNav()" id="collapsible">
-            <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" height="20" width="20"><title/>
-                <path fill="white"
-                      d="M39.3756,48.0022l30.47-25.39a6.0035,6.0035,0,0,0-7.6878-9.223L26.1563,43.3906a6.0092,6.0092,0,0,0,0,9.2231L62.1578,82.615a6.0035,6.0035,0,0,0,7.6878-9.2231Z"/>
-            </svg>
-        </button>
-        <section class="content_section" id="section2">
-            <div>
-            </div>
-        </section>
-        <section class="content_section" id="section3">Section 3</section>
-        <section class="content_section" id="section4">Section 3</section>
-        <section class="content_section" id="section5">Section 3</section>
-        <section class="content_section" id="section6">Section 3</section>
-        <section class="content_section" id="section7">Section 3</section>
-    </main>
-</div>
-
-<script>
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
-
-    function funNav() {
-        var gridContainer = document.getElementById("grid_container");
-        var collapsible = document.getElementById("collapsible");
-        var main = document.getElementById("main");
-
-        document.getElementById("section2").scrollIntoView({behavior: "smooth"});
-        gridContainer.classList.toggle("in_navbar");
-        collapsible.classList.toggle("rotate");
-
-        setTimeout(() => {
-            main.classList.toggle("stop-scrolling");
-        }, 500);
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const navLinks = document.querySelectorAll('.sidebar a');
-        const sections = document.querySelectorAll('.content_section');
-
-        let observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    let activeIndex = Array.from(sections).indexOf(entry.target);
-                    updateNavLinks(activeIndex);
-                }
-            });
-        }, {
-            root: null, // observing in relation to the viewport
-            rootMargin: '0px',
-            threshold: 0.5 // trigger when 50% of the section is visible
-        });
-
-        sections.forEach(section => {
-            observer.observe(section); // Observe each section
-        });
-
-        function updateNavLinks(activeIndex) {
-            navLinks.forEach((link, index) => {
-                link.style.color = (index === activeIndex) ? 'white' : '#818181';
-            });
-        }
-    });
-
-</script>
-
-</body>
-</html>
