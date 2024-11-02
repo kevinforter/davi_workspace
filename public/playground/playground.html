@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fixed Sidebar Layout</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    </style>
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+    }
+
+    .grid_container {
+        display: grid;
+        grid-template-columns: 12.5% 1fr; /* Sidebar size auto to content, main content takes the rest */
+        height: 100vh; /* Full viewport height */
+        transition: grid-template-columns 0.5s ease;
+    }
+
+    .in_navbar {
+        grid-template-columns: 0 1fr;
+    }
+
+    .rotate {
+        transform: rotate(180deg);
+    }
+
+    .sidebar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #333;
+        color: white;
+        height: 100vh; /* Full viewport height */
+        overflow-y: auto; /* Enables scrolling if content is taller than the viewport */
+        line-height: 40px;
+        font-weight: calc(500);
+        transition: 0.5s ease;
+    }
+
+    .main_content {
+        position: relative;
+        height: 100vh; /* Full viewport height */
+        overflow-y: auto; /* Enables scrolling */
+        display: grid;
+        grid-template-rows: repeat(3, 1fr); /* Creates three rows of equal height */
+    }
+
+    .stop-scrolling {
+        overflow-y: hidden;
+    }
+
+    .content_section {
+        position: relative;
+        display: flex;
+        align-items: center; /* Centers content vertically */
+        justify-content: center; /* Centers content horizontally */
+        border-bottom: 1px solid #ccc; /* Separates sections visually */
+        min-height: 100vh;
+    }
+
+    nav a {
+        padding: 8px 16px 8px 16px; /* Basic padding + more to the left */
+        text-decoration: none; /* Get rid of the line under it */
+        font-size: 25px;
+        color: #818181; /* Light Grey for better contrast */
+        display: block;
+        transition: 0.3s; /* Smooth Transition when collapsing */
+    }
+
+    nav a:hover {
+        color: white;
+    }
+
+    .collapsible {
+        width: 36px;
+        height: 36px;
+        background-color: black;
+        border-radius: 8px;
+        border: 1px solid red;
+        position: absolute;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top: calc(100vh + 75px);
+    }
+
+    #section2 > div {
+        border-radius: 30px;
+        border: 1px solid red;
+        height: 95%;
+        width: calc(100% - 36px);
+    }
+
+    /* Example styling for the sections */
+    #section1 {
+        background-color: #f8f9fa;
+    }
+
+    #section2 {
+        background-color: #e9ecef;
+    }
+
+    #section3 {
+        background-color: #dee2e6;
+    }
+
+</style>
+
+</head>
+<body>
+<div class="grid_container" id="grid_container">
+    <nav class="sidebar">
+        <ul>
+            <li><a href="#section1">Home</a></li>
+            <li><a href="#section2">Dashboard</a></li>
+            <li><a href="#section3">Research</a></li>
+            <li><a href="#section4">Data Source</a></li>
+            <li><a href="#section5">Visual Design</a></li>
+            <li><a href="#section6">Sources</a></li>
+            <li><a href="#section7">Contact</a></li>
+        </ul>
+    </nav>
+    <main class="main_content" id="main">
+        <section class="content_section" id="section1">Section 1</section>
+        <button class="collapsible" onclick="funNav()" id="collapsible">
+            <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" height="20" width="20"><title/>
+                <path fill="white"
+                      d="M39.3756,48.0022l30.47-25.39a6.0035,6.0035,0,0,0-7.6878-9.223L26.1563,43.3906a6.0092,6.0092,0,0,0,0,9.2231L62.1578,82.615a6.0035,6.0035,0,0,0,7.6878-9.2231Z"/>
+            </svg>
+        </button>
+        <section class="content_section" id="section2">
+            <div>
+            </div>
+        </section>
+        <section class="content_section" id="section3">Section 3</section>
+        <section class="content_section" id="section4">Section 3</section>
+        <section class="content_section" id="section5">Section 3</section>
+        <section class="content_section" id="section6">Section 3</section>
+        <section class="content_section" id="section7">Section 3</section>
+    </main>
+</div>
+
+<script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    function funNav() {
+        var gridContainer = document.getElementById("grid_container");
+        var collapsible = document.getElementById("collapsible");
+        var main = document.getElementById("main");
+
+        gridContainer.classList.toggle("in_navbar");
+        collapsible.classList.toggle("rotate");
+        main.classList.toggle("stop-scrolling");
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const navLinks = document.querySelectorAll('.sidebar a');
+        const sections = document.querySelectorAll('.content_section');
+
+        let observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    let activeIndex = Array.from(sections).indexOf(entry.target);
+                    updateNavLinks(activeIndex);
+                }
+            });
+        }, {
+            root: null, // observing in relation to the viewport
+            rootMargin: '0px',
+            threshold: 0.5 // trigger when 50% of the section is visible
+        });
+
+        sections.forEach(section => {
+            observer.observe(section); // Observe each section
+        });
+
+        function updateNavLinks(activeIndex) {
+            navLinks.forEach((link, index) => {
+                link.style.color = (index === activeIndex) ? 'white' : '#818181';
+            });
+        }
+    });
+
+</script>
+
+</body>
+</html>

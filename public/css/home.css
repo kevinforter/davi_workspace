@@ -47,6 +47,10 @@ body {
     color: #f1f1f1; /* Changing color to white when hovering */
 }
 
+.in_navbar {
+    width: 0;
+}
+
 /* Styles for the main content container */
 .main_content {
     margin-left: 15%; /* Offset by the width of the sidebar */
