@@ -102,6 +102,10 @@
             transition: 0.3s; /* Smooth Transition when collapsing */
         }
 
+		nav h1 {
+			font-size: 2.25em;
+		}
+
         nav a:hover {
             color: white;
         }
@@ -138,6 +142,12 @@
 			color: black;
 		}
 
+		main h1 {
+			color: white;
+			font-size: 10em;
+			text-transform: uppercase;
+		}
+
         #section2 > div {
             border-radius: 30px;
             height: 95%;
@@ -154,6 +164,37 @@
             background-color: #101010;
         }
 
+		@media screen and (max-width: 1400px){
+			nav a {
+				font-size: 16px;
+			}
+
+			nav h1 {
+				font-size: 2em;
+			}
+
+			#Layer_1 {
+				width: 98px;
+			}
+
+			main h1 {
+				font-size: 7em;
+			}
+		}
+
+		@media screen and (max-width: 1200px) {
+			nav a {
+				font-size: 12px;
+			}
+
+			nav h1 {
+				font-size: 1.5em;
+			}
+
+			#Layer_1 {
+				width: 64px;
+			}
+		}
     </style>
 
 </head>
@@ -868,7 +909,7 @@ y7/7HwL6A//01g//8vWnH//1L1//4z/5V4d++uvX//nx7esvv/z5b1//9uN/6ae3n/7y41//9ue/
 	]]>
 </i:pgf>
 </svg>
-                <h1 style="font-size: 2.25em">AVDB</h1>
+                <h1>AVDB</h1>
             </div>
             <ul>
                 <li><a href="#section1">Welcome</a></li>
@@ -884,7 +925,7 @@ y7/7HwL6A//01g//8vWnH//1L1//4z/5V4d++uvX//nx7esvv/z5b1//9uN/6ae3n/7y41//9ue/
     <main class="main_content" id="main">
         <section style="align-items: flex-start; flex-direction: column; text-align: left" class="content_section" id="section1">
             <div>
-                <h1 style="color: white; font-size: 10em; text-transform: uppercase">welcome.</h1>
+                <h1>welcome.</h1>
                 <h2 style="color: lightgrey; font-weight: normal">To Fabrice and Kevin's DAVI Project. Checkout our Dashboard about <br> the
                     Avalanche Stats in Switzerland.</h2>
                 <button class="get_started"><a href="#section2">Get Started</a></button>
