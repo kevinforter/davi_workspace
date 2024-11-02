@@ -178,9 +178,13 @@
         var collapsible = document.getElementById("collapsible");
         var main = document.getElementById("main");
 
+        document.getElementById("section2").scrollIntoView({ behavior: "smooth" });
         gridContainer.classList.toggle("in_navbar");
         collapsible.classList.toggle("rotate");
-        main.classList.toggle("stop-scrolling");
+
+        setTimeout(() => {
+            main.classList.toggle("stop-scrolling");
+        }, 500);
     }
 
     document.addEventListener('DOMContentLoaded', function () {
