@@ -62,6 +62,16 @@
             transition: 0.5s ease;
         }
 
+		.sidebar_content {
+			opacity: 1;
+			transition: 0.5s ease;
+		}
+
+		.sidebar_content.hidden {
+			opacity: 0;
+			pointer-events: none; /* Prevent interaction when hidden */
+		}
+
         .main_content {
             position: relative;
             height: 100vh; /* Full viewport height */
@@ -150,7 +160,7 @@
 <body>
 <div class="grid_container" id="grid_container">
     <nav class="sidebar">
-        <div style="display: flex; flex-direction: column; gap: 100px; padding-top: 50px">
+        <div style="display: flex; flex-direction: column; gap: 100px; padding-top: 50px" class="sidebar_content">
             <div style="padding-left: 16px">
                 <svg version="1.1" id="Layer_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
                      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -872,7 +882,7 @@ y7/7HwL6A//01g//8vWnH//1L1//4z/5V4d++uvX//nx7esvv/z5b1//9uN/6ae3n/7y41//9ue/
         </div>
     </nav>
     <main class="main_content" id="main">
-        <section style="flex-direction: column; text-align: left" class="content_section" id="section1">
+        <section style="align-items: flex-start; flex-direction: column; text-align: left" class="content_section" id="section1">
             <div>
                 <h1 style="color: white; font-size: 10em; text-transform: uppercase">welcome.</h1>
                 <h2 style="color: lightgrey; font-weight: normal">To Fabrice and Kevin's DAVI Project. Checkout our Dashboard about <br> the
@@ -950,6 +960,30 @@ y7/7HwL6A//01g//8vWnH//1L1//4z/5V4d++uvX//nx7esvv/z5b1//9uN/6ae3n/7y41//9ue/
             });
         }
     });
+
+	document.addEventListener('DOMContentLoaded', function () {
+		const sidebar = document.querySelector('.sidebar_content');
+		const sections = document.querySelectorAll('.content_section');
+
+		let observer = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.target.id === 'section1' && entry.isIntersecting) {
+					sidebar.classList.add('hidden');
+				} else if (entry.target.id !== 'section1' && entry.isIntersecting) {
+					sidebar.classList.remove('hidden');
+				}
+			});
+		}, {
+			root: null, // observing in relation to the viewport
+			rootMargin: '0px',
+			threshold: 0.5 // trigger when 50% of the section is visible
+		});
+
+		sections.forEach(section => {
+			observer.observe(section); // Observe each section
+		});
+	});
+
 
 </script>
 
