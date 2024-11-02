@@ -108,7 +108,25 @@
             align-items: center;
             justify-content: center;
             top: calc(100vh + 75px);
+			cursor: pointer;
         }
+
+		.get_started {
+			height: fit-content;
+			width: fit-content;
+			text-transform: uppercase;
+			border-radius: 50px;
+			border: none;
+			margin-top: 20px;
+			font-size: 1.5em;
+			padding-inline: 1.5%;
+			padding-block: 0.5%;
+		}
+
+		.get_started a {
+			text-decoration: none;
+			color: black;
+		}
 
         #section2 > div {
             border-radius: 30px;
@@ -843,7 +861,7 @@ y7/7HwL6A//01g//8vWnH//1L1//4z/5V4d++uvX//nx7esvv/z5b1//9uN/6ae3n/7y41//9ue/
                 <h1 style="font-size: 2.25em">AVDB</h1>
             </div>
             <ul>
-                <li><a href="#section1">Home</a></li>
+                <li><a href="#section1">Welcome</a></li>
                 <li><a href="#section2">Dashboard</a></li>
                 <li><a href="#section3">Research</a></li>
                 <li><a href="#section4">Data Source</a></li>
@@ -854,7 +872,14 @@ y7/7HwL6A//01g//8vWnH//1L1//4z/5V4d++uvX//nx7esvv/z5b1//9uN/6ae3n/7y41//9ue/
         </div>
     </nav>
     <main class="main_content" id="main">
-        <section class="content_section" id="section1">Section 1</section>
+        <section style="flex-direction: column; text-align: left" class="content_section" id="section1">
+            <div>
+                <h1 style="color: white; font-size: 10em; text-transform: uppercase">welcome.</h1>
+                <h2 style="color: lightgrey; font-weight: normal">To Fabrice and Kevin's DAVI Project. Checkout our Dashboard about <br> the
+                    Avalanche Stats in Switzerland.</h2>
+                <button class="get_started"><a href="#section2">Get Started</a></button>
+            </div>
+        </section>
         <button class="collapsible" onclick="funNav()" id="collapsible">
             <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" height="20" width="20"><title/>
                 <path fill="white"
