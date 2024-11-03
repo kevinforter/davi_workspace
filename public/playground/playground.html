@@ -62,15 +62,15 @@
             transition: 0.5s ease;
         }
 
-		.sidebar_content {
-			opacity: 1;
-			transition: 0.5s ease;
-		}
+        .sidebar_content {
+            opacity: 1;
+            transition: 0.5s ease;
+        }
 
-		.sidebar_content.hidden {
-			opacity: 0;
-			pointer-events: none; /* Prevent interaction when hidden */
-		}
+        .sidebar_content.hidden {
+            opacity: 0;
+            pointer-events: none; /* Prevent interaction when hidden */
+        }
 
         .main_content {
             position: relative;
@@ -102,9 +102,9 @@
             transition: 0.3s; /* Smooth Transition when collapsing */
         }
 
-		nav h1 {
-			font-size: 2.25em;
-		}
+        nav h1 {
+            font-size: 2.25em;
+        }
 
         nav a:hover {
             color: white;
@@ -122,31 +122,31 @@
             align-items: center;
             justify-content: center;
             top: calc(100vh + 75px);
-			cursor: pointer;
+            cursor: pointer;
         }
 
-		.get_started {
-			height: fit-content;
-			width: fit-content;
-			text-transform: uppercase;
-			border-radius: 50px;
-			border: none;
-			margin-top: 20px;
-			font-size: 1.5em;
-			padding-inline: 1.5%;
-			padding-block: 0.5%;
-		}
+        .get_started {
+            height: fit-content;
+            width: fit-content;
+            text-transform: uppercase;
+            border-radius: 50px;
+            border: none;
+            margin-top: 20px;
+            font-size: 1.5em;
+            padding-inline: 1.5%;
+            padding-block: 0.5%;
+        }
 
-		.get_started a {
-			text-decoration: none;
-			color: black;
-		}
+        .get_started a {
+            text-decoration: none;
+            color: black;
+        }
 
-		main h1 {
-			color: white;
-			font-size: 10em;
-			text-transform: uppercase;
-		}
+        main h1 {
+            color: white;
+            font-size: 10em;
+            text-transform: uppercase;
+        }
 
         #section2 > div {
             border-radius: 30px;
@@ -155,7 +155,55 @@
             background-color: white;
         }
 
-        /* Example styling for the sections */
+		/*
+		#section3 img {
+			transition: transform 0.3s ease;
+			position: relative;
+		}
+
+		#section3 #sketch_1:hover {
+			transform: scale(2) translate(25%, 25%);
+		}
+
+		#section3 #sketch_2:hover {
+			transform: scale(2) translate(-25%);
+		}
+
+		#section3 #sketch_3:hover {
+			transform: scale(2) translate(25%, -25%);
+		}
+
+		 */
+
+		.overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.9);
+			display: none;
+			justify-content: center;
+			align-items: center;
+			z-index: 1000;
+		}
+
+		.overlay img {
+			width: 80%;
+			max-width: 80%;
+			border-radius: 5px;
+		}
+
+		.close {
+			position: absolute;
+			top: 20px;
+			right: 75px;
+			font-size: 30px;
+			color: #fff;
+			cursor: pointer;
+		}
+
+		/* Example styling for the sections */
         #section1 {
             background-color: #101010;
         }
@@ -164,421 +212,431 @@
             background-color: #101010;
         }
 
-		@media screen and (max-width: 1400px){
-			nav a {
-				font-size: 16px;
-			}
+        #section3 {
+			opacity: 1;
+            background-color: #101010;
+			transition: opacity 0.3s ease;
+        }
 
-			nav h1 {
-				font-size: 2em;
-			}
-
-			#Layer_1 {
-				width: 98px;
-			}
-
-			main h1 {
-				font-size: 7em;
-			}
+		.hovered {
+			opacity: 0.5;
 		}
 
-		@media screen and (max-width: 1200px) {
-			nav a {
-				font-size: 12px;
-			}
+        @media screen and (max-width: 1400px) {
+            nav a {
+                font-size: 16px;
+            }
 
-			nav h1 {
-				font-size: 1.5em;
-			}
+            nav h1 {
+                font-size: 2em;
+            }
 
-			#Layer_1 {
-				width: 64px;
-			}
-		}
+            #Layer_1 {
+                width: 98px;
+            }
 
-		/* Contact Page */
-		.icon-block svg {
-			width: 100%;
-			height: 100%;
-		}
+            main h1 {
+                font-size: 7em;
+            }
+        }
 
-		.team-cards-inner-container {
-			display: flex;
-			row-gap: 1.3rem;
-			column-gap: 1.3rem;
-		}
+        @media screen and (max-width: 1200px) {
+            nav a {
+                font-size: 12px;
+            }
 
-		.text-blk {
-			margin-top: 0px;
-			margin-right: 0px;
-			margin-bottom: 0px;
-			margin-left: 0px;
-			padding-top: 0px;
-			padding-right: 0px;
-			padding-bottom: 0px;
-			padding-left: 0px;
-			line-height: 25px;
-		}
+            nav h1 {
+                font-size: 1.5em;
+            }
 
-		.responsive-cell-block {
-			min-height: 75px;
-		}
+            #Layer_1 {
+                width: 64px;
+            }
+        }
 
-		.responsive-container-block {
-			min-height: 75px;
-			height: fit-content;
-			width: 100%;
-			padding-top: 0px;
-			padding-right: 0px;
-			padding-bottom: 0px;
-			padding-left: 0px;
-			display: flex;
-			flex-wrap: wrap;
-			margin-top: 0px;
-			margin-right: auto;
-			margin-bottom: 0px;
-			margin-left: auto;
-			justify-content: center;
-		}
+        /* Contact Page */
+        .icon-block svg {
+            width: 100%;
+            height: 100%;
+        }
 
-		.inner-container {
-			max-width: 1200px;
-			min-height: 100vh;
-			margin-top: 0px;
-			margin-right: 0px;
-			margin-bottom: 0px;
-			margin-left: 0px;
-			justify-content: center;
-		}
+        .team-cards-inner-container {
+            display: flex;
+            row-gap: 1.3rem;
+            column-gap: 1.3rem;
+        }
 
-		.section-head {
-			color: white;
-			font-size: 60px;
-			line-height: 70px;
-			margin-top: 0px;
-			margin-right: 0px;
-			margin-bottom: 24px;
-			margin-left: 0px;
-		}
+        .text-blk {
+            margin-top: 0px;
+            margin-right: 0px;
+            margin-bottom: 0px;
+            margin-left: 0px;
+            padding-top: 0px;
+            padding-right: 0px;
+            padding-bottom: 0px;
+            padding-left: 0px;
+            line-height: 25px;
+        }
 
-		.section-body {
-			color: white;
-			font-size: 14px;
-			line-height: 18px;
-			margin-top: 0px;
-			margin-right: 0px;
-			margin-bottom: 64px;
-			margin-left: 0px;
-		}
+        .responsive-cell-block {
+            min-height: 75px;
+        }
 
-		.team-cards-outer-container {
-			display: flex;
-			align-items: center;
-		}
+        .responsive-container-block {
+            min-height: 75px;
+            height: fit-content;
+            width: 100%;
+            padding-top: 0px;
+            padding-right: 0px;
+            padding-bottom: 0px;
+            padding-left: 0px;
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 0px;
+            margin-right: auto;
+            margin-bottom: 0px;
+            margin-left: auto;
+            justify-content: center;
+        }
 
-		.content-container {
-			display: flex;
-			justify-content: flex-start;
-			flex-direction: row;
-			align-items: center;
-			padding-top: 0px;
-			padding-right: 25px;
-			padding-bottom: 0px;
-			padding-left: 0px;
-		}
+        .inner-container {
+            max-width: 1200px;
+            min-height: 100vh;
+            margin-top: 0px;
+            margin-right: 0px;
+            margin-bottom: 0px;
+            margin-left: 0px;
+            justify-content: center;
+        }
 
-		.img-box {
-			max-width: 130px;
-			max-height: 130px;
-			width: 100%;
-			height: 100%;
-			overflow-x: hidden;
-			overflow-y: hidden;
-			margin-top: 0px;
-			margin-right: 25px;
-			margin-bottom: 0px;
-			margin-left: 0px;
-		}
+        .section-head {
+            color: white;
+            font-size: 60px;
+            line-height: 70px;
+            margin-top: 0px;
+            margin-right: 0px;
+            margin-bottom: 24px;
+            margin-left: 0px;
+        }
 
-		.card {
-			background-color: rgb(255, 255, 255);
-			display: flex;
-			padding-top: 16px;
-			padding-right: 16px;
-			padding-bottom: 16px;
-			padding-left: 16px;
-			box-shadow: rgba(95, 95, 95, 0.1) 6px 12px 24px;
-			flex-direction: row;
-			border-top-left-radius: 15px;
-			border-top-right-radius: 15px;
-			border-bottom-right-radius: 15px;
-			border-bottom-left-radius: 15px;
-		}
+        .section-body {
+            color: white;
+            font-size: 14px;
+            line-height: 18px;
+            margin-top: 0px;
+            margin-right: 0px;
+            margin-bottom: 64px;
+            margin-left: 0px;
+        }
 
-		.card-container {
-			max-width: 350px;
-		}
+        .team-cards-outer-container {
+            display: flex;
+            align-items: center;
+        }
 
-		.card-content-box {
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-		}
+        .content-container {
+            display: flex;
+            justify-content: flex-start;
+            flex-direction: row;
+            align-items: center;
+            padding-top: 0px;
+            padding-right: 25px;
+            padding-bottom: 0px;
+            padding-left: 0px;
+        }
 
-		.person-name {
-			font-size: 20px;
-			font-weight: 700;
-			margin-top: 0px;
-			margin-right: 0px;
-			margin-bottom: 5px;
-			margin-left: 0px;
-		}
+        .img-box {
+            max-width: 130px;
+            max-height: 130px;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            margin-top: 0px;
+            margin-right: 25px;
+            margin-bottom: 0px;
+            margin-left: 0px;
+        }
 
-		.person-info {
-			font-size: 11px;
-			line-height: 15px;
-		}
+        .card {
+            background-color: rgb(255, 255, 255);
+            display: flex;
+            padding-top: 16px;
+            padding-right: 16px;
+            padding-bottom: 16px;
+            padding-left: 16px;
+            box-shadow: rgba(95, 95, 95, 0.1) 6px 12px 24px;
+            flex-direction: row;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+            border-bottom-left-radius: 15px;
+        }
 
-		.card-container {
-			max-width: 350px;
-		}
+        .card-container {
+            max-width: 350px;
+        }
 
-		.outer-container {
-			justify-content: center;
-			padding-top: 0px;
-			padding-right: 50px;
-			padding-bottom: 0px;
-			padding-left: 50px;
-			background-color: #101010;
-		}
+        .card-content-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
 
-		.person-img {
-			width: 100%;
-			height: 100%;
-			border-top-left-radius: 6px;
-			border-top-right-radius: 6px;
-			border-bottom-right-radius: 6px;
-			border-bottom-left-radius: 6px;
-			object-fit: contain;
-		}
+        .person-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 0px;
+            margin-right: 0px;
+            margin-bottom: 5px;
+            margin-left: 0px;
+        }
 
-		@keyframes bounce {
+        .person-info {
+            font-size: 11px;
+            line-height: 15px;
+        }
 
-			0%,
-			20%,
-			50%,
-			80%,
-			100% {
-				transform: translateY(0px);
-			}
+        .card-container {
+            max-width: 350px;
+        }
 
-			40% {
-				transform: translateY(-30px);
-			}
+        .outer-container {
+            justify-content: center;
+            padding-top: 0px;
+            padding-right: 50px;
+            padding-bottom: 0px;
+            padding-left: 50px;
+            background-color: #101010;
+        }
 
-			60% {
-				transform: translateY(-15px);
-			}
+        .person-img {
+            width: 100%;
+            height: 100%;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+            border-bottom-left-radius: 6px;
+            object-fit: contain;
+        }
 
-			0%,
-			20%,
-			50%,
-			80%,
-			100% {
-				transform: translateY(0px);
-			}
+        @keyframes bounce {
 
-			40% {
-				transform: translateY(-30px);
-			}
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0px);
+            }
 
-			60% {
-				transform: translateY(-15px);
-			}
-		}
+            40% {
+                transform: translateY(-30px);
+            }
 
-		@media (max-width: 1024px) {
-			.team-card-container {
-				justify-content: center;
-			}
+            60% {
+                transform: translateY(-15px);
+            }
 
-			.section-head {
-				font-size: 50px;
-				line-height: 55px;
-			}
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0px);
+            }
 
-			.img-box {
-				max-width: 109px;
-				max-height: 109px;
-			}
+            40% {
+                transform: translateY(-30px);
+            }
 
-			.content-container {
-				padding-top: 0px;
-				padding-right: 20px;
-				padding-bottom: 0px;
-				padding-left: 0px;
-			}
+            60% {
+                transform: translateY(-15px);
+            }
+        }
 
-			.inner-container {
-				justify-content: space-evenly;
-			}
-		}
+        @media (max-width: 1024px) {
+            .team-card-container {
+                justify-content: center;
+            }
 
-		@media (max-width: 768px) {
-			.inner-container {
-				margin-top: 60px;
-				margin-right: 0px;
-				margin-bottom: 60px;
-				margin-left: 0px;
-			}
+            .section-head {
+                font-size: 50px;
+                line-height: 55px;
+            }
 
-			.section-body {
-				margin-top: 0px;
-				margin-right: 0px;
-				margin-bottom: 0px;
-				margin-left: 0px;
-			}
+            .img-box {
+                max-width: 109px;
+                max-height: 109px;
+            }
 
-			.img-box {
-				margin-top: 0px;
-				margin-right: 30px;
-				margin-bottom: 0px;
-				margin-left: 0px;
-			}
+            .content-container {
+                padding-top: 0px;
+                padding-right: 20px;
+                padding-bottom: 0px;
+                padding-left: 0px;
+            }
 
-			.content-box {
-				text-align: center;
-			}
+            .inner-container {
+                justify-content: space-evenly;
+            }
+        }
 
-			.content-container {
-				margin-top: 0px;
-				margin-right: 0px;
-				margin-bottom: 30px;
-				margin-left: 0px;
-			}
+        @media (max-width: 768px) {
+            .inner-container {
+                margin-top: 60px;
+                margin-right: 0px;
+                margin-bottom: 60px;
+                margin-left: 0px;
+            }
 
-			.card-container {
-				max-width: 45%;
-			}
+            .section-body {
+                margin-top: 0px;
+                margin-right: 0px;
+                margin-bottom: 0px;
+                margin-left: 0px;
+            }
 
-			.team-cards-inner-container {
-				justify-content: center;
-			}
-		}
+            .img-box {
+                margin-top: 0px;
+                margin-right: 30px;
+                margin-bottom: 0px;
+                margin-left: 0px;
+            }
 
-		@media (max-width: 500px) {
-			.outer-container {
-				padding-top: 0px;
-				padding-right: 60px;
-				padding-bottom: 0px;
-				padding-left: 60px;
-			}
+            .content-box {
+                text-align: center;
+            }
 
-			.section-head {
-				font-size: 40px;
-				line-height: 45px;
-			}
+            .content-container {
+                margin-top: 0px;
+                margin-right: 0px;
+                margin-bottom: 30px;
+                margin-left: 0px;
+            }
 
-			.content-box {
-				padding-top: 0px;
-				padding-right: 0px;
-				padding-bottom: 0px;
-				padding-left: 0px;
-			}
+            .card-container {
+                max-width: 45%;
+            }
 
-			.section-body {
-				font-size: 12px;
-			}
+            .team-cards-inner-container {
+                justify-content: center;
+            }
+        }
 
-			.img-box {
-				max-width: 68px;
-				max-height: 68px;
-			}
+        @media (max-width: 500px) {
+            .outer-container {
+                padding-top: 0px;
+                padding-right: 60px;
+                padding-bottom: 0px;
+                padding-left: 60px;
+            }
 
-			.person-name {
-				font-size: 14px;
-				margin-top: 0px;
-				margin-right: 0px;
-				margin-bottom: 1px;
-				margin-left: 0px;
-			}
+            .section-head {
+                font-size: 40px;
+                line-height: 45px;
+            }
 
-			.content-box {
-				margin-top: 0px;
-				margin-right: 0px;
-				margin-bottom: 46px;
-				margin-left: 0px;
-				text-align: left;
-			}
+            .content-box {
+                padding-top: 0px;
+                padding-right: 0px;
+                padding-bottom: 0px;
+                padding-left: 0px;
+            }
 
-			.content-container {
-				margin-top: 0px;
-				margin-right: 0px;
-				margin-bottom: 0px;
-				margin-left: 0px;
-			}
+            .section-body {
+                font-size: 12px;
+            }
 
-			.card-container {
-				max-width: 100%;
-			}
-		}
+            .img-box {
+                max-width: 68px;
+                max-height: 68px;
+            }
 
-		*,
-		*:before,
-		*:after {
-			-moz-box-sizing: border-box;
-			-webkit-box-sizing: border-box;
-			box-sizing: border-box;
-		}
+            .person-name {
+                font-size: 14px;
+                margin-top: 0px;
+                margin-right: 0px;
+                margin-bottom: 1px;
+                margin-left: 0px;
+            }
 
-		body {
-			margin: 0;
-		}
+            .content-box {
+                margin-top: 0px;
+                margin-right: 0px;
+                margin-bottom: 46px;
+                margin-left: 0px;
+                text-align: left;
+            }
 
-		.wk-desk-4 {
-			width: 33.333333%;
-		}
+            .content-container {
+                margin-top: 0px;
+                margin-right: 0px;
+                margin-bottom: 0px;
+                margin-left: 0px;
+            }
 
-		.wk-desk-6 {
-			width: 50%;
-		}
+            .card-container {
+                max-width: 100%;
+            }
+        }
 
-		.wk-desk-8 {
-			width: 66.666667%;
-		}
+        *,
+        *:before,
+        *:after {
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
 
-		@media (max-width: 1024px) {
+        body {
+            margin: 0;
+        }
 
-			.wk-ipadp-5 {
-				width: 41.666667%;
-			}
+        .wk-desk-4 {
+            width: 33.333333%;
+        }
 
-			.wk-ipadp-6 {
-				width: 50%;
-			}
+        .wk-desk-6 {
+            width: 50%;
+        }
 
-			.wk-ipadp-10 {
-				width: 83.333333%;
-			}
-		}
+        .wk-desk-8 {
+            width: 66.666667%;
+        }
 
-		@media (max-width: 768px) {
+        @media (max-width: 1024px) {
 
-			.wk-tab-8 {
-				width: 66.666667%;
-			}
+            .wk-ipadp-5 {
+                width: 41.666667%;
+            }
 
-			.wk-tab-12 {
-				width: 100%;
-			}
-		}
+            .wk-ipadp-6 {
+                width: 50%;
+            }
 
-		@media (max-width: 500px) {
+            .wk-ipadp-10 {
+                width: 83.333333%;
+            }
+        }
 
-			.wk-mobile-12 {
-				width: 100%;
-			}
-		}
+        @media (max-width: 768px) {
+
+            .wk-tab-8 {
+                width: 66.666667%;
+            }
+
+            .wk-tab-12 {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .wk-mobile-12 {
+                width: 100%;
+            }
+        }
 
     </style>
 
@@ -1308,10 +1366,12 @@ y7/7HwL6A//01g//8vWnH//1L1//4z/5V4d++uvX//nx7esvv/z5b1//9uN/6ae3n/7y41//9ue/
         </div>
     </nav>
     <main class="main_content" id="main">
-        <section style="align-items: flex-start; flex-direction: column; text-align: left" class="content_section" id="section1">
+        <section style="align-items: flex-start; flex-direction: column; text-align: left" class="content_section"
+                 id="section1">
             <div>
                 <h1>welcome.</h1>
-                <h2 style="color: lightgrey; font-weight: normal">To Fabrice and Kevin's DAVI Project. Checkout our Dashboard about <br> the
+                <h2 style="color: lightgrey; font-weight: normal">To Fabrice and Kevin's DAVI Project. Checkout our
+                    Dashboard about <br> the
                     Avalanche Stats in Switzerland.</h2>
                 <button class="get_started"><a href="#section2">Get Started</a></button>
             </div>
@@ -1326,60 +1386,110 @@ y7/7HwL6A//01g//8vWnH//1L1//4z/5V4d++uvX//nx7esvv/z5b1//9uN/6ae3n/7y41//9ue/
             <div>
             </div>
         </section>
-        <section class="content_section" id="section3">Section 3</section>
+        <section class="content_section" id="section3">
+			<div id="imageOverlay" class="overlay">
+				<span id="closeBtn" class="close">&times;</span>
+				<img id="fullImage" src="" alt="Full View Image">
+			</div>
+
+            <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 95%; width: calc(100% - 36px); gap: 5%">
+                <div style="width: 100%; display: flex; align-items: center; justify-content: space-evenly; gap: 5%">
+                    <div>
+                        <img id="sketch_1" src="sketch_dashboard_3.jpg" style="width: 300px; border-radius: 5px" onclick="showImage(this)">
+                    </div>
+                    <div>
+                        <h2 style="color: white">Lorem Ipsum</h2>
+                        <p style="color: white">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
+                            eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero
+                            eos
+                            et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+                            sanctus
+                            est Lorem ipsum dolor sit amet.</p>
+                    </div>
+                </div>
+                <div style="width: 100%; display: flex; align-items: center; justify-content: space-evenly; gap: 5%">
+					<div>
+						<h2 style="color: white">Lorem Ipsum</h2>
+						<p style="color: white">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
+							eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero
+							eos
+							et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+							sanctus
+							est Lorem ipsum dolor sit amet.</p>
+					</div>
+					<div>
+                        <img id="sketch_2" src="sketch_dashboard_4.jpg" style="width: 300px; border-radius: 5px" onclick="showImage(this)">
+                    </div>
+                </div>
+                <div style="width: 100%; display: flex; align-items: center; justify-content: space-evenly; gap: 5%">
+                    <div>
+                        <img id="sketch_3" src="mockup_dashboard.png" style="width: 300px; border-radius: 5px" onclick="showImage(this)">
+                    </div>
+					<div>
+						<h2 style="color: white">Lorem Ipsum</h2>
+						<p style="color: white">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
+							eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero
+							eos
+							et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+							sanctus
+							est Lorem ipsum dolor sit amet.</p>
+					</div>
+                </div>
+            </div>
+        </section>
         <section class="content_section" id="section4">Section 3</section>
         <section class="content_section" id="section5">Section 3</section>
         <section class="content_section" id="section6">Section 3</section>
         <section class="content_section" id="section7">
-			<div class="responsive-container-block outer-container">
-				<div class="responsive-container-block inner-container">
-					<div class="responsive-cell-block wk-tab-12 wk-mobile-12 wk-desk-4 wk-ipadp-5 content-container">
-						<div class="content-box">
-							<p class="text-blk section-head">
-								Head of the project
-							</p>
-							<p class="text-blk section-body">
-								Lorem ipsum dolor sit amet, consectetur adipiscing
-							</p>
-						</div>
-					</div>
-					<div class="responsive-cell-block wk-ipadp-6 wk-tab-12 wk-mobile-12 wk-desk-8 team-cards-outer-container">
-						<div class="responsive-container-block team-cards-inner-container">
-							<div class="responsive-cell-block wk-mobile-12 wk-ipadp-10 wk-tab-8 wk-desk-6 card-container">
-								<div class="card">
-									<div class="img-box">
-										<img class="person-img" src="Kevin.png" alt="Kevin">
-									</div>
-									<div class="card-content-box">
-										<p class="text-blk person-name">
-											Nairobi Nora
-										</p>
-										<p class="text-blk person-info">
-											Lorem ipsum dolor
-										</p>
-									</div>
-								</div>
-							</div>
-							<div class="responsive-cell-block wk-mobile-12 wk-ipadp-10 wk-tab-8 wk-desk-6 card-container">
-								<div class="card">
-									<div class="img-box">
-										<img class="person-img" src="Fabrice.png" alt="Fabrice">
-									</div>
-									<div class="card-content-box">
-										<p class="text-blk person-name">
-											Nairobi Nora
-										</p>
-										<p class="text-blk person-info">
-											Lorem ipsum dolor
-										</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+            <div class="responsive-container-block outer-container">
+                <div class="responsive-container-block inner-container">
+                    <div class="responsive-cell-block wk-tab-12 wk-mobile-12 wk-desk-4 wk-ipadp-5 content-container">
+                        <div class="content-box">
+                            <p class="text-blk section-head">
+                                Head of the project
+                            </p>
+                            <p class="text-blk section-body">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing
+                            </p>
+                        </div>
+                    </div>
+                    <div class="responsive-cell-block wk-ipadp-6 wk-tab-12 wk-mobile-12 wk-desk-8 team-cards-outer-container">
+                        <div class="responsive-container-block team-cards-inner-container">
+                            <div class="responsive-cell-block wk-mobile-12 wk-ipadp-10 wk-tab-8 wk-desk-6 card-container">
+                                <div class="card">
+                                    <div class="img-box">
+                                        <img class="person-img" src="Kevin.png" alt="Kevin">
+                                    </div>
+                                    <div class="card-content-box">
+                                        <p class="text-blk person-name">
+                                            Nairobi Nora
+                                        </p>
+                                        <p class="text-blk person-info">
+                                            Lorem ipsum dolor
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="responsive-cell-block wk-mobile-12 wk-ipadp-10 wk-tab-8 wk-desk-6 card-container">
+                                <div class="card">
+                                    <div class="img-box">
+                                        <img class="person-img" src="Fabrice.png" alt="Fabrice">
+                                    </div>
+                                    <div class="card-content-box">
+                                        <p class="text-blk person-name">
+                                            Nairobi Nora
+                                        </p>
+                                        <p class="text-blk person-info">
+                                            Lorem ipsum dolor
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 </div>
 
@@ -1436,29 +1546,39 @@ y7/7HwL6A//01g//8vWnH//1L1//4z/5V4d++uvX//nx7esvv/z5b1//9uN/6ae3n/7y41//9ue/
         }
     });
 
-	document.addEventListener('DOMContentLoaded', function () {
-		const sidebar = document.querySelector('.sidebar_content');
-		const sections = document.querySelectorAll('.content_section');
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebar = document.querySelector('.sidebar_content');
+        const sections = document.querySelectorAll('.content_section');
 
-		let observer = new IntersectionObserver((entries) => {
-			entries.forEach(entry => {
-				if (entry.target.id === 'section1' && entry.isIntersecting) {
-					sidebar.classList.add('hidden');
-				} else if (entry.target.id !== 'section1' && entry.isIntersecting) {
-					sidebar.classList.remove('hidden');
-				}
-			});
-		}, {
-			root: null, // observing in relation to the viewport
-			rootMargin: '0px',
-			threshold: 0.5 // trigger when 50% of the section is visible
-		});
+        let observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.target.id === 'section1' && entry.isIntersecting) {
+                    sidebar.classList.add('hidden');
+                } else if (entry.target.id !== 'section1' && entry.isIntersecting) {
+                    sidebar.classList.remove('hidden');
+                }
+            });
+        }, {
+            root: null, // observing in relation to the viewport
+            rootMargin: '0px',
+            threshold: 0.5 // trigger when 50% of the section is visible
+        });
 
-		sections.forEach(section => {
-			observer.observe(section); // Observe each section
-		});
-	});
+        sections.forEach(section => {
+            observer.observe(section); // Observe each section
+        });
+    });
 
+	function showImage(imgElement) {
+		const overlay = document.getElementById("imageOverlay");
+		const fullImage = document.getElementById("fullImage");
+		fullImage.src = imgElement.src; // Set full image source to clicked image source
+		overlay.style.display = "flex"; // Show the overlay
+	}
+
+	document.getElementById("closeBtn").onclick = function() {
+		document.getElementById("imageOverlay").style.display = "none"; // Hide the overlay
+	};
 
 </script>
 
