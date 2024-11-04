@@ -48,3 +48,32 @@ nav h1 {
 .sidebar_title img {
     width: 116px;
 }
+
+/* ---------- Media Queries */
+@media screen and (max-width: 1400px) {
+    nav a {
+        font-size: 16px;
+    }
+
+    nav h1 {
+        font-size: 2em;
+    }
+
+    nav img {
+        width: 98px;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    nav a {
+        font-size: 12px;
+    }
+
+    nav h1 {
+        font-size: 1.5em;
+    }
+
+    nav img {
+        width: 64px;
+    }
+}

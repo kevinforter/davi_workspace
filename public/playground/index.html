@@ -57,7 +57,7 @@
         <section class="section_content full_height" id="section2">
             <div></div>
         </section>
-        <section class="section_content full_height" id="section3">
+        <section class="section_content fit_content" id="section3">
             <div id="imageOverlay" class="overlay">
                 <span id="closeBtn" class="close">&times;</span>
                 <img id="fullImage" src="" alt="Full View Image">
@@ -65,48 +65,68 @@
 
             <div class="section3_container">
                 <div class="section3_container_content">
-                    <div>
+                    <figure>
                         <img id="sketch_1" src="assets/sketch_dashboard_3.jpg" alt="first sketch"
                              onclick="showImage(this)">
-                    </div>
+                        <figcaption>Img. 1: First Sketch</figcaption>
+                    </figure>
                     <div>
-                        <h2>Lorem Ipsum</h2>
-                        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                            eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero
-                            eos
-                            et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-                            sanctus
-                            est Lorem ipsum dolor sit amet.</p>
+                        <h2>The Beginning</h2>
+                        <p>As a keen winter sports enthusiast, Kevin is not only interested in skiing but also in the
+                            statistics of winter sports. He is particularly fond of off-piste skiing and the associated
+                            risk of avalanches. When he wanted to find out what had happened in recent years, he only
+                            came across a confusing table and a map with lots of points.</p>
+                        <br>
+                        <p>In the beginning, we only
+                            wanted to improve the map once. Our points were simple. Firstly, we wanted to be able to
+                            filter. It should be possible to specify which danger level and activity should be
+                            displayed. It should also be possible to specify a range of the year. The map should be
+                            extended with a bar chart to the right of it, which brings even more detail to light.</p>
                     </div>
                 </div>
                 <div class="section3_container_content">
                     <div>
-                        <h2>Lorem Ipsum</h2>
-                        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                            eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero
-                            eos
-                            et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-                            sanctus
-                            est Lorem ipsum dolor sit amet.</p>
+                        <h2>The Review</h2>
+                        <p>However, we quickly realized that our sketch was very rough. Obviously. We did some research
+                            on the Internet and with our good old friend Google to find out how best to design a
+                            dashboard with a map.</p>
+                        <br>
+                        <p>
+                            We quickly came to the conclusion that we were missing charts on our dashboard. Fine, we
+                            have a map and a bar chart. But there's still a certain spice missing. A line chart here, a
+                            column chart there and another donut chart. And et voilà, now it looks much more attractive.
+                            But it still lacks a certain ✨interactivity✨. The idea: when you click on a canton, it is
+                            automatically zoomed in and the diagrams on the right-hand side adapt dynamically.
+                        </p>
                     </div>
-                    <div>
+                    <figure>
+                        <img id="dashboard_gif" src="assets/Design%20ohne%20Titel.gif" alt="google for dashboard"
+                             onclick="showImage(this)">
+                        <figcaption>Img. 2.1: How to google</figcaption>
+                        <br>
                         <img id="sketch_2" src="assets/sketch_dashboard_4.jpg" alt="second sketch"
                              onclick="showImage(this)">
-                    </div>
+                        <figcaption>Img. 2.2: Second Sketch</figcaption>
+                    </figure>
                 </div>
                 <div class="section3_container_content">
-                    <div>
+                    <figure>
                         <img id="sketch_3" src="assets/mockup_dashboard.png" alt="mockup"
                              onclick="showImage(this)">
-                    </div>
+                        <figcaption>Img. 3: First Mockup</figcaption>
+                    </figure>
                     <div>
-                        <h2>Lorem Ipsum</h2>
-                        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                            eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero
-                            eos
-                            et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-                            sanctus
-                            est Lorem ipsum dolor sit amet.</p>
+                        <h2>The Design</h2>
+                        <p>When we were reasonably satisfied with our sketch, we sent it to Halldor and Victor to see if
+                            it met their expectations.</p>
+                        <br>
+                        <p>In the meantime, we set about making a first mockup. For this we used FIGMA to create a very
+                            similar representation of how it should look in the end. We added additional interactions,
+                            such as the ability to collapse the page navigation to add more space for the diagrams.</p>
+                        <br>
+                        <p>We decided that we wanted to show the hazard levels in a stacked diagram to save more space.
+                            This will be equipped with a hover effect so that more information can be displayed. We have
+                            moved the line diagram to the bottom to make it easier to read.</p>
                     </div>
                 </div>
             </div>
@@ -160,6 +180,9 @@
                     alpine environments. Funding for this dataset is provided by the Swiss Federal Institute for Forest,
                     Snow, and Landscape Research (WSL).
                 </p>
+                <p>Source: <a
+                        href="https://www.envidat.ch/dataset/fatal-avalanche-accidents-in-switzerland-since-1936-37">Avalanche
+                    accidents in switzerland since 1936-37</a></p>
                 <br>
                 <h3>Dataset 2: Fatal Avalanche Accidents Since 1936/37</h3>
                 <p>
@@ -195,6 +218,8 @@
                     improving safety protocols. This dataset is funded by the Swiss Institute for Snow and Avalanche
                     Research (SLF).
                 </p>
+                <p>Source: <a href="https://www.envidat.ch/dataset/avalanche-accidents-in-switzerland-since-1970-71">Avalanche
+                    accidents in switzerland since 1936-37</a></p>
                 <br>
                 <p>
                     Both datasets are bound by Terms of Use that must be adhered to by users, ensuring ethical and

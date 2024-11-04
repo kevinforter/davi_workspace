@@ -134,9 +134,10 @@ section {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 95%;
-    width: calc(100% - 36px);
-    gap: 5%;
+    /*height: 95%;
+    width: calc(100% - 36px);*/
+    width: 75%;
+    /*gap: 5%;*/
 }
 
 .section3_container_content {
@@ -144,12 +145,22 @@ section {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    gap: 5%
+    gap: 5%;
+    margin-block: 5%;
 }
 
 .section3_container_content img {
     width: 300px;
     border-radius: 5px
+}
+
+#dashboard_gif {
+    height: 200px;
+    object-fit: cover;
+}
+
+.section3_container_content figcaption {
+    font-size: 0.75em;
 }
 
 .overlay {
@@ -199,7 +210,7 @@ section {
 }
 
 .section4_article {
-    width: 70%;
+    width: 75%;
     margin-bottom: 5%;
     color: white;
     transition: color 0.1s linear;
@@ -207,6 +218,10 @@ section {
 
 .section4_article ul {
     list-style-type: circle;
+}
+
+.section4_article a {
+    color: white;
 }
 
 /* ---------- Design choices Section */
@@ -229,33 +244,7 @@ section {
 
 /* ---------- Media Queries */
 @media screen and (max-width: 1400px) {
-    nav a {
-        font-size: 16px;
-    }
-
-    nav h1 {
-        font-size: 2em;
-    }
-
-    #Layer_1 {
-        width: 98px;
-    }
-
-    main h1 {
+    #section1 h1 {
         font-size: 7em;
-    }
-}
-
-@media screen and (max-width: 1200px) {
-    nav a {
-        font-size: 12px;
-    }
-
-    nav h1 {
-        font-size: 1.5em;
-    }
-
-    #Layer_1 {
-        width: 64px;
     }
 }
