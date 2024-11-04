@@ -24,7 +24,7 @@
     <nav class="nav_sidebar">
         <div class="sidebar_content">
             <div class="sidebar_title">
-                <img src="assets/level5.svg">
+                <img src="assets/level5.svg" alt="AVDB Logo">
                 <h1>AVDB</h1>
             </div>
             <ul>
@@ -66,7 +66,7 @@
             <div class="section3_container">
                 <div class="section3_container_content">
                     <div>
-                        <img id="sketch_1" src="assets/sketch_dashboard_3.jpg"
+                        <img id="sketch_1" src="assets/sketch_dashboard_3.jpg" alt="first sketch"
                              onclick="showImage(this)">
                     </div>
                     <div>
@@ -90,13 +90,13 @@
                             est Lorem ipsum dolor sit amet.</p>
                     </div>
                     <div>
-                        <img id="sketch_2" src="assets/sketch_dashboard_4.jpg"
+                        <img id="sketch_2" src="assets/sketch_dashboard_4.jpg" alt="second sketch"
                              onclick="showImage(this)">
                     </div>
                 </div>
                 <div class="section3_container_content">
                     <div>
-                        <img id="sketch_3" src="assets/mockup_dashboard.png"
+                        <img id="sketch_3" src="assets/mockup_dashboard.png" alt="mockup"
                              onclick="showImage(this)">
                     </div>
                     <div>
@@ -113,8 +113,8 @@
         </section>
         <section class="section_content fit_content" id="section4">
             <div class="section4_title_wrapper">
-                <img src="assets/SLF-Logo-Colored.svg">
-                <h2>WSL-Institut für Schnee-und <br> Lawinenforschung SLF</h2>
+                <img src="assets/SLF-Logo-Colored.svg" alt="SLF Logo">
+                <h2>WSL-Institut für Schnee- und <br> Lawinenforschung SLF</h2>
             </div>
             <article class="section4_article" id="article">
                 <h3>Avalanche Accidents in Switzerland: Background Information</h3>
@@ -323,9 +323,9 @@
     });
 
     function funNav() {
-        var gridContainer = document.getElementById("grid_container");
-        var collapsible = document.getElementById("collapsible");
-        var main = document.getElementById("main");
+        const gridContainer = document.getElementById("grid_container");
+        const collapsible = document.getElementById("collapsible");
+        const main = document.getElementById("main");
 
         document.getElementById("section2").scrollIntoView({behavior: "smooth"});
         gridContainer.classList.toggle("collapse");
@@ -339,7 +339,7 @@
     function showImage(imgElement) {
         const overlay = document.getElementById("imageOverlay");
         const fullImage = document.getElementById("fullImage");
-        fullImage.src = imgElement.src; // Set full image source to clicked image source
+        fullImage.src = imgElement.src; // Set full image source to a clicked image source
         overlay.style.display = "flex"; // Show the overlay
     }
 
