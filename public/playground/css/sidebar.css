@@ -1,0 +1,50 @@
+nav {
+    display: flex;
+    justify-content: center;
+    background-color: #101010;
+    color: white;
+    height: 100vh; /* Full viewport height */
+    overflow-y: auto; /* Enables scrolling if content is taller than the viewport */
+    line-height: 40px;
+    font-weight: calc(500);
+    transition: 0.5s ease;
+}
+
+nav a {
+    padding: 8px 16px 8px 16px; /* Basic padding + more to the left */
+    text-decoration: none; /* Get rid of the line under it */
+    font-size: 25px;
+    color: #818181; /* Light Grey for better contrast */
+    display: block;
+    transition: 0.3s; /* Smooth Transition when collapsing */
+}
+
+nav a:hover {
+    color: white;
+}
+
+nav h1 {
+    font-size: 2.25em;
+}
+
+.sidebar_content {
+    opacity: 1;
+    transition: 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    padding-top: 50px;
+}
+
+.sidebar_content.hidden {
+    opacity: 0;
+    pointer-events: none; /* Prevent interaction when hidden */
+}
+
+.sidebar_title {
+    padding-left: 16px;
+}
+
+.sidebar_title img {
+    width: 116px;
+}

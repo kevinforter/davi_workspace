@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section Layout</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+    }
+
+    .full-height {
+      height: 100vh;
+      background-color: #333; /* Adjust colors as needed */
+    }
+
+    .fit-content {
+      height: fit-content;
+      padding: 50px; /* Adjust padding as needed */
+      background-color: #555; /* Adjust colors as needed */
+    }
+
+  </style>
+</head>
+<body>
+<section class="full-height">Section 1</section>
+<section class="full-height">Section 2</section>
+<section class="fit-content">
+  <div style="width: 70%; margin-bottom: 5%; color: grey;
+  transition: color 0.1s linear;" id="fade-text">
+  <h3>Avalanche Accidents in Switzerland: Background Information</h3>
+  <p>
+    The datasets on avalanche accidents in Switzerland provide an extensive overview of avalanche incidents involving individuals from two starting points: one dataset documents all known incidents with at least one person involved since 1970/71, while the other records fatal avalanches dating back to 1936/37. Each dataset is updated annually following the close of the hydrological year (October 1 to September 30) to ensure current and comprehensive coverage.
+  </p>
+  <br>
+  <h3>Dataset 1: Avalanche Accidents Since 1970/71</h3>
+  <p>
+    This dataset covers all avalanche incidents in Switzerland involving at least one person. The record begins on October 1, 1970, and continues annually. Detailed information available for each incident includes:
+  </p>
+  <br>
+  <ul style="list-style-type: circle;">
+    <li><strong>Avalanche Identifier</strong>: A unique ID for each accident</li>
+    <li><strong>Accident Date and Accuracy</strong>: Date with a range indicating the precision in days</li>
+    <li><strong>Location Data</strong>: Canton, municipality, latitude, longitude, and accuracy in meters</li>
+    <li><strong>Terrain Information</strong>: Elevation, slope aspect (main orientation), and steepest slope inclination within the start zone</li>
+    <li><strong>Forecasted Danger Levels</strong>: Avalanche danger forecasted at the time of the accident, specifying two levels</li>
+    <li><strong>Accident Zone</strong>: Information on whether the accident was within the most dangerous aspect and elevation mentioned in the forecast</li>
+    <li><strong>Casualty Details</strong>: Counts of individuals caught, fully buried, and deceased</li>
+    <li><strong>Activity Context</strong>: The accident party’s activity or location at the time of the incident</li>
+  </ul>
+  <br>
+  <p>
+    The dataset is a critical resource for understanding avalanche dynamics and human vulnerability in alpine environments. Funding for this dataset is provided by the Swiss Federal Institute for Forest, Snow, and Landscape Research (WSL).
+  </p>
+  <br>
+  <h3>Dataset 2: Fatal Avalanche Accidents Since 1936/37</h3>
+  <p>
+    The fatal avalanche accident dataset provides records of incidents with at least one fatality, dating back to October 1, 1936. This dataset contains similar fields to the first dataset, with a particular focus on fatal events:
+  </p>
+  <br>
+  <ul style="list-style-type: circle;">
+    <li><strong>Avalanche Identifier and Accident Date</strong>: Similar to the general accident dataset, with date precision</li>
+    <li><strong>Hydrological Year</strong>: Each record corresponds to a hydrological year from October 1 to September 30</li>
+    <li><strong>Geolocation Data</strong>: Includes canton, municipality, latitude, longitude, accuracy, and elevation of the start zone</li>
+    <li><strong>Terrain and Slope</strong>: Information on slope aspect and inclination</li>
+    <li><strong>Forecasted Danger Levels and Core Zone Presence</strong>: Danger levels and whether the incident occurred in the forecasted core danger zone</li>
+    <li><strong>Fatalities and Other Casualties</strong>: Counts of deceased, caught, and fully buried individuals</li>
+    <li><strong>Context of Accident Party</strong>: Description of the activity or location of those involved at the incident time</li>
+  </ul>
+  <br>
+  <p>
+    The data provides a historical perspective on avalanche fatalities, aiding in risk assessment and improving safety protocols. This dataset is funded by the Swiss Institute for Snow and Avalanche Research (SLF).
+  </p>
+  <br>
+  <p>
+    Both datasets are bound by Terms of Use that must be adhered to by users, ensuring ethical and responsible use of the data. They serve as valuable resources for avalanche researchers, safety planners, and policymakers working to mitigate avalanche risks and improve public safety in avalanche-prone areas.
+  </p>
+</div></section>
+<section class="full-height">Section 4</section>
+<section class="full-height">Section 5</section>
+
+<script>
+</script>
+</body>
+</html>
