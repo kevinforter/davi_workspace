@@ -15,7 +15,7 @@ body, html {
 }
 
 p {
-    font-size: 1.5em;
+    font-size: 1.2em;
 }
 
 main {
@@ -142,6 +142,7 @@ section {
     width: calc(100% - 36px);*/
     width: 75%;
     /*gap: 5%;*/
+    max-width: 1600px;
 }
 
 .section3_container_content {
@@ -168,7 +169,7 @@ section {
 }
 
 .section3_container_content h2 {
-    font-size: 2em;
+    font-size: 1.5em;
 }
 
 .overlay {
@@ -219,13 +220,19 @@ section {
 
 .section4_article {
     width: 75%;
+    max-width: 1600px;
     margin-bottom: 5%;
     color: white;
     transition: color 0.1s linear;
 }
 
+.section4_article h3 {
+    font-size: 1.2em;
+}
+
 .section4_article ul {
     list-style-type: circle;
+    font-size: 1.2em;
 }
 
 .section4_article a {
@@ -257,6 +264,14 @@ section {
     }
 
     .section3_container_content h2 {
+        font-size: unset;
+    }
+
+    .section4_article h3 {
+        font-size: unset;
+    }
+
+    .section4_article ul {
         font-size: unset;
     }
 }
