@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <!-- meta tags & title -->
     <meta charset="UTF-8">
@@ -30,15 +30,15 @@
                 <h1>AVDB</h1>
             </div>
             <div class="sidebar_list">
-            <ul>
-                <li><a href="#section1">Welcome</a></li>
-                <li><a href="#section2">Dashboard</a></li>
-                <li><a href="#section3">Research</a></li>
-                <li><a href="#section4">Data Source</a></li>
-                <li><a href="#section5">Design choices</a></li>
-                <li><a href="#section6">References</a></li>
-                <li><a href="#section7">Contact</a></li>
-            </ul>
+                <ul>
+                    <li><a href="#section1">Welcome</a></li>
+                    <li><a href="#section2">Dashboard</a></li>
+                    <li><a href="#section3">Research</a></li>
+                    <li><a href="#section4">Data Source</a></li>
+                    <li><a href="#section5">Design choices</a></li>
+                    <li><a href="#section6">References</a></li>
+                    <li><a href="#section7">Contact</a></li>
+                </ul>
             </div>
         </div>
     </nav>
@@ -103,15 +103,18 @@
                             automatically zoomed in and the diagrams on the right-hand side adapt dynamically.
                         </p>
                     </div>
-                    <figure>
-                        <img id="dashboard_gif" src="assets/Design%20ohne%20Titel.gif" alt="google for dashboard"
-                             onclick="showImage(this)">
-                        <figcaption>Img. 2.1: How to google</figcaption>
-                        <br>
-                        <img id="sketch_2" src="assets/sketch_dashboard_4.jpg" alt="second sketch"
-                             onclick="showImage(this)">
-                        <figcaption>Img. 2.2: Second Sketch</figcaption>
-                    </figure>
+                    <div class="section3_container_content_figure">
+                        <figure>
+                            <img id="dashboard_gif" src="assets/Design%20ohne%20Titel.gif" alt="google for dashboard"
+                                 onclick="showImage(this)">
+                            <figcaption>Img. 2.1: How to google</figcaption>
+                        </figure>
+                        <figure>
+                            <img id="sketch_2" src="assets/sketch_dashboard_4.jpg" alt="second sketch"
+                                 onclick="showImage(this)">
+                            <figcaption>Img. 2.2: Second Sketch</figcaption>
+                        </figure>
+                    </div>
                 </div>
                 <div class="section3_container_content">
                     <figure>
@@ -244,7 +247,8 @@
                                 The 🧠 of the project
                             </h1>
                             <p class="text-blk section-body">
-                                Hic aliquid debet esse, sed quid nescimus, et propterea hic textus latine est, quod sonum reddit callidum.
+                                Hic aliquid debet esse, sed quid nescimus, et propterea hic textus latine est, quod
+                                sonum reddit callidum.
                             </p>
                         </div>
                     </div>

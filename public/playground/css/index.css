@@ -40,7 +40,7 @@ section {
 
 .grid_container {
     display: grid;
-    grid-template-columns: fit-content(100%) 1fr; /* Sidebar size auto to content, main content takes the rest */
+    grid-template-columns: 10% 1fr; /* Sidebar size auto to content, main content takes the rest */
     height: 100vh; /* Full viewport height */
     transition: grid-template-columns 0.5s ease;
 }
@@ -154,6 +154,15 @@ section {
     margin-block: 5%;
 }
 
+.section3_container_content_figure {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 5%;
+    margin-block: 5%;
+}
+
 .section3_container_content img {
     width: 500px;
     aspect-ratio: 3/2;
@@ -258,6 +267,12 @@ section {
 }
 
 /* ---------- Media Queries */
+@media screen and (max-width: 2000px) {
+    .section3_container_content:nth-child(2) {
+        flex-direction: column;
+    }
+}
+
 @media screen and (max-width: 1800px) {
     p {
         font-size: unset;
