@@ -1,0 +1,100 @@
+nav {
+    display: flex;
+    justify-content: center;
+    background-color: #101010;
+    color: white;
+    height: 100vh; /* Full viewport height */
+    overflow-y: auto; /* Enables scrolling if content is taller than the viewport */
+    /*line-height: 70px;*/
+    font-weight: calc(500);
+    transition: 0.5s ease;
+    padding-left: 5%;
+}
+
+nav a {
+    padding: 8px 16px 8px 16px; /* Basic padding + more to the left */
+    text-decoration: none; /* Get rid of the line under it */
+    font-size: 25px;
+    color: #818181; /* Light Grey for better contrast */
+    display: block;
+    transition: 0.3s; /* Smooth Transition when collapsing */
+}
+
+nav a:hover {
+    color: white;
+}
+
+nav h1 {
+    font-size: 2.25em;
+}
+
+nav ul {
+    list-style-type: none;
+}
+
+nav li {
+    line-height: 1.5; /* Adjusts the line height to be tighter */
+    word-break: break-word; /* Ensures that long words wrap properly */
+    margin-bottom: 10%;
+}
+
+.sidebar_content {
+    opacity: 1;
+    transition: 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    padding-top: 36px;
+}
+
+.sidebar_content.hidden {
+    opacity: 0;
+    pointer-events: none; /* Prevent interaction when hidden */
+}
+
+.sidebar_title {
+    padding-left: 16px;
+}
+
+.sidebar_title img {
+    width: 116px;
+}
+
+.sidebar_list {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin-bottom: calc(70px + 36px + 2.25em);
+}
+
+/* ---------- Media Queries */
+@media screen and (max-width: 1400px) {
+    nav {
+        line-height: 40px;
+    }
+
+    nav a {
+        font-size: 16px;
+    }
+
+    nav h1 {
+        font-size: 2em;
+    }
+
+    .sidebar_title img {
+        width: 98px;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    nav a {
+        font-size: 12px;
+    }
+
+    nav h1 {
+        font-size: 1.5em;
+    }
+
+    .sidebar_title img{
+        width: 72px;
+    }
+}
