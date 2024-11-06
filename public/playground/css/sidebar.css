@@ -5,9 +5,10 @@ nav {
     color: white;
     height: 100vh; /* Full viewport height */
     overflow-y: auto; /* Enables scrolling if content is taller than the viewport */
-    line-height: 70px;
+    /*line-height: 70px;*/
     font-weight: calc(500);
     transition: 0.5s ease;
+    padding-left: 5%;
 }
 
 nav a {
@@ -29,6 +30,12 @@ nav h1 {
 
 nav ul {
     list-style-type: none;
+}
+
+nav li {
+    line-height: 1.5; /* Adjusts the line height to be tighter */
+    word-break: break-word; /* Ensures that long words wrap properly */
+    margin-bottom: 10%;
 }
 
 .sidebar_content {
