@@ -8,7 +8,6 @@ nav {
     /*line-height: 70px;*/
     font-weight: calc(500);
     transition: 0.5s ease;
-    padding-left: 5%;
 }
 
 nav a {
@@ -34,7 +33,6 @@ nav ul {
 
 nav li {
     line-height: 1.5; /* Adjusts the line height to be tighter */
-    word-break: break-word; /* Ensures that long words wrap properly */
     margin-bottom: 10%;
 }
 
@@ -67,11 +65,27 @@ nav li {
 }
 
 /* ---------- Media Queries */
+@media screen and (max-width: 1700px) {
+    nav a {
+        font-size: 20px;
+    }
+}
+
 @media screen and (max-width: 1400px) {
-    nav {
-        line-height: 40px;
+    nav a {
+        font-size: 16px;
     }
 
+    nav h1 {
+        font-size: 2em;
+    }
+
+    .sidebar_title img {
+        width: 98px;
+    }
+}
+
+@media screen and (max-width: 1400px) {
     nav a {
         font-size: 16px;
     }
