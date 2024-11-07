@@ -175,6 +175,7 @@ section {
 
 .section3_container_content figcaption {
     font-size: 0.75em;
+    color: #818181;
 }
 
 .section3_container_content h2 {
@@ -195,7 +196,7 @@ section {
 }
 
 .overlay img {
-    width: 80%;
+    width: 50%;
     max-width: 80%;
     border-radius: 5px;
 }
@@ -258,6 +259,86 @@ section {
 #section6 {
     background-color: #101010;
     color: white;
+    flex-direction: column;
+    padding-top: 5%;
+}
+
+.section6_article {
+    width: 75%;
+    max-width: 1600px;
+    margin-bottom: 5%;
+    /*
+    color: white;
+    transition: color 0.1s linear;
+    */
+}
+
+.section6_article a {
+    color: white;
+}
+
+.section6_article ul {
+    list-style-type: circle;
+    font-size: 1.2em;
+}
+
+.section6_article_img {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.section6_article img {
+    height: 300px;
+    border-radius: 8px;
+}
+
+.section6_article_img figcaption {
+    font-size: 0.75em;
+    color: #818181;
+}
+
+.table_wrapper {
+    overflow-y: auto;
+    margin: 0 auto; /* Center the table wrapper */
+}
+
+table {
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    color: #101010;
+    font-size: 0.75em;
+    width: 100%;
+}
+
+table td, table th {
+    padding-inline: 8px;
+    padding-block: 8px;
+    text-align: left;
+}
+
+table thead tr {
+    font-weight: lighter;
+    height: 60px;
+    background: #a82438;
+}
+
+table body tr {
+    height: 50px;
+}
+
+.table_head {
+    color: #fff;
+    line-height: 1.2;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+.column18, .column17, .column16, .column14, .column13 {
+    text-align: right;
 }
 
 /* ---------- Contact Section */
@@ -287,6 +368,10 @@ section {
     }
 
     .section4_article ul {
+        font-size: unset;
+    }
+
+    .section6_article ul {
         font-size: unset;
     }
 }
