@@ -102,8 +102,8 @@ section {
 }
 
 #section2 > div {
-    border-radius: 30px;
-    height: 95%;
+    border-radius: 15px;
+    height: 97.5%;
     width: calc(100% - 36px);
     background-color: white;
 }
