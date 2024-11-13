@@ -1,6 +1,3 @@
-WSL Institute for Snow and Avalanche Research SLF
-Avalanche accidents in Switzerland since 1970-1971
-Update: 2023-12-19 16:13 (UTC)
 avalanche.id,date,date.quality,hydrological.year,canton,municipality,"start.zone.coordinates.latitude","start.zone.coordinates.longitude",coordinates.quality,start.zone.elevation,start.zone.slope.aspect,start.zone.inclination,"forecasted.dangerlevel.rating1","forecasted.dangerlevel.rating2","forecasted.most.dangerous.aspect.and.elevation",number.dead,number.caught,number.fully.buried,activity
 "afbfcea9-91d4-441d-ba46-c51304b608ed",1970-10-05,0,1970/71,BE,Guttannen,46.57536539,8.33961337,,,,,,,,0,3,0,transportation.corridor
 "861431db-0239-4e52-b706-874356ac4e89",1970-10-23,0,1970/71,UR,Realp,46.57494541,8.41349712,0,2600,SE,,,,,1,5,1,transportation.corridor

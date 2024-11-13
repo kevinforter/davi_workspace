@@ -1,0 +1,31 @@
+/* style.css */
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.map-container {
+    width: 80vw;            /* Set the width of the map container */
+    height: 80vh;           /* Set the height of the map container */
+    margin: auto;
+    border: 1px solid #333;
+    border-radius: 8px;     /* Rounded corners for the container */
+    overflow: hidden;       /* Ensure rounded corners apply to the SVG inside */
+}
+
+#map svg {
+    width: 100%;            /* SVG takes full width of container */
+    height: 100%;           /* SVG takes full height of container */
+    border-radius: 8px;     /* Apply border radius directly to SVG */
+}
+
+path {
+    /* fill: #444; */
+    /* stroke: #ffffff; */
+    stroke-width: 0.5px;
+}
+
+path:hover {
+    fill: darkred;
+}

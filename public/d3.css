@@ -1,0 +1,46 @@
+body {
+    font-family: "SF Pro" , sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center horizontally */
+    text-align: center;
+    flex-direction: column;
+}
+
+#chart_wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center horizontally */
+    text-align: center;
+}
+
+/* Styling for each chart container */
+#total_caught, #piechart_container_left, #piechart_container_right {
+    display: flex;
+    justify-content: center; /* Horizontal centering for charts */
+    align-items: center;
+    width: 450px;
+    height: 450px;
+}
+
+#stacked_bar_chart {
+    width: 1350px;
+}
+
+/* Styling for total_caught text */
+#total_caught {
+    font-size: 58px;
+    font-weight: bold;
+    color: #336BFF;
+}
+
+.tooltip {
+    position: absolute;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 14px;
+    display: none; /* Hidden by default */
+}
