@@ -7,6 +7,28 @@
   <link rel="stylesheet" href="map.css">
 </head>
 <body>
+<div id="filters">
+  <label for="cantonFilter">Canton:</label>
+  <select id="cantonFilter">
+    <option value="all">All</option>
+  </select>
+
+  <label for="municipalityFilter">Municipality:</label>
+  <select id="municipalityFilter">
+    <option value="all">All</option>
+  </select>
+
+  <label for="dangerLevelFilter">Danger Level:</label>
+  <select id="dangerLevelFilter">
+    <option value="all">All</option>
+  </select>
+
+  <label for="fromDate">From:</label>
+  <input type="date" id="fromDate">
+
+  <label for="toDate">To:</label>
+  <input type="date" id="toDate">
+</div>
 <h1>Swiss Canton Boundaries</h1>
 <div id="map" class="map-container"></div>
 <script src="https://d3js.org/d3.v7.min.js"></script>

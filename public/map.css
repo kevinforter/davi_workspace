@@ -29,3 +29,15 @@ path {
 path:hover {
     fill: darkred;
 }
+
+#filters {
+    margin-bottom: 20px;
+}
+
+#filters select,
+#filters input {
+    margin-right: 10px;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}

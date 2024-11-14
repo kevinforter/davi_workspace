@@ -128,6 +128,13 @@ latitudes.forEach(lat => {
         .text(`${lat}°N`);
 });
 
+// Variables to store selected filter values
+let selectedCanton = 'all';
+let selectedMunicipality = 'all';
+let selectedDangerLevel = 'all';
+let fromDate = null;
+let toDate = null;
+
 // Create a tooltip div that is hidden by default
 const tooltip = d3.select("body").append("div")
     .style("position", "absolute")
@@ -138,65 +145,121 @@ const tooltip = d3.select("body").append("div")
     .style("box-shadow", "0px 0px 5px #888888")
     .style("pointer-events", "none")
     .style("opacity", 0)
-    .style("text-align", "left");  // Ensure text is left-aligned
+    .style("text-align", "left");
 
-// Load the CSV file and draw points dynamically
-d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(data => {
+// Function to draw points on the map
+function drawPoints(data) {
+    // Clear any existing points
+    pointsGroup.selectAll("circle").remove();
+
     data.forEach(row => {
-        // Parse latitude and longitude from the CSV file
         const latitude = parseFloat(row['start.zone.coordinates.latitude']);
         const longitude = parseFloat(row['start.zone.coordinates.longitude']);
-
-        // Extract additional data to display on hover
         const date = row['date'];
         const canton = row['canton'];
         const municipality = row['municipality'];
         const dangerLevel = row['forecasted.dangerlevel.rating1'];
-        const caught = row['number.caught'];
-        const fullyBuried = row['number.fully.buried'];
-        const dead = row['number.dead'];
 
-        // Ensure valid coordinates before plotting
-        if (!isNaN(latitude) && !isNaN(longitude)) {
-            // Project the coordinates
-            const projectedCoordinates = projection([longitude, latitude]);
+        // Convert the date to a JavaScript Date object for filtering
+        const rowDate = new Date(date);
 
-            // Append a circle for each coordinate
-            pointsGroup.append("circle")
-                .attr("cx", projectedCoordinates[0])
-                .attr("cy", projectedCoordinates[1])
-                .attr("r", 2)  // Radius of each dot set to 2
-                .attr("fill", "red")
-                .attr("stroke", "black")
-                .attr("stroke-width", 0.5)  // Stroke width set to 0.5
-                .on("mouseover", (event) => {
-                    // Display tooltip with data when hovering over a dot
-                    tooltip
-                        .style("opacity", 1)
-                        .html(`
-                            <strong>Date:</strong> ${date}<br>
-                            <strong>Canton:</strong> ${canton}<br>
-                            <strong>Municipality:</strong> ${municipality}<br>
-                            <strong>Coordinates:</strong> [${latitude}, ${longitude}]<br>
-                            <strong>Danger Level:</strong> ${dangerLevel}<br>
-                            <strong>Caught:</strong> ${caught}<br>
-                            <strong>Fully Buried:</strong> ${fullyBuried}<br>
-                            <strong>Dead:</strong> ${dead}
-                        `)
-                        .style("left", (event.pageX + 10) + "px")  // Position tooltip near the cursor
-                        .style("top", (event.pageY - 28) + "px");
-                })
-                .on("mousemove", (event) => {
-                    // Update tooltip position when moving the mouse
-                    tooltip
-                        .style("left", (event.pageX + 10) + "px")
-                        .style("top", (event.pageY - 28) + "px");
-                })
-                .on("mouseout", () => {
-                    // Hide the tooltip when the mouse moves away
-                    tooltip.style("opacity", 0);
-                });
+        // Check if the data matches the selected filters
+        if (
+            (selectedCanton === 'all' || canton === selectedCanton) &&
+            (selectedMunicipality === 'all' || municipality === selectedMunicipality) &&
+            (selectedDangerLevel === 'all' || dangerLevel === selectedDangerLevel) &&
+            (!fromDate || rowDate >= new Date(fromDate)) &&
+            (!toDate || rowDate <= new Date(toDate))
+        ) {
+            // Ensure valid coordinates before plotting
+            if (!isNaN(latitude) && !isNaN(longitude)) {
+                const projectedCoordinates = projection([longitude, latitude]);
+
+                pointsGroup.append("circle")
+                    .attr("cx", projectedCoordinates[0])
+                    .attr("cy", projectedCoordinates[1])
+                    .attr("r", 2)
+                    .attr("fill", "red")
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 0.5)
+                    .on("mouseover", (event) => {
+                        tooltip
+                            .style("opacity", 1)
+                            .html(`
+                                <strong>Date:</strong> ${date}<br>
+                                <strong>Canton:</strong> ${canton}<br>
+                                <strong>Municipality:</strong> ${municipality}<br>
+                                <strong>Coordinates:</strong> [${latitude}, ${longitude}]<br>
+                                <strong>Danger Level:</strong> ${dangerLevel}
+                            `)
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 28) + "px");
+                    })
+                    .on("mousemove", (event) => {
+                        tooltip
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 28) + "px");
+                    })
+                    .on("mouseout", () => {
+                        tooltip.style("opacity", 0);
+                    });
+            }
         }
     });
-}).catch(error => console.error("Error loading the CSV file:", error));
+}
 
+// Load the CSV file, populate filters, and draw points
+d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(data => {
+    // Populate filter dropdowns with unique values
+    const uniqueCantons = [...new Set(data.map(d => d['canton']))].sort();
+    const uniqueMunicipalities = [...new Set(data.map(d => d['municipality']))].sort();
+    const uniqueDangerLevels = [...new Set(data.map(d => d['forecasted.dangerlevel.rating1']))].sort();
+
+    // Populate Canton filter
+    const cantonFilter = d3.select("#cantonFilter");
+    uniqueCantons.forEach(canton => {
+        cantonFilter.append("option").attr("value", canton).text(canton);
+    });
+
+    // Populate Municipality filter
+    const municipalityFilter = d3.select("#municipalityFilter");
+    uniqueMunicipalities.forEach(municipality => {
+        municipalityFilter.append("option").attr("value", municipality).text(municipality);
+    });
+
+    // Populate Danger Level filter
+    const dangerLevelFilter = d3.select("#dangerLevelFilter");
+    uniqueDangerLevels.forEach(level => {
+        dangerLevelFilter.append("option").attr("value", level).text(level);
+    });
+
+    // Draw initial points
+    drawPoints(data);
+
+    // Event listeners for filter changes
+    cantonFilter.on("change", function() {
+        selectedCanton = this.value;
+        drawPoints(data);
+    });
+
+    municipalityFilter.on("change", function() {
+        selectedMunicipality = this.value;
+        drawPoints(data);
+    });
+
+    dangerLevelFilter.on("change", function() {
+        selectedDangerLevel = this.value;
+        drawPoints(data);
+    });
+
+    // Event listeners for date filters
+    d3.select("#fromDate").on("change", function() {
+        fromDate = this.value;
+        drawPoints(data);
+    });
+
+    d3.select("#toDate").on("change", function() {
+        toDate = this.value;
+        drawPoints(data);
+    });
+}).catch(error => console.error("Error loading the CSV file:", error));
