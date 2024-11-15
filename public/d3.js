@@ -114,10 +114,10 @@ d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(funct
 
     // Define specific colors for each level
     const colorMapping = {
-        "1": "#28a745", // Green for Level 1
-        "2": "#ffc107", // Yellow for Level 2
-        "3": "#fd7e14", // Orange for Level 3
-        "4": "#dc3545", // Red for Level 4
+        "1": "#9FFF64", // Green for Level 1
+        "2": "#F2FF00", // Yellow for Level 2
+        "3": "#FFC31E", // Orange for Level 3
+        "4": "#FF0000", // Red for Level 4
         "5": "#8B0000"  // Dark Red for Level 5
     };
 
@@ -153,6 +153,9 @@ d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(funct
         ...d,
         width: d.width * scalingFactor
     }));
+
+    // Sort the stackedData by the level (convert level to a number for sorting)
+    stackedData.sort((a, b) => +a.level - +b.level);
 
     // Create the stacked bar
     const svg = d3.select("#stacked_bar_chart")
