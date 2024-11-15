@@ -12,7 +12,7 @@ const path = d3.geoPath().projection(projection);
 
 // Function to apply zoom transformations to the SVG groups
 function zoomed(event) {
-    const { transform } = event;
+    const {transform} = event;
     g.attr("transform", transform);
     gridGroup.attr("transform", transform);  // Apply transformation to grid lines
     pointsGroup.attr("transform", transform);  // Apply transformation to points
@@ -91,7 +91,7 @@ const latitudes = d3.range(45.5, 48.0, 0.5);  // Adjust as needed
 // Draw longitude lines and labels
 longitudes.forEach(lon => {
     gridGroup.append("path")
-        .datum({ type: "LineString", coordinates: [[lon, 45], [lon, 48]] })
+        .datum({type: "LineString", coordinates: [[lon, 45], [lon, 48]]})
         .attr("d", path)
         .attr("stroke", "#999")
         .attr("stroke-width", 0.5)
@@ -111,7 +111,7 @@ longitudes.forEach(lon => {
 // Draw latitude lines and labels
 latitudes.forEach(lat => {
     gridGroup.append("path")
-        .datum({ type: "LineString", coordinates: [[5.5, lat], [10.5, lat]] })
+        .datum({type: "LineString", coordinates: [[5.5, lat], [10.5, lat]]})
         .attr("d", path)
         .attr("stroke", "#999")
         .attr("stroke-width", 0.5)
@@ -128,13 +128,6 @@ latitudes.forEach(lat => {
         .text(`${lat}°N`);
 });
 
-// Variables to store selected filter values
-let selectedCanton = 'all';
-let selectedMunicipality = 'all';
-let selectedDangerLevel = 'all';
-let fromDate = null;
-let toDate = null;
-
 // Create a tooltip div that is hidden by default
 const tooltip = d3.select("body").append("div")
     .style("position", "absolute")
@@ -147,119 +140,201 @@ const tooltip = d3.select("body").append("div")
     .style("opacity", 0)
     .style("text-align", "left");
 
-// Function to draw points on the map
-function drawPoints(data) {
-    // Clear any existing points
-    pointsGroup.selectAll("circle").remove();
+document.addEventListener('DOMContentLoaded', function () {
+    // Variables to store selected filter values
+    let selectedCanton = 'all';
+    let selectedMunicipality = 'all';
+    let selectedDangerLevels = new Set();
+    let fromDate = null;
+    let toDate = null;
 
-    data.forEach(row => {
-        const latitude = parseFloat(row['start.zone.coordinates.latitude']);
-        const longitude = parseFloat(row['start.zone.coordinates.longitude']);
-        const date = row['date'];
-        const canton = row['canton'];
-        const municipality = row['municipality'];
-        const dangerLevel = row['forecasted.dangerlevel.rating1'];
+    // Event listener to open and close the filter popup
+    document.getElementById('filterButton').addEventListener('click', () => {
+        document.getElementById('filterModal').style.display = 'block';
+    });
 
-        // Convert the date to a JavaScript Date object for filtering
-        const rowDate = new Date(date);
+    document.getElementById('closeFilter').addEventListener('click', () => {
+        document.getElementById('filterModal').style.display = 'none';
+    });
 
-        // Check if the data matches the selected filters
-        if (
-            (selectedCanton === 'all' || canton === selectedCanton) &&
-            (selectedMunicipality === 'all' || municipality === selectedMunicipality) &&
-            (selectedDangerLevel === 'all' || dangerLevel === selectedDangerLevel) &&
-            (!fromDate || rowDate >= new Date(fromDate)) &&
-            (!toDate || rowDate <= new Date(toDate))
-        ) {
-            // Ensure valid coordinates before plotting
-            if (!isNaN(latitude) && !isNaN(longitude)) {
-                const projectedCoordinates = projection([longitude, latitude]);
+    // Load the CSV file, populate filters, and draw points
+    d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(data => {
+        // Populate filter dropdowns with unique values
+        const uniqueCantons = [...new Set(data.map(d => d['canton']))].sort();
+        const uniqueMunicipalities = [...new Set(data.map(d => d['municipality']))].sort();
+        const uniqueDangerLevels = [...new Set(data.map(d => d['forecasted.dangerlevel.rating1']))].sort();
 
-                pointsGroup.append("circle")
-                    .attr("cx", projectedCoordinates[0])
-                    .attr("cy", projectedCoordinates[1])
-                    .attr("r", 2)
-                    .attr("fill", "red")
-                    .attr("stroke", "black")
-                    .attr("stroke-width", 0.5)
-                    .on("mouseover", (event) => {
-                        tooltip
-                            .style("opacity", 1)
-                            .html(`
-                                <strong>Date:</strong> ${date}<br>
-                                <strong>Canton:</strong> ${canton}<br>
-                                <strong>Municipality:</strong> ${municipality}<br>
-                                <strong>Coordinates:</strong> [${latitude}, ${longitude}]<br>
-                                <strong>Danger Level:</strong> ${dangerLevel}
-                            `)
-                            .style("left", (event.pageX + 10) + "px")
-                            .style("top", (event.pageY - 28) + "px");
-                    })
-                    .on("mousemove", (event) => {
-                        tooltip
-                            .style("left", (event.pageX + 10) + "px")
-                            .style("top", (event.pageY - 28) + "px");
-                    })
-                    .on("mouseout", () => {
-                        tooltip.style("opacity", 0);
-                    });
+        // Populate Canton filter
+        const cantonFilter = d3.select("#cantonFilter");
+        // Add the "all" option to allow filtering for all cantons
+        cantonFilter.append("option").attr("value", "all").text("All Cantons");
+
+        // Populate with unique values
+        uniqueCantons.forEach(canton => {
+            cantonFilter.append("option").attr("value", canton).text(canton);
+        });
+
+        // Populate Municipality filter
+        const municipalityFilter = d3.select("#municipalityFilter");
+        // Add the "all" option to allow filtering for all municipalities
+        municipalityFilter.append("option").attr("value", "all").text("All Municipalities");
+
+        // Populate with unique values
+        uniqueMunicipalities.forEach(municipality => {
+            municipalityFilter.append("option").attr("value", municipality).text(municipality);
+        });
+
+
+        // Populate Danger Level filter with checkboxes
+        const dangerLevelContainer = d3.select("#dangerLevelContainer");
+        uniqueDangerLevels.forEach(level => {
+            console.log("Level:", level); // Check the value of each level
+
+            const checkbox = dangerLevelContainer.append("div").append("label");
+            checkbox.append("input")
+                .attr("type", "checkbox")
+                .attr("value", level)
+                .on("change", function () {
+                    if (this.checked) {
+                        selectedDangerLevels.add(this.value);
+                    } else {
+                        selectedDangerLevels.delete(this.value);
+                    }
+                });
+
+            // Ensure the level is a number
+            let levelNumber = Number(level); // Convert level to number
+
+            // Assign text based on the level value
+            let levelText;
+            switch (levelNumber) {
+                case 1:
+                    levelText = "Gering";
+                    break;
+                case 2:
+                    levelText = "Mässig";
+                    break;
+                case 3:
+                    levelText = "Erheblich";
+                    break;
+                case 4:
+                    levelText = "Gross";
+                    break;
+                case 5:
+                    levelText = "Sehr gross";
+                    break;
+                default:
+                    levelText = "Empty"; // Default for null or invalid values
             }
+
+            checkbox.append("span").text(levelText);
+        });
+
+
+        // Function to draw points on the map
+        function drawPoints(data) {
+            // Clear any existing points
+            pointsGroup.selectAll("circle").remove();
+
+            data.forEach(row => {
+                const latitude = parseFloat(row['start.zone.coordinates.latitude']);
+                const longitude = parseFloat(row['start.zone.coordinates.longitude']);
+                const date = row['date'];
+                const canton = row['canton'];
+                const municipality = row['municipality'];
+                const dangerLevel = row['forecasted.dangerlevel.rating1'];
+
+                // Convert the date to a JavaScript Date object for filtering
+                const rowDate = new Date(date);
+
+                // Check if the data matches the selected filters
+                if (
+                    (selectedCanton === 'all' || canton === selectedCanton) &&
+                    (selectedMunicipality === 'all' || municipality === selectedMunicipality) &&
+                    (selectedDangerLevels.size === 0 || selectedDangerLevels.has(dangerLevel)) &&
+                    (!fromDate || rowDate >= new Date(fromDate)) &&
+                    (!toDate || rowDate <= new Date(toDate))
+                ) {
+                    // Ensure valid coordinates before plotting
+                    if (!isNaN(latitude) && !isNaN(longitude)) {
+                        const projectedCoordinates = projection([longitude, latitude]);
+
+                        pointsGroup.append("circle")
+                            .attr("cx", projectedCoordinates[0])
+                            .attr("cy", projectedCoordinates[1])
+                            .attr("r", 2)
+                            .attr("fill", "red")
+                            .attr("stroke", "black")
+                            .attr("stroke-width", 0.5)
+                            .on("mouseover", (event) => {
+                                tooltip
+                                    .style("opacity", 1)
+                                    .html(`
+                                        <strong>Date:</strong> ${date}<br>
+                                        <strong>Canton:</strong> ${canton}<br>
+                                        <strong>Municipality:</strong> ${municipality}<br>
+                                        <strong>Coordinates:</strong> [${latitude}, ${longitude}]<br>
+                                        <strong>Danger Level:</strong> ${dangerLevel}
+                                    `)
+                                    .style("left", (event.pageX + 10) + "px")
+                                    .style("top", (event.pageY - 28) + "px");
+                            })
+                            .on("mousemove", (event) => {
+                                tooltip
+                                    .style("left", (event.pageX + 10) + "px")
+                                    .style("top", (event.pageY - 28) + "px");
+                            })
+                            .on("mouseout", () => {
+                                tooltip.style("opacity", 0);
+                            });
+                    }
+                }
+            });
         }
-    });
-}
 
-// Load the CSV file, populate filters, and draw points
-d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(data => {
-    // Populate filter dropdowns with unique values
-    const uniqueCantons = [...new Set(data.map(d => d['canton']))].sort();
-    const uniqueMunicipalities = [...new Set(data.map(d => d['municipality']))].sort();
-    const uniqueDangerLevels = [...new Set(data.map(d => d['forecasted.dangerlevel.rating1']))].sort();
-
-    // Populate Canton filter
-    const cantonFilter = d3.select("#cantonFilter");
-    uniqueCantons.forEach(canton => {
-        cantonFilter.append("option").attr("value", canton).text(canton);
-    });
-
-    // Populate Municipality filter
-    const municipalityFilter = d3.select("#municipalityFilter");
-    uniqueMunicipalities.forEach(municipality => {
-        municipalityFilter.append("option").attr("value", municipality).text(municipality);
-    });
-
-    // Populate Danger Level filter
-    const dangerLevelFilter = d3.select("#dangerLevelFilter");
-    uniqueDangerLevels.forEach(level => {
-        dangerLevelFilter.append("option").attr("value", level).text(level);
-    });
-
-    // Draw initial points
-    drawPoints(data);
-
-    // Event listeners for filter changes
-    cantonFilter.on("change", function() {
-        selectedCanton = this.value;
+        // Draw initial points
         drawPoints(data);
-    });
 
-    municipalityFilter.on("change", function() {
-        selectedMunicipality = this.value;
-        drawPoints(data);
-    });
+        // Event listener for applying filters
+        document.getElementById('applyFilter').addEventListener('click', () => {
+            selectedCanton = document.getElementById('cantonFilter').value;
+            selectedMunicipality = document.getElementById('municipalityFilter').value;
+            fromDate = document.getElementById('fromDate').value;
+            toDate = document.getElementById('toDate').value;
 
-    dangerLevelFilter.on("change", function() {
-        selectedDangerLevel = this.value;
-        drawPoints(data);
-    });
+            drawPoints(data);
+            document.getElementById('filterModal').style.display = 'none';
+        });
+    }).catch(error => console.error("Error loading the CSV file:", error));
+});
 
-    // Event listeners for date filters
-    d3.select("#fromDate").on("change", function() {
-        fromDate = this.value;
-        drawPoints(data);
-    });
+// JavaScript to handle the modal popup
 
-    d3.select("#toDate").on("change", function() {
-        toDate = this.value;
-        drawPoints(data);
-    });
-}).catch(error => console.error("Error loading the CSV file:", error));
+// Get elements
+const filterButton = document.getElementById('filterButton');
+const filterModal = document.getElementById('filterModal');
+const closeFilter = document.getElementById('closeFilter');
+const applyFilterButton = document.getElementById('applyFilter');
+
+// Open the filter modal
+filterButton.addEventListener('click', () => {
+    filterModal.style.display = 'block';
+});
+
+// Close the filter modal
+closeFilter.addEventListener('click', () => {
+    filterModal.style.display = 'none';
+});
+
+// Apply the filter and close the modal
+applyFilterButton.addEventListener('click', () => {
+    // Call your filter function here if needed
+    filterModal.style.display = 'none';
+});
+
+// Close modal when clicking outside of the modal content
+window.addEventListener('click', (event) => {
+    if (event.target === filterModal) {
+        filterModal.style.display = 'none';
+    }
+});

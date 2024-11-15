@@ -1,34 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Swiss Canton Boundaries</title>
-  <link rel="stylesheet" href="map.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swiss Canton Boundaries</title>
+    <link rel="stylesheet" href="map.css">
 </head>
 <body>
-<div id="filters">
-  <label for="cantonFilter">Canton:</label>
-  <select id="cantonFilter">
-    <option value="all">All</option>
-  </select>
+<!-- Button to open the filter popup -->
+<button id="filterButton">Open Filter</button>
 
-  <label for="municipalityFilter">Municipality:</label>
-  <select id="municipalityFilter">
-    <option value="all">All</option>
-  </select>
+<!-- Modal container for the filter -->
+<div id="filterModal" class="modal">
+    <div class="modal-content">
+        <div class="filter-header">
+            <h2 class="filter-titel">Add Filter</h2>
+            <span id="closeFilter" class="close-button" aria-label="Close">&times;</span>
+        </div>
+        <div class="filter-content">
+            <label for="cantonFilter">Canton:</label>
+            <select id="cantonFilter"></select>
 
-  <label for="dangerLevelFilter">Danger Level:</label>
-  <select id="dangerLevelFilter">
-    <option value="all">All</option>
-  </select>
+            <label for="municipalityFilter">Municipality:</label>
+            <select id="municipalityFilter"></select>
 
-  <label for="fromDate">From:</label>
-  <input type="date" id="fromDate">
+            <label for="dangerLevelContainer">Danger Level:</label>
+            <div id="dangerLevelContainer"></div>
 
-  <label for="toDate">To:</label>
-  <input type="date" id="toDate">
+            <label for="fromDate">From Date:</label>
+            <input type="date" id="fromDate">
+
+            <label for="toDate">To Date:</label>
+            <input type="date" id="toDate">
+        </div>
+        <button id="applyFilter">Apply Filter</button>
+    </div>
 </div>
+
 <h1>Swiss Canton Boundaries</h1>
 <div id="map" class="map-container"></div>
 <script src="https://d3js.org/d3.v7.min.js"></script>
