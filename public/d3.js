@@ -1,9 +1,14 @@
-d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(function(data) {
+//const { path } = require("d3-path");
+
+
+
+
+d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(function (data) {
     var totalCaught = d3.sum(data, function (d) {
         return +d['number.caught'];
     });
 
-// Display totalCaught in the element with id="total_caught"
+    // Display totalCaught in the element with id="total_caught"
     d3.select("#total_caught").text(totalCaught);
 })
 
@@ -19,27 +24,57 @@ var svg1 = d3.select("#piechart_container_left")
     .attr("height", height1)
     .append("g")
     .attr("transform", "translate(" + width1 / 2 + "," + height1 / 2 + ")");
+var pie = d3.pie().value(function (d) { return d.count; });
+var arc = d3.arc().innerRadius(115).outerRadius(radius1);
+// change and animate on svg1
+function changeSvgs(newData) {
+    var path = svg1.selectAll("path");
+    var data0 = path.data(), data1 = pie(newData);
+    path = path.data(data1);
+    path.transition().duration(1500).attrTween("d", arcTween)
 
-d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(function(data) {
-    var totalCaught = d3.sum(data, function(d) { return +d['number.caught']; });
-    var totalDead = d3.sum(data, function(d) { return +d['number.dead']; });
+    "hello world i hate mi life it's so boring or I can't find motivation for this stufff ..... "
+
+    // animate percentage number
+    svg1.select("text").transition().tween("text", () => {
+        const interpolator = d3.interpolateNumber(data0[0].data.count, data1[0].data.count);
+        return function(t) {
+            d3.select(this).text(interpolator(t).toFixed(2).toString() + "%")
+        }
+    }).duration(1500);
+
+    path = svg2.selectAll("path");
+    data0 = path.data(), data1 = pie(newData);
+}
+// interplation used for animation 
+function arcTween(d) {
+    var i = d3.interpolate(this._current, d);
+
+    this._current = i(0);
+    return function (t) {
+        return arc(i(t))
+    }
+
+}
+
+d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(function (data) {
+    var totalCaught = d3.sum(data, function (d) { return +d['number.caught']; });
+    var totalDead = d3.sum(data, function (d) { return +d['number.dead']; });
     var percentageDead = (totalDead / totalCaught) * 100;
 
-    var pieData1 = { "Dead": percentageDead, "Survived": 100 - percentageDead };
+    var pieData0 = [{ "type": "dead", "count": percentageDead }, { "type": "survived", "count": 100 - percentageDead }]
+    var pieData1 = [{ "type": "dead", "count": 75 }, { "type": "survived", "count": 100 - 75 }]
 
-    var color1 = d3.scaleOrdinal()
-        .domain(Object.keys(pieData1))
+    // TODO change function to our colorscheme
+    var color = d3.scaleOrdinal()
+        .domain(Object.keys(pieData0[0].type))
         .range(["#336BFF", "#ffffff"]);
 
-    var pie1 = d3.pie().value(function(d) { return d[1]; });
-    var data_ready1 = pie1(Object.entries(pieData1));
-
-    svg1.selectAll('whatever')
-        .data(data_ready1)
+    svg1.selectAll('whatever').data(pie(pieData0))
         .enter()
         .append('path')
-        .attr('d', d3.arc().innerRadius(115).outerRadius(radius1))
-        .attr('fill', function(d) { return color1(d.data[0]); })
+        .attr('d', arc)
+        .attr('fill', function (d) { return color(d.data.type); })
         .attr("stroke", "black")
         .style("stroke-width", "2px")
         .style("opacity", 0.7);
@@ -52,9 +87,165 @@ d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(funct
         .style("fill", "#336BFF")
         .text(percentageDead.toFixed(2) + "%");
 
-}).catch(function(error) {
+    d3.select("#button1").on('click', function (d) {
+        changeSvgs(pieData1)
+    })
+    d3.select("#button2").on('click', function (d) {
+        changeSvgs(pieData0)
+    })
+
+    // TODO labels from bottom
+
+    function myChange(newData) {
+        var path = svg1.selectAll("path");
+        var data0 = path.data(), data1 = pie(newData);
+        path = path.data(data1);
+        path.transition().duration(1500).attrTween("d", arcTween)
+    }
+
+    function arcTween(d) {
+        var i = d3.interpolate(this._current, d);
+
+        this._current = i(0);
+        return function (t) {
+            return arc(i(t))
+        }
+
+    }
+}).catch(function (error) {
     console.error("Error loading the CSV file for the first chart: ", error);
 });
+
+
+
+/*d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(function (data) {
+    var totalCaught = d3.sum(data, function (d) { return +d['number.caught']; });
+    var totalDead = d3.sum(data, function (d) { return +d['number.dead']; });
+    var percentageDead = (totalDead / totalCaught) * 100;
+
+    var pieData1 = { "Dead": percentageDead, "Survived": 100 - percentageDead };
+    var pieData12 = { "Dead": 50, "Survived": 50 };
+
+
+    var color1 = d3.scaleOrdinal()
+        .domain(Object.keys(pieData1))
+        .range(["#336BFF", "#ffffff"]);
+
+
+    var pie1 = d3.pie().value(function (d) { return d[1]; });
+    var data_ready1 = pie1(Object.entries(pieData1));
+
+    var arc = d3.arc().innerRadius(115).outerRadius(radius1)
+
+
+    svg1.selectAll('whatever')
+        .data(data_ready1)
+        .enter()
+        .append('path')
+        .attr('d', arc)
+        .attr('fill', function (d) { return color1(d.data[0]); })
+        .attr("stroke", "black")
+        .style("stroke-width", "2px")
+        .style("opacity", 0.7);
+
+    svg1.append("text")
+        .attr("text-anchor", "middle")
+        .attr("dy", "0.4em")
+        .style("font-size", "56px")
+        .style("font-weight", "bold")
+        .style("fill", "#336BFF")
+        .text(percentageDead.toFixed(2) + "%");
+    d3.select("button").on("click", buttonClick);
+    function buttonClick() {
+        myChange(pieData12);
+
+    }
+    function myChange(newData) {
+        var path = svg1.selectAll("path");
+        var data0 = path.data(), data1 = pie1(Object.entries(newData));
+        path = path.data(data1);
+        console.log(path)
+        path.transition().duration(1500).attrTween("d", arcTween)
+        console.log(path)
+        path.enter().append("path").each(function (d, i) {
+            var narc = findNeighborArc(i, data0, data1, key);
+            if (narc) {
+                this._current = narc;
+                this._previous = narc;
+            } else {
+                this._current = d;
+            }
+        })
+            .attr("fill", function (d, i) {
+                return color1(d.data.region)
+            })
+            .transition()
+            .duration(100)
+            .attrTween("d", arcTween)
+
+    }
+
+
+    function change() {
+        let path = svg1.selectAll("path");
+        let data0 = path.data(),
+            data1 = pie1(Object.entries(pieData12));
+        path = path.data(data1, (d) => {
+            return d.data.dead
+        });
+        path.transition().duration(100).attrTween("d", arcTween)
+
+        path
+            .enter()
+            .append("path")
+            .each(function (d, i) {
+                var narc = findNeighborArc(i, data0, data1, key);
+                if (narc) {
+                    this._current = narc;
+                    this._previous = narc;
+                } else {
+                    this._current = d;
+                }
+            })
+            .attr("fill", function (d, i) {
+                return color(d.data.region)
+            })
+            .transition()
+            .duration(100)
+            .attrTween("d", arcTween)
+
+
+        path
+            .exit()
+            .transition()
+            .duration(100)
+            .attrTween("d", function (d, index) {
+
+                var currentIndex = this._previous.data.region;
+                var i = d3.interpolateObject(d, this._previous);
+                return function (t) {
+                    return arc(i(t))
+                }
+
+            })
+            .remove()
+
+    }
+    function arcTween(d) {
+
+        var i = d3.interpolate(this._current, d);
+
+        this._current = i(0);
+
+        return function (t) {
+            return arc(i(t))
+        }
+
+    }
+}).catch(function (error) {
+    console.error("Error loading the CSV file for the first chart: ", error);
+});*/
+
 
 // Second Pie Chart (Percentage Fully Buried)
 var width2 = 450;
@@ -69,9 +260,9 @@ var svg2 = d3.select("#piechart_container_right")
     .append("g")
     .attr("transform", "translate(" + width2 / 2 + "," + height2 / 2 + ")");
 
-d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(function(data) {
-    var totalCaught = d3.sum(data, function(d) { return +d['number.caught']; });
-    var fullyBuried = d3.sum(data, function(d) { return +d['number.fully.buried']; });
+d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(function (data) {
+    var totalCaught = d3.sum(data, function (d) { return +d['number.caught']; });
+    var fullyBuried = d3.sum(data, function (d) { return +d['number.fully.buried']; });
     var percentageBuried = (fullyBuried / totalCaught) * 100;
 
     var pieData2 = { "Fully Buried": percentageBuried, "Not Buried": 100 - percentageBuried };
@@ -80,15 +271,17 @@ d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(funct
         .domain(Object.keys(pieData2))
         .range(["#336BFF", "#ffffff"]);
 
-    var pie2 = d3.pie().value(function(d) { return d[1]; });
+    var pie2 = d3.pie().value(function (d) { return d[1]; });
     var data_ready2 = pie2(Object.entries(pieData2));
+
+    var arc = d3.arc().innerRadius(115).outerRadius(radius2);
 
     svg2.selectAll('whatever')
         .data(data_ready2)
         .enter()
         .append('path')
-        .attr('d', d3.arc().innerRadius(115).outerRadius(radius2))
-        .attr('fill', function(d) { return color2(d.data[0]); })
+        .attr('d', arc)
+        .attr('fill', function (d) { return color2(d.data[0]); })
         .attr("stroke", "black")
         .style("stroke-width", "2px")
         .style("opacity", 0.7);
@@ -101,12 +294,12 @@ d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(funct
         .style("fill", "#336BFF")
         .text(percentageBuried.toFixed(2) + "%");
 
-}).catch(function(error) {
+}).catch(function (error) {
     console.error("Error loading the CSV file for the second chart: ", error);
 });
 
 // Load the data
-d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(function(data) {
+d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(function (data) {
 
     // Set the fixed width for the chart
     const width = 1350; // Fixed width of the stacked bar chart
@@ -178,19 +371,19 @@ d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(funct
         .attr("width", d => d.width)
         .attr("height", height)
         .attr("fill", d => colorMapping[d.level]) // Use color from mapping based on level
-        .on("mouseover", function(event, d) {
+        .on("mouseover", function (event, d) {
             tooltip.style("display", "block")
                 .text(`Level: ${d.level}`);
         })
-        .on("mousemove", function(event) {
+        .on("mousemove", function (event) {
             tooltip.style("top", (event.pageY - 10) + "px")
                 .style("left", (event.pageX + 10) + "px");
         })
-        .on("mouseout", function() {
+        .on("mouseout", function () {
             tooltip.style("display", "none");
         });
 
-}).catch(function(error) {
+}).catch(function (error) {
     console.error("Error loading CSV data:", error);
 });
 
