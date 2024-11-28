@@ -1,11 +1,23 @@
 d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(function(data) {
-    var totalCaught = d3.sum(data, function (d) {
+    var totalCaught = d3.sum(data, function(d) {
         return +d['number.caught'];
     });
 
-// Display totalCaught in the element with id="total_caught"
-    d3.select("#total_caught").text(totalCaught);
-})
+    // Generate the total_caught_wrapper and append it to the #total_caught container
+    var totalCaughtWrapper = d3.select("#total_caught")
+        .append("div") // Append a div element
+        .attr("class", "total_caught_wrapper") // Add the class for styling
+        .style("width", "75%")
+        .style("height", "370px") // Set a height for visibility
+        .style("background-color", "rgba(191, 191, 191, 0.5)") // Set background color
+        .style("border-radius", "8px")
+        .style("display", "flex")
+        .style("justify-content", "center")
+        .style("align-items", "center");
+
+    // Set the totalCaught value as the text inside the wrapper
+    totalCaughtWrapper.text(totalCaught);
+});
 
 // First Pie Chart (Percentage Dead)
 var width1 = 450;
@@ -161,7 +173,9 @@ d3.csv("assets/avalanche_accidents_fatal_switzerland_since_1936.csv").then(funct
     const svg = d3.select("#stacked_bar_chart")
         .append("svg")
         .attr("width", width) // Set SVG width to 1350px
-        .attr("height", height);
+        .attr("height", height)
+        .attr("stroke", "black")
+        .style("stroke-width", "2px");
 
     let xOffset = 0; // Track the x position for each segment
 
