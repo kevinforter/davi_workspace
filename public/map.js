@@ -5,7 +5,7 @@ const height = 610;
 // Set up the map projection centered on Switzerland
 const projection = d3.geoMercator()
     .center([8.3, 46.8])
-    .scale(7000)
+    .scale(11000)
     .translate([width / 2, height / 2]);
 
 const path = d3.geoPath().projection(projection);
@@ -84,6 +84,7 @@ d3.json("assets/swissBOUNDARIES3D_1_3_TLM_KANTONSGEBIET.json").then(data => {
 
 }).catch(error => console.error(error));
 
+/*
 // Define longitude and latitude intervals for Switzerland
 const longitudes = d3.range(5.5, 10.5, 0.5);  // Adjust as needed
 const latitudes = d3.range(45.5, 48.0, 0.5);  // Adjust as needed
@@ -127,6 +128,7 @@ latitudes.forEach(lat => {
         .attr("fill", "#333")
         .text(`${lat}°N`);
 });
+ */
 
 // Create a tooltip div that is hidden by default
 const tooltip = d3.select("body").append("div")

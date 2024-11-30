@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <title>Line chart from CSV using d3.js</title>
+    <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="chart.css" />
+</head>
+<body>
+<button id="filterButton">Open Filter</button>
+
+<div id="filterModal" class="modal">
+    <div class="modal-content">
+        <div class="filter-header">
+            <h2 class="filter-titel">Add Filter</h2>
+            <span id="closeFilter" class="close-button" aria-label="Close">&times;</span>
+        </div>
+        <div class="filter-content">
+            <label for="cantonFilter">Canton:</label>
+            <select id="cantonFilter"></select>
+
+            <label for="municipalityFilter">Municipality:</label>
+            <select id="municipalityFilter"></select>
+
+            <label for="dangerLevelContainer">Danger Level:</label>
+            <div id="dangerLevelContainer"></div>
+
+            <label for="fromDate">From Date:</label>
+            <input type="date" id="fromDate">
+
+            <label for="toDate">To Date:</label>
+            <input type="date" id="toDate">
+        </div>
+        <button id="applyFilter">Apply Filter</button>
+    </div>
+</div>
+
+<div id="root"></div>
+<script src="chart.js" type="text/javascript"></script>
+</body>
+</html>
