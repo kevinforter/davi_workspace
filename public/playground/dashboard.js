@@ -261,7 +261,22 @@ document.addEventListener("DOMContentLoaded", function () {
                             .attr("cx", projectedCoordinates[0])
                             .attr("cy", projectedCoordinates[1])
                             .attr("r", 2)
-                            .attr("fill", "red")
+                            .attr("fill", function() {
+                                // Check if the dangerLevels array contains 3, 4, or 1
+                                if (dangerLevel.includes(3)) {
+                                    return "orange"; // Red if dangerLevel array includes 3
+                                } else if (dangerLevel.includes(4)) {
+                                    return "red"; // Orange if dangerLevel array includes 4
+                                } else if (dangerLevel.includes(1)) {
+                                    return "#9FFF64"; // Green if dangerLevel array includes 1
+                                } else if (dangerLevel.includes(2)) {
+                                    return "yellow"; // Green if dangerLevel array includes 2
+                                } else if (dangerLevel.includes(5)) {
+                                    return "#A11B1B"; // Green if dangerLevel array includes 5
+                                } else {
+                                    return "grey"; // Default grey if no relevant dangerLevel is present
+                                }
+                            })
                             .attr("stroke", "black")
                             .attr("stroke-width", 0.5)
                             .on("mouseover", (event) => {
