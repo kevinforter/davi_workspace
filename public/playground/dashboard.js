@@ -267,6 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             .on("mouseover", (event) => {
                                 tooltip
                                     .style("opacity", 1)
+                                    .style("z-index", 100)
                                     .html(`
                                         <strong>Date:</strong> ${formattedDate}<br>
                                         <strong>Canton:</strong> ${canton}<br>
