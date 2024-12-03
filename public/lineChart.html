@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smooth Line Chart</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .chart {
+            margin: 20px auto;
+            width: 80%;
+            height: 500px;
+        }
+
+        .axis path, .axis line {
+            fill: none;
+            shape-rendering: crispEdges;
+        }
+    </style>
+</head>
+<body>
+<div class="chart" id="chart"></div>
+
+<script>
+    // Load CSV data
+    d3.csv("assets/ava36.csv").then(function (data) {
+
+        // Parse date and convert columns to numeric
+        data.forEach(d => {
+            d.date = new Date(d.date);
+            d.year = d.date.getFullYear();
+            d.buried = Math.max(0, +d.buried);
+            d.caught = Math.max(0, +d.caught);
+            d.dead = Math.max(0, +d.dead);
+        });
+
+        // Group by year and aggregate the data
+        const yearlyData = Array.from(
+            d3.group(data, d => d.year),
+            ([key, values]) => ({
+                year: key,
+                buried: d3.sum(values, v => v.buried),
+                caught: d3.sum(values, v => v.caught),
+                dead: d3.sum(values, v => v.dead)
+            })
+        );
+
+        const years = yearlyData.map(d => d.year);
+        const buried = yearlyData.map(d => ({year: d.year, value: d.buried}));
+        const caught = yearlyData.map(d => ({year: d.year, value: d.caught}));
+        const dead = yearlyData.map(d => ({year: d.year, value: d.dead}));
+
+        // Smooth the data using cubic spline interpolation
+        function smoothData(data) {
+            return d3.line()
+                .curve(d3.curveBumpX)
+                .x(d => x(d.year))
+                .y(d => y(d.value))(data);
+        }
+
+        // Set up SVG dimensions
+        const width = 1200;
+        const height = 700;
+        const margin = {top: 20, right: 30, bottom: 50, left: 60};
+
+        // Create SVG container
+        const svg = d3.select("#chart").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        const x = d3.scaleLinear()
+            .domain([d3.min(years), d3.max(years)])
+            .range([margin.left, width - margin.right]);
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max([...buried, ...caught, ...dead], d => d.value)])
+            .range([height - margin.bottom, margin.top]);
+
+        // Add x-axis
+        svg.append("g")
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+
+        // Add y-axis
+        svg.append("g")
+            .attr("transform", `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y));
+
+        // Define the area generators
+        const areaBuried = d3.area()
+            .curve(d3.curveBumpX)
+            .x(d => x(d.year))
+            .y0(height - margin.bottom)
+            .y1(d => y(d.value));
+
+        const areaDead = d3.area()
+            .curve(d3.curveBumpX)
+            .x(d => x(d.year))
+            .y0(height - margin.bottom)
+            .y1(d => y(d.value));
+
+        // Add the areas for Buried
+        svg.append("path")
+            .datum(buried)
+            .attr("class", "area buried")
+            .attr("fill", "blue")
+            .attr("opacity", 0.075)
+            .attr("d", areaBuried);
+
+        // Add the areas for Dead
+        svg.append("path")
+            .datum(dead)
+            .attr("class", "area dead")
+            .attr("fill", "CB9DF0")
+            .attr("opacity", 0.075)
+            .attr("d", areaDead);
+
+        // Add the smoothed lines
+        svg.append("path")
+            .datum(caught)
+            .attr("class", "line caught")
+            .attr("fill", "none")
+            .attr("stroke", "black")
+            .attr("stroke-width", 2)
+            .attr("opacity", 1)
+            .attr("d", smoothData(caught));
+
+        svg.append("path")
+            .datum(buried)
+            .attr("class", "line buried")
+            .attr("fill", "none")
+            .attr("stroke", "blue")
+            .attr("stroke-width", 2)
+            .attr("opacity", 1)
+            .attr("d", smoothData(buried));
+
+        svg.append("path")
+            .datum(dead)
+            .attr("class", "line dead")
+            .attr("fill", "none")
+            .attr("stroke", "#CB9DF0")
+            .attr("stroke-width", 2)
+            .attr("opacity", 1)
+            .attr("d", smoothData(dead));
+
+        // Add hover effect
+        svg.selectAll(".line")
+            .on("mouseover", function() {
+                d3.selectAll(".line").attr("opacity", 0.15);
+                d3.select(this).attr("opacity", 1);
+            })
+            .on("mouseout", function() {
+                d3.selectAll(".line").attr("opacity", 1);
+            });
+
+        // Add legend
+        const legend = svg.append("g")
+            .attr("transform", `translate(${width / 2 - 80},${height - 15})`);
+
+        legend.append("circle")
+            .attr("cx", 5)
+            .attr("cy", 5)
+            .attr("r", 5)
+            .attr("fill", "black");
+
+        legend.append("text")
+            .attr("x", 20)
+            .attr("y", 10)
+            .text("Caught")
+            .style("font-size", "12px");
+
+        legend.append("circle")
+            .attr("cx", 85)
+            .attr("cy", 5)
+            .attr("r", 5)
+            .attr("fill", "blue");
+
+        legend.append("text")
+            .attr("x", 100)
+            .attr("y", 10)
+            .text("Buried")
+            .style("font-size", "12px");
+
+        legend.append("circle")
+            .attr("cx", 165)
+            .attr("cy", 5)
+            .attr("r", 5)
+            .attr("fill", "#CB9DF0");
+
+        legend.append("text")
+            .attr("x", 180)
+            .attr("y", 10)
+            .text("Dead")
+            .style("font-size", "12px");
+    });
+</script>
+</body>
+</html>
