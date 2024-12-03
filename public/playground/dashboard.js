@@ -1,3 +1,21 @@
+// Track loading states
+let mapLoaded = false;
+let dataLoaded = false;
+
+// Function to check if all components are loaded
+function checkMapLoaded() {
+    if (mapLoaded) {
+        document.getElementById('map-loader').style.display = 'none';
+    }
+}
+
+function checkDataLoaded() {
+    if (dataLoaded) {
+        document.getElementById('charts-loader').style.display = 'flex';
+        document.getElementById('lineChart-loader').style.display = 'none';
+    }
+}
+
 const margin = { top: 5, right: 0, bottom: 40, left: 30 },
     containerWidth = document.querySelector("#lineChart").offsetWidth,
     containerHeight = document.querySelector("#lineChart").offsetHeight,
@@ -62,6 +80,9 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
 
     cantons.append("title").text(d => d.properties.NAME);
 
+    mapLoaded = true; // Map loaded
+    checkMapLoaded();
+
     // Click event to zoom into the canton
     function clicked(event, d) {
         const [[x0, y0], [x1, y1]] = pathMap.bounds(d);
@@ -91,7 +112,7 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
 
     // Apply the reset function when clicking outside of cantons
     svgMap.on("click", reset);
-}).catch(error => console.error(error));
+}).catch(error => console.error("Error loading map:", error));
 
 // Recalculate and redraw the SVG on window resize
 window.addEventListener("resize", () => {
@@ -142,6 +163,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         let filteredData = data;
+
+        dataLoaded = true; // Map loaded
+        checkDataLoaded();
 
         const uniqueCantons = [...new Set(data.map((d) => d["canton"]))].sort();
         const uniqueMunicipalities = [
@@ -572,5 +596,5 @@ document.addEventListener("DOMContentLoaded", function () {
             drawPoints(data);
             document.getElementById('filterModal').style.display = 'none';
         });
-    });
+    }).catch(error => console.error("Error loading data:", error));
 });
