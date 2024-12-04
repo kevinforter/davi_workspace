@@ -16,7 +16,7 @@ function checkDataLoaded() {
     }
 }
 
-const margin = {top: 5, right: 0, bottom: 40, left: 30},
+const margin = {top: 15, right: 0, bottom: 40, left: 30},
     containerWidth = document.querySelector("#lineChart").offsetWidth,
     containerHeight = document.querySelector("#lineChart").offsetHeight,
     widthLineChart = containerWidth - margin.left - margin.right,
@@ -112,6 +112,29 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
 
     // Apply the reset function when clicking outside of cantons
     svgMap.on("click", reset);
+
+    d3.select("#map").append("div")
+        .text("Last Updated")
+        .style("position", "absolute")
+        .style("width", "100%")
+        .style("height", "fit-content")
+        .style("top", "10px")
+        .style("left", "10px")
+        .style("font-weight", "bold")
+        .style("font-size", "1.1rem")
+        .style("color", "#999")
+
+    d3.select("#map").append("div")
+        .text("Mi. 4 Dez. 2024")
+        .style("position", "absolute")
+        .style("width", "100%")
+        .style("height", "fit-content")
+        .style("top", "calc(1.1rem + 15px)")
+        .style("left", "10px")
+        .style("font-weight", "bold")
+        .style("font-size", "1.1rem")
+        .style("color", "#dfdfdf")
+
 }).catch(error => console.error("Error loading map:", error));
 
 // Recalculate and redraw the SVG on window resize
@@ -600,6 +623,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("y", 10)
                 .text("Dead")
                 .style("font-size", "12px");
+
+            d3.select("#lineChart").append("div")
+                .text("Timeline of Accidents")
+                .style("position", "absolute")
+                .style("width", "100%")
+                .style("height", "fit-content")
+                .style("top", "10px")
+                .style("left", "10px")
+                .style("font-weight", "bold")
+                .style("font-size", "1.1rem")
+                .style("color", "#dfdfdf")
         }
 
         drawStackedBar(filteredData);
@@ -749,6 +783,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     d3.selectAll("rect").style("opacity", 1);
                 });
+
+            d3.select("#distDangerLevel").append("div")
+                .text("Danger Level Distribution")
+                .style("position", "absolute")
+                .style("width", "100%")
+                .style("height", "fit-content")
+                .style("top", "10px")
+                .style("left", "10px")
+                .style("font-weight", "bold")
+                .style("font-size", "1.1rem")
+                .style("color", "#dfdfdf");
         }
 
         drawPieChart(filteredData);
@@ -782,8 +827,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 svg.append("path")
                     .attr("d", arc({ startAngle: 0, endAngle: 2 * Math.PI }))
                     .attr("fill", "#ffffff")
-                    .attr("stroke", "black")
-                    .style("stroke-width", "2px")
                     .style("opacity", 0.7);
 
                 // Define data for the blue slice
@@ -795,9 +838,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     .enter()
                     .append("path")
                     .attr("class", "pie")
-                    .attr("fill", "#336BFF")
-                    .attr("stroke", "black")
-                    .style("stroke-width", "2px")
+                    .attr("fill", "#7C98B3")
                     .attr("d", arc({ startAngle: 0, endAngle: 0 })) // Start with no slice
                     .transition()
                     .duration(1000)
@@ -815,7 +856,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     .attr("dy", "0.4em")
                     .style("font-size", "38px")
                     .style("font-weight", "bold")
-                    .style("fill", "#336BFF")
+                    .style("fill", "#7C98B3")
                     .transition()
                     .duration(1000)
                     .tween("text", function () {
@@ -825,6 +866,28 @@ document.addEventListener("DOMContentLoaded", function () {
                         };
                     });
             }
+
+            d3.select("#distBuried").append("div")
+                .text("Buried Percentage")
+                .style("position", "absolute")
+                .style("width", "100%")
+                .style("height", "fit-content")
+                .style("top", "10px")
+                .style("left", "10px")
+                .style("font-weight", "bold")
+                .style("font-size", "1.1rem")
+                .style("color", "#dfdfdf");
+
+            d3.select("#distDead").append("div")
+                .text("Dead Percentage")
+                .style("position", "absolute")
+                .style("width", "100%")
+                .style("height", "fit-content")
+                .style("top", "10px")
+                .style("left", "10px")
+                .style("font-weight", "bold")
+                .style("font-size", "1.1rem")
+                .style("color", "#dfdfdf");
 
             // Draw pie charts
             drawChart("#distBuried", percentageBuried, "Fully Buried");
@@ -841,7 +904,19 @@ document.addEventListener("DOMContentLoaded", function () {
             // Display totalCaught in the element with id="total_caught"
             d3.select("#caught").text(totalCaught)
                 .style("font-weight", "bold")
+                .style("color", "#7C98B3")
                 .style("font-size", "8em");
+
+            d3.select("#caught").append("div")
+                .text("Total Caught People")
+                .style("position", "absolute")
+                .style("width", "100%")
+                .style("height", "fit-content")
+                .style("top", "10px")
+                .style("left", "10px")
+                .style("font-weight", "bold")
+                .style("font-size", "1.1rem")
+                .style("color", "#dfdfdf");
         }
 
         // Event listener for applying filters
