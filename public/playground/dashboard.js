@@ -671,8 +671,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .append("svg")
                 .attr("width", widthStackedBar) // Set SVG width to 1350px
                 .attr("height", heightStackedBar)
-                .attr("stroke", "black")
-                .style("stroke-width", "1px");
+                .style("border-radius", "8px");
 
             let xOffset = 0; // Track the x position for each segment
 
@@ -705,6 +704,100 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
         }
 
+        drawPieChart(filteredData);
+        function drawPieChart(filteredData) {
+            d3.selectAll("path.pie").remove();
+            d3.selectAll("text.text").remove();
+            d3.selectAll("#distBuried > svg").remove();
+            d3.selectAll("#distDead > svg").remove();
+
+            // Second Pie Chart (Percentage Fully Buried)
+            var width2 = 250;
+            var height2 = 250;
+            var margin2 = 45;
+            var radius2 = Math.min(width2, height2) / 2 - margin2;
+
+            var svg2 = d3.select("#distBuried")
+                .append("svg")
+                .attr("width", width2)
+                .attr("height", height2)
+                .append("g")
+                .attr("transform", "translate(" + width2 / 2 + "," + height2 / 2 + ")");
+
+            var svg1 = d3.select("#distDead")
+                .append("svg")
+                .attr("width", width2)
+                .attr("height", height2)
+                .append("g")
+                .attr("transform", "translate(" + width2 / 2 + "," + height2 / 2 + ")");
+
+            var totalCaught = d3.sum(filteredData, function (d) { return +d['caught']; });
+            var fullyBuried = d3.sum(filteredData, function (d) { return +d['buried']; });
+            var percentageBuried = (fullyBuried / totalCaught) * 100;
+            var totalDead = d3.sum(filteredData, function (d) { return +d['dead']; });
+            var percentageDead = (totalDead / totalCaught) * 100;
+
+            var pieData2 = { "Fully Buried": percentageBuried, "Not Buried": 100 - percentageBuried };
+            var pieData1 = { "Dead": percentageDead, "Not Dead": 100 - percentageDead };
+
+            var color2 = d3.scaleOrdinal()
+                .domain(Object.keys(pieData2))
+                .range(["#336BFF", "#ffffff"]);
+
+            var color1 = d3.scaleOrdinal()
+                .domain(Object.keys(pieData1))
+                .range(["#336BFF", "#ffffff"]);
+
+            var pie2 = d3.pie().value(function (d) { return d[1]; });
+            var data_ready2 = pie2(Object.entries(pieData2));
+
+            var pie1 = d3.pie().value(function (d) { return d[1]; });
+            var data_ready1 = pie1(Object.entries(pieData1));
+
+            var arc = d3.arc().innerRadius(115).outerRadius(radius2);
+
+            svg2.selectAll('whatever')
+                .data(data_ready2)
+                .enter()
+                .append('path')
+                .attr('d', arc)
+                .attr('fill', function (d) { return color2(d.data[0]); })
+                .attr("stroke", "black")
+                .attr("class", "pie")
+                .style("stroke-width", "2px")
+                .style("opacity", 0.7);
+
+            svg2.append("text")
+                .attr("text-anchor", "middle")
+                .attr("dy", "0.4em")
+                .attr("class", "text")
+                .style("font-size", "38px")
+                .style("font-weight", "bold")
+                .style("fill", "#336BFF")
+                .text(percentageBuried.toFixed(2) + "%");
+
+            let xOffset = 0; // Track the x position for each segment
+            svg1.selectAll('whatever')
+                .data(data_ready1)
+                .enter()
+                .append('path')
+                .attr('d', arc)
+                .attr('fill', function (d) { return color1(d.data[0]); })
+                .attr("stroke", "black")
+                .attr("class", "pie")
+                .style("stroke-width", "2px")
+                .style("opacity", 0.7)
+
+            svg1.append("text")
+                .attr("text-anchor", "middle")
+                .attr("dy", "0.4em")
+                .attr("class", "text")
+                .style("font-size", "38px")
+                .style("font-weight", "bold")
+                .style("fill", "#336BFF")
+                .text(percentageDead.toFixed(2) + "%");
+        }
+
         writeCaught(filteredData);
         function writeCaught(filteredData) {
 
@@ -728,6 +821,7 @@ document.addEventListener("DOMContentLoaded", function () {
             drawPoints(filteredData);
             writeCaught(filteredData);
             drawStackedBar(filteredData);
+            drawPieChart(filteredData);
             document.getElementById('filterModal').style.display = 'none';
         });
     }).catch(error => console.error("Error loading data:", error));
