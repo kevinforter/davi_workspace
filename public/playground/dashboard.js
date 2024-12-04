@@ -87,7 +87,7 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
     function clicked(event, d) {
         const [[x0, y0], [x1, y1]] = pathMap.bounds(d);
         event.stopPropagation();
-        cantons.transition().style("fill", "#444");
+        cantons.transition().style("fill", "transparent");
         d3.select(this).transition().style("fill", "lightgrey");
 
         svgMap.transition().duration(750).call(
@@ -604,11 +604,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         drawStackedBar(filteredData);
         function drawStackedBar(filteredData) {
-            d3.select("#distActivity").selectAll("*").remove();
+            d3.select("#distDangerLevel").selectAll("*").remove();
 
             // Set the fixed width for the chart
             const widthStackedBar = (document.querySelector("#distActivity").offsetWidth) - 50; // Fixed width of the stacked bar chart
-            const heightStackedBar = 100;
+            const heightStackedBar = 75;
 
             // Define specific colors for each level
             const colorMapping = {
@@ -667,7 +667,7 @@ document.addEventListener("DOMContentLoaded", function () {
             stackedData.sort((a, b) => +a.level - +b.level);
 
             // Create the stacked bar
-            const svgStackedBar = d3.select("#distActivity")
+            const svgStackedBar = d3.select("#distDangerLevel")
                 .append("svg")
                 .attr("width", widthStackedBar) // Set SVG width to 1350px
                 .attr("height", heightStackedBar)
@@ -679,6 +679,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 .data(stackedData)
                 .enter()
                 .append("rect")
+                .attr("class", d => {
+                    // Map levels to CSS class names
+                    switch (+d.level) {
+                        case 1:
+                            return "gering"; // Low danger
+                        case 2:
+                            return "mässig"; // Moderate danger
+                        case 3:
+                            return "erheblich"; // Considerable danger
+                        case 4:
+                            return "gross"; // High danger
+                        case 5:
+                            return "sehrGross"; // Very high danger
+                        default:
+                            return "empty"; // Default
+                    }
+                })
                 .attr("x", d => {
                     const x = xOffset;
                     xOffset += d.width;
@@ -692,6 +709,34 @@ document.addEventListener("DOMContentLoaded", function () {
                     tooltip
                         .style("display", "block")
                         .text(`Level: ${d.level}`);
+
+                    if (d3.select(this).classed("gering")) {
+                        // When hovering over death area/line
+                        d3.selectAll("rect")
+                            .style("opacity", 0.3);
+                        d3.select(this)
+                            .style("opacity", 1)
+                    } else if (d3.select(this).classed("mässig")) {
+                        d3.selectAll("rect")
+                            .style("opacity", 0.3);
+                        d3.select(this)
+                            .style("opacity", 1)
+                    } else if (d3.select(this).classed("erheblich")) {
+                        d3.selectAll("rect")
+                            .style("opacity", 0.3);
+                        d3.select(this)
+                            .style("opacity", 1)
+                    } else if (d3.select(this).classed("gross")) {
+                        d3.selectAll("rect")
+                            .style("opacity", 0.3);
+                        d3.select(this)
+                            .style("opacity", 1)
+                    } else if (d3.select(this).classed("sehr gross")) {
+                        d3.selectAll("rect")
+                            .style("opacity", 0.3);
+                        d3.select(this)
+                            .style("opacity", 1)
+                    }
                 })
                 .on("mousemove", function (event) {
                     tooltip
@@ -701,6 +746,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 .on("mouseout", function () {
                     tooltip
                         .style("display", "none");
+
+                    d3.selectAll("rect").style("opacity", 1);
                 });
         }
 
@@ -776,7 +823,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("fill", "#336BFF")
                 .text(percentageBuried.toFixed(2) + "%");
 
-            let xOffset = 0; // Track the x position for each segment
             svg1.selectAll('whatever')
                 .data(data_ready1)
                 .enter()
