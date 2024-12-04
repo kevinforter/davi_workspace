@@ -11,12 +11,12 @@ function checkMapLoaded() {
 
 function checkDataLoaded() {
     if (dataLoaded) {
-        document.getElementById('charts-loader').style.display = 'flex';
+        /*document.getElementById('charts-loader').style.display = 'none';*/
         document.getElementById('lineChart-loader').style.display = 'none';
     }
 }
 
-const margin = { top: 5, right: 0, bottom: 40, left: 30 },
+const margin = {top: 5, right: 0, bottom: 40, left: 30},
     containerWidth = document.querySelector("#lineChart").offsetWidth,
     containerHeight = document.querySelector("#lineChart").offsetHeight,
     widthLineChart = containerWidth - margin.left - margin.right,
@@ -242,7 +242,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Convert the date to a JavaScript Date object for filtering
                 const rowDate = new Date(date);
-                const options = { weekday: 'short', year: 'numeric', month: 'short' };
+                const options = {weekday: 'short', year: 'numeric', month: 'short'};
                 const formattedDate = date.toLocaleDateString('de-CH', options);
 
                 // Check if the data matches the selected filters
@@ -261,7 +261,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             .attr("cx", projectedCoordinates[0])
                             .attr("cy", projectedCoordinates[1])
                             .attr("r", 2)
-                            .attr("fill", function() {
+                            .attr("fill", function () {
                                 // Check if the dangerLevels array contains 3, 4, or 1
                                 if (dangerLevel.includes(3)) {
                                     return "orange"; // Red if dangerLevel array includes 3
@@ -529,7 +529,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("d", areaDead);
 
             svg.selectAll(".line, .area")
-                .on("mouseover", function() {
+                .on("mouseover", function () {
                     // Reset all opacities first
                     //d3.selectAll(".line, .area").attr("opacity", 1);
 
@@ -555,7 +555,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Always keep the hovered element at full opacity
                     // d3.select(this).attr("opacity", 1);
                 })
-                .on("mouseout", function() {
+                .on("mouseout", function () {
                     // Reset all opacities to full when mouse leaves
                     d3.selectAll(".line").attr("opacity", 1);
                     d3.selectAll(".area").attr("opacity", 0.0);
@@ -602,6 +602,122 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("font-size", "12px");
         }
 
+        drawStackedBar(filteredData);
+        function drawStackedBar(filteredData) {
+            d3.select("#distActivity").selectAll("*").remove();
+
+            // Set the fixed width for the chart
+            const widthStackedBar = (document.querySelector("#distActivity").offsetWidth) - 50; // Fixed width of the stacked bar chart
+            const heightStackedBar = 100;
+
+            // Define specific colors for each level
+            const colorMapping = {
+                "1": "#9FFF64", // Green for Level 1
+                "2": "#F2FF00", // Yellow for Level 2
+                "3": "#FFC31E", // Orange for Level 3
+                "4": "#FF0000", // Red for Level 4
+                "5": "#8B0000"  // Dark Red for Level 5
+            };
+
+            // Create a tooltip div that is hidden by default
+            const tooltip = d3.select("body").append("div")
+                .style("position", "absolute")
+                .style("background", "rgba(0, 0, 0, 0.75)")
+                .style("padding", "8px")
+                .style("color", "#fff")
+                .style("padding", "10px")
+                .style("border-radius", "4px")
+                .style("pointer-events", "none")
+                .style("display", "none");
+
+            // Calculate total caught and group by danger level, ignoring empty or null cells
+            const totalCaughtStack = d3.sum(filteredData, d => +d['caught']);
+            const dangerLevels = d3.rollup(
+                filteredData.filter(d => d['forecasted.dangerlevel.rating1'] && d['forecasted.dangerlevel.rating1'] !== "NULL"),
+                v => d3.sum(v, d => +d['caught']),
+                d => d['forecasted.dangerlevel.rating1']
+            );
+
+            // Ensure dangerLevels has data before continuing
+            if (!dangerLevels || dangerLevels.size === 0) {
+                console.error("No valid data for forecasted danger levels.");
+                return;
+            }
+
+            // Calculate the proportional widths for each segment
+            const proportionalWidths = Array.from(dangerLevels, ([level, count]) => ({
+                level,
+                count,
+                width: (count / totalCaughtStack) * widthStackedBar // Initial proportional width based on total count
+            }));
+
+            // Calculate the total of proportional widths
+            const totalProportionalWidth = proportionalWidths.reduce((sum, d) => sum + d.width, 0);
+
+            // Determine the scaling factor to adjust to exactly 1350px
+            const scalingFactor = widthStackedBar / totalProportionalWidth;
+
+            // Apply the scaling factor to each segment to maintain proportionality and fit 1350px
+            const stackedData = proportionalWidths.map(d => ({
+                ...d,
+                width: d.width * scalingFactor
+            }));
+
+            // Sort the stackedData by the level (convert level to a number for sorting)
+            stackedData.sort((a, b) => +a.level - +b.level);
+
+            // Create the stacked bar
+            const svgStackedBar = d3.select("#distActivity")
+                .append("svg")
+                .attr("width", widthStackedBar) // Set SVG width to 1350px
+                .attr("height", heightStackedBar)
+                .attr("stroke", "black")
+                .style("stroke-width", "1px");
+
+            let xOffset = 0; // Track the x position for each segment
+
+            svgStackedBar.selectAll("rect")
+                .data(stackedData)
+                .enter()
+                .append("rect")
+                .attr("x", d => {
+                    const x = xOffset;
+                    xOffset += d.width;
+                    return x;
+                })
+                .attr("y", 0)
+                .attr("width", d => d.width)
+                .attr("height", heightStackedBar)
+                .attr("fill", d => colorMapping[d.level]) // Use color from mapping based on level
+                .on("mouseover", function (event, d) {
+                    tooltip
+                        .style("display", "block")
+                        .text(`Level: ${d.level}`);
+                })
+                .on("mousemove", function (event) {
+                    tooltip
+                        .style("top", (event.pageY - 10) + "px")
+                        .style("left", (event.pageX + 10) + "px");
+                })
+                .on("mouseout", function () {
+                    tooltip
+                        .style("display", "none");
+                });
+        }
+
+        writeCaught(filteredData);
+        function writeCaught(filteredData) {
+
+            var totalCaught = d3.sum(filteredData, function (d) {
+                return +d['caught'];
+            });
+
+            // Display totalCaught in the element with id="total_caught"
+            d3.select("#caught").text(totalCaught)
+                .style("font-weight", "bold")
+                .style("font-size", "8em");
+        }
+
         // Event listener for applying filters
         document.getElementById('applyFilter').addEventListener('click', () => {
             selectedCanton = document.getElementById('cantonFilter').value;
@@ -609,7 +725,9 @@ document.addEventListener("DOMContentLoaded", function () {
             fromDate = document.getElementById('fromDate').value;
             toDate = document.getElementById('toDate').value;
 
-            drawPoints(data);
+            drawPoints(filteredData);
+            writeCaught(filteredData);
+            drawStackedBar(filteredData);
             document.getElementById('filterModal').style.display = 'none';
         });
     }).catch(error => console.error("Error loading data:", error));
