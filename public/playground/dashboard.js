@@ -758,90 +758,77 @@ document.addEventListener("DOMContentLoaded", function () {
             d3.selectAll("#distBuried > svg").remove();
             d3.selectAll("#distDead > svg").remove();
 
-            // Second Pie Chart (Percentage Fully Buried)
-            var width2 = 250;
-            var height2 = 250;
-            var margin2 = 45;
-            var radius2 = Math.min(width2, height2) / 2 - margin2;
+            var width = 250, height = 250, margin = 45;
+            var radius = Math.min(width, height) / 2 - margin;
 
-            var svg2 = d3.select("#distBuried")
-                .append("svg")
-                .attr("width", width2)
-                .attr("height", height2)
-                .append("g")
-                .attr("transform", "translate(" + width2 / 2 + "," + height2 / 2 + ")");
+            var arc = d3.arc().innerRadius(115).outerRadius(radius);
 
-            var svg1 = d3.select("#distDead")
-                .append("svg")
-                .attr("width", width2)
-                .attr("height", height2)
-                .append("g")
-                .attr("transform", "translate(" + width2 / 2 + "," + height2 / 2 + ")");
-
-            var totalCaught = d3.sum(filteredData, function (d) { return +d['caught']; });
-            var fullyBuried = d3.sum(filteredData, function (d) { return +d['buried']; });
+            var totalCaught = d3.sum(filteredData, d => +d['caught']);
+            var fullyBuried = d3.sum(filteredData, d => +d['buried']);
             var percentageBuried = (fullyBuried / totalCaught) * 100;
-            var totalDead = d3.sum(filteredData, function (d) { return +d['dead']; });
+
+            var totalDead = d3.sum(filteredData, d => +d['dead']);
             var percentageDead = (totalDead / totalCaught) * 100;
 
-            var pieData2 = { "Fully Buried": percentageBuried, "Not Buried": 100 - percentageBuried };
-            var pieData1 = { "Dead": percentageDead, "Not Dead": 100 - percentageDead };
+            function drawChart(containerId, percentage, label) {
+                var svg = d3.select(containerId)
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .append("g")
+                    .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-            var color2 = d3.scaleOrdinal()
-                .domain(Object.keys(pieData2))
-                .range(["#336BFF", "#ffffff"]);
+                // Draw static white background (full circle)
+                svg.append("path")
+                    .attr("d", arc({ startAngle: 0, endAngle: 2 * Math.PI }))
+                    .attr("fill", "#ffffff")
+                    .attr("stroke", "black")
+                    .style("stroke-width", "2px")
+                    .style("opacity", 0.7);
 
-            var color1 = d3.scaleOrdinal()
-                .domain(Object.keys(pieData1))
-                .range(["#336BFF", "#ffffff"]);
+                // Define data for the blue slice
+                var blueData = [{ startAngle: 0, endAngle: 0 }, { startAngle: 0, endAngle: (percentage / 100) * 2 * Math.PI }];
 
-            var pie2 = d3.pie().value(function (d) { return d[1]; });
-            var data_ready2 = pie2(Object.entries(pieData2));
+                // Draw the blue slice with animation
+                svg.selectAll("path.slice")
+                    .data(blueData.slice(1)) // Only use the overlay slice
+                    .enter()
+                    .append("path")
+                    .attr("class", "pie")
+                    .attr("fill", "#336BFF")
+                    .attr("stroke", "black")
+                    .style("stroke-width", "2px")
+                    .attr("d", arc({ startAngle: 0, endAngle: 0 })) // Start with no slice
+                    .transition()
+                    .duration(1000)
+                    .attrTween("d", function (d) {
+                        var interpolate = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
+                        return function (t) {
+                            return arc(interpolate(t));
+                        };
+                    });
 
-            var pie1 = d3.pie().value(function (d) { return d[1]; });
-            var data_ready1 = pie1(Object.entries(pieData1));
+                // Add text percentage in the center
+                svg.append("text")
+                    .attr("class", "text")
+                    .attr("text-anchor", "middle")
+                    .attr("dy", "0.4em")
+                    .style("font-size", "38px")
+                    .style("font-weight", "bold")
+                    .style("fill", "#336BFF")
+                    .transition()
+                    .duration(1000)
+                    .tween("text", function () {
+                        var interpolate = d3.interpolate(0, percentage);
+                        return function (t) {
+                            d3.select(this).text(interpolate(t).toFixed(2) + "%");
+                        };
+                    });
+            }
 
-            var arc = d3.arc().innerRadius(115).outerRadius(radius2);
-
-            svg2.selectAll('whatever')
-                .data(data_ready2)
-                .enter()
-                .append('path')
-                .attr('d', arc)
-                .attr('fill', function (d) { return color2(d.data[0]); })
-                .attr("stroke", "black")
-                .attr("class", "pie")
-                .style("stroke-width", "2px")
-                .style("opacity", 0.7);
-
-            svg2.append("text")
-                .attr("text-anchor", "middle")
-                .attr("dy", "0.4em")
-                .attr("class", "text")
-                .style("font-size", "38px")
-                .style("font-weight", "bold")
-                .style("fill", "#336BFF")
-                .text(percentageBuried.toFixed(2) + "%");
-
-            svg1.selectAll('whatever')
-                .data(data_ready1)
-                .enter()
-                .append('path')
-                .attr('d', arc)
-                .attr('fill', function (d) { return color1(d.data[0]); })
-                .attr("stroke", "black")
-                .attr("class", "pie")
-                .style("stroke-width", "2px")
-                .style("opacity", 0.7)
-
-            svg1.append("text")
-                .attr("text-anchor", "middle")
-                .attr("dy", "0.4em")
-                .attr("class", "text")
-                .style("font-size", "38px")
-                .style("font-weight", "bold")
-                .style("fill", "#336BFF")
-                .text(percentageDead.toFixed(2) + "%");
+            // Draw pie charts
+            drawChart("#distBuried", percentageBuried, "Fully Buried");
+            drawChart("#distDead", percentageDead, "Dead");
         }
 
         writeCaught(filteredData);
