@@ -742,7 +742,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 .on("mouseover", function (event, d) {
                     tooltip
                         .style("display", "block")
-                        .text(`Level: ${d.level}`);
+                        .text("Level: " + (function() {
+                            switch (+d.level) {
+                                case 1:
+                                    return "gering"; // Low danger
+                                case 2:
+                                    return "mässig"; // Moderate danger
+                                case 3:
+                                    return "erheblich"; // Considerable danger
+                                case 4:
+                                    return "gross"; // High danger
+                                case 5:
+                                    return "sehrGross"; // Very high danger
+                                default:
+                                    return "empty"; // Default
+                            }
+                        })());
 
                     if (d3.select(this).classed("gering")) {
                         // When hovering over death area/line
@@ -803,6 +818,17 @@ document.addEventListener("DOMContentLoaded", function () {
             d3.selectAll("#distBuried > svg").remove();
             d3.selectAll("#distDead > svg").remove();
 
+            // Create a tooltip div that is hidden by default
+            const tooltip = d3.select("body").append("div")
+                .style("position", "absolute")
+                .style("background", "rgba(0, 0, 0, 0.75)")
+                .style("padding", "8px")
+                .style("color", "#fff")
+                .style("padding", "10px")
+                .style("border-radius", "4px")
+                .style("pointer-events", "none")
+                .style("display", "none");
+
             var width = 250, height = 250, margin = 45;
             var radius = Math.min(width, height) / 2 - margin;
 
@@ -838,6 +864,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     .enter()
                     .append("path")
                     .attr("class", "pie")
+                    .attr("id", containerId === "#distBuried" ? "distBuried" : "distDead") // Assign id based on the container
                     .attr("fill", "#7C98B3")
                     .attr("d", arc({ startAngle: 0, endAngle: 0 })) // Start with no slice
                     .transition()
@@ -847,6 +874,23 @@ document.addEventListener("DOMContentLoaded", function () {
                         return function (t) {
                             return arc(interpolate(t));
                         };
+                    })
+                    .on("end", function () {
+                        // Attach tooltip event listeners after transition
+                        d3.select(this)
+                            .on("mouseover", function (event) {
+                                tooltip
+                                    .style("display", "block")
+                                    .text("Total: " + (d3.select(this).attr("id") === "distBuried" ? fullyBuried : totalDead));
+                            })
+                            .on("mousemove", function (event) {
+                                tooltip
+                                    .style("top", (event.pageY - 10) + "px")
+                                    .style("left", (event.pageX + 10) + "px");
+                            })
+                            .on("mouseout", function () {
+                                tooltip.style("display", "none");
+                            });
                     });
 
                 // Add text percentage in the center
@@ -868,7 +912,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             d3.select("#distBuried").append("div")
-                .text("Buried Percentage")
+                .text("Fully Buried Percentage")
                 .style("position", "absolute")
                 .style("width", "100%")
                 .style("height", "fit-content")
