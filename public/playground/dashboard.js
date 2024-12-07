@@ -938,6 +938,17 @@ document.addEventListener("DOMContentLoaded", function () {
             let bottomMargin = 20;
             let topMargin = 40;
 
+            // Create a tooltip div that is hidden by default
+            const tooltip = d3.select("body").append("div")
+                .style("position", "absolute")
+                .style("background", "rgba(0, 0, 0, 0.75)")
+                .style("padding", "8px")
+                .style("color", "#fff")
+                .style("padding", "10px")
+                .style("border-radius", "4px")
+                .style("pointer-events", "none")
+                .style("display", "none");
+
             // Initialize an object to store the counts of each activity
             const activityCounts = {
                 offpiste: 0,
@@ -1020,7 +1031,27 @@ document.addEventListener("DOMContentLoaded", function () {
                     .duration(1000) // Animation duration (in ms)
                     .ease(d3.easeCubicOut) // Easing function
                     .attr("y", yscale(value) + topMargin) // Animate to the final Y position
-                    .attr("height", innerHeight - yscale(value)); // Animate to the final height
+                    .attr("height", innerHeight - yscale(value)) // Animate to the final height
+                    .on("end", function () {
+                        // Add mouse events after the transition is complete
+                        d3.select(this)
+                            .on("mouseover", function (event) {
+                                tooltip
+                                    .style("display", "block")
+                                    .html(`<strong>${Object.keys(dataObj)[index]}</strong><br>Total: ${value}`);
+
+                                d3.select(this).style("opacity", 0.7);
+                            })
+                            .on("mousemove", function (event) {
+                                tooltip
+                                    .style("top", (event.pageY - 10) + "px")
+                                    .style("left", (event.pageX + 10) + "px");
+                            })
+                            .on("mouseout", function () {
+                                tooltip.style("display", "none");
+                                d3.select(this).style("opacity", 1);
+                            });
+                    });
             });
 
             d3.select("#distActivity").append("div")
