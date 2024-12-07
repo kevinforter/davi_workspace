@@ -1040,7 +1040,10 @@ document.addEventListener("DOMContentLoaded", function () {
                                     .style("display", "block")
                                     .html(`<strong>${Object.keys(dataObj)[index]}</strong><br>Total: ${value}`);
 
-                                d3.select(this).style("opacity", 0.7);
+                                d3.selectAll("#distActivity rect")
+                                    .style("opacity", 0.3);
+                                d3.select(this)
+                                    .style("opacity", 1);
                             })
                             .on("mousemove", function (event) {
                                 tooltip
@@ -1049,7 +1052,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             })
                             .on("mouseout", function () {
                                 tooltip.style("display", "none");
-                                d3.select(this).style("opacity", 1);
+                                d3.selectAll("rect").style("opacity", 1);
                             });
                     });
             });
