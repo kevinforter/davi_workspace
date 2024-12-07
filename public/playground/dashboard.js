@@ -121,7 +121,7 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
         .style("top", "10px")
         .style("left", "10px")
         .style("font-weight", "bold")
-        .style("font-size", "1.1rem")
+        .style("font-size", "1rem")
         .style("color", "#999")
 
     d3.select("#map").append("div")
@@ -129,10 +129,10 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
         .style("position", "absolute")
         .style("width", "100%")
         .style("height", "fit-content")
-        .style("top", "calc(1.1rem + 15px)")
+        .style("top", "calc(1rem + 15px)")
         .style("left", "10px")
         .style("font-weight", "bold")
-        .style("font-size", "1.1rem")
+        .style("font-size", "1rem")
         .style("color", "#dfdfdf")
 
 }).catch(error => console.error("Error loading map:", error));
@@ -632,7 +632,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("top", "10px")
                 .style("left", "10px")
                 .style("font-weight", "bold")
-                .style("font-size", "1.1rem")
+                .style("font-size", "1rem")
                 .style("color", "#dfdfdf")
         }
 
@@ -640,9 +640,8 @@ document.addEventListener("DOMContentLoaded", function () {
         function drawStackedBar(filteredData) {
             d3.select("#distDangerLevel").selectAll("*").remove();
 
-            // Set the fixed width for the chart
-            const widthStackedBar = (document.querySelector("#distActivity").offsetWidth) - 50; // Fixed width of the stacked bar chart
-            const heightStackedBar = 75;
+            const widthStackedBar = (document.querySelector("#distDangerLevel").offsetWidth) - 50;
+            const heightStackedBar = (document.querySelector("#distDangerLevel").offsetHeight) - 75;
 
             // Define specific colors for each level
             const colorMapping = {
@@ -716,18 +715,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("class", d => {
                     // Map levels to CSS class names
                     switch (+d.level) {
-                        case 1:
-                            return "gering"; // Low danger
-                        case 2:
-                            return "mässig"; // Moderate danger
-                        case 3:
-                            return "erheblich"; // Considerable danger
-                        case 4:
-                            return "gross"; // High danger
-                        case 5:
-                            return "sehrGross"; // Very high danger
-                        default:
-                            return "empty"; // Default
+                        case 1: return "gering";
+                        case 2: return "mässig";
+                        case 3: return "erheblich";
+                        case 4: return "gross";
+                        case 5: return "sehrGross";
+                        default: return "empty";
                     }
                 })
                 .attr("x", d => {
@@ -744,48 +737,19 @@ document.addEventListener("DOMContentLoaded", function () {
                         .style("display", "block")
                         .text("Level: " + (function() {
                             switch (+d.level) {
-                                case 1:
-                                    return "gering"; // Low danger
-                                case 2:
-                                    return "mässig"; // Moderate danger
-                                case 3:
-                                    return "erheblich"; // Considerable danger
-                                case 4:
-                                    return "gross"; // High danger
-                                case 5:
-                                    return "sehrGross"; // Very high danger
-                                default:
-                                    return "empty"; // Default
+                                case 1: return "gering";
+                                case 2: return "mässig";
+                                case 3: return "erheblich";
+                                case 4: return "gross";
+                                case 5: return "sehrGross";
+                                default: return "empty";
                             }
                         })());
 
-                    if (d3.select(this).classed("gering")) {
-                        // When hovering over death area/line
-                        d3.selectAll("rect")
-                            .style("opacity", 0.3);
-                        d3.select(this)
-                            .style("opacity", 1)
-                    } else if (d3.select(this).classed("mässig")) {
-                        d3.selectAll("rect")
-                            .style("opacity", 0.3);
-                        d3.select(this)
-                            .style("opacity", 1)
-                    } else if (d3.select(this).classed("erheblich")) {
-                        d3.selectAll("rect")
-                            .style("opacity", 0.3);
-                        d3.select(this)
-                            .style("opacity", 1)
-                    } else if (d3.select(this).classed("gross")) {
-                        d3.selectAll("rect")
-                            .style("opacity", 0.3);
-                        d3.select(this)
-                            .style("opacity", 1)
-                    } else if (d3.select(this).classed("sehr gross")) {
-                        d3.selectAll("rect")
-                            .style("opacity", 0.3);
-                        d3.select(this)
-                            .style("opacity", 1)
-                    }
+                    d3.selectAll("#distDangerLevel rect")
+                        .style("opacity", 0.3);
+                    d3.select(this)
+                        .style("opacity", 1);
                 })
                 .on("mousemove", function (event) {
                     tooltip
@@ -807,7 +771,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("top", "10px")
                 .style("left", "10px")
                 .style("font-weight", "bold")
-                .style("font-size", "1.1rem")
+                .style("font-size", "1rem")
                 .style("color", "#dfdfdf");
         }
 
@@ -829,10 +793,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("pointer-events", "none")
                 .style("display", "none");
 
-            var width = 250, height = 250, margin = 45;
+            var width = 200, height = 200, margin = 35;
             var radius = Math.min(width, height) / 2 - margin;
 
-            var arc = d3.arc().innerRadius(115).outerRadius(radius);
+            var arc = d3.arc().innerRadius(100).outerRadius(radius);
 
             var totalCaught = d3.sum(filteredData, d => +d['caught']);
             var fullyBuried = d3.sum(filteredData, d => +d['buried']);
@@ -865,7 +829,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     .append("path")
                     .attr("class", "pie")
                     .attr("id", containerId === "#distBuried" ? "distBuried" : "distDead") // Assign id based on the container
-                    .attr("fill", "#7C98B3")
+                    .attr("fill", "#8B93FF")
                     .attr("d", arc({ startAngle: 0, endAngle: 0 })) // Start with no slice
                     .transition()
                     .duration(1000)
@@ -898,9 +862,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     .attr("class", "text")
                     .attr("text-anchor", "middle")
                     .attr("dy", "0.4em")
-                    .style("font-size", "38px")
+                    .style("font-size", "1.75rem")
                     .style("font-weight", "bold")
-                    .style("fill", "#7C98B3")
+                    .style("fill", "#8B93FF")
                     .transition()
                     .duration(1000)
                     .tween("text", function () {
@@ -919,7 +883,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("top", "10px")
                 .style("left", "10px")
                 .style("font-weight", "bold")
-                .style("font-size", "1.1rem")
+                .style("font-size", "1rem")
                 .style("color", "#dfdfdf");
 
             d3.select("#distDead").append("div")
@@ -930,7 +894,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("top", "10px")
                 .style("left", "10px")
                 .style("font-weight", "bold")
-                .style("font-size", "1.1rem")
+                .style("font-size", "1rem")
                 .style("color", "#dfdfdf");
 
             // Draw pie charts
@@ -948,7 +912,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Display totalCaught in the element with id="total_caught"
             d3.select("#caught").text(totalCaught)
                 .style("font-weight", "bold")
-                .style("color", "#7C98B3")
+                .style("color", "#8B93FF")
                 .style("font-size", "8em");
 
             d3.select("#caught").append("div")
@@ -959,9 +923,114 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("top", "10px")
                 .style("left", "10px")
                 .style("font-weight", "bold")
-                .style("font-size", "1.1rem")
+                .style("font-size", "1rem")
                 .style("color", "#dfdfdf");
         }
+
+        function drawChart(filteredData) {
+            d3.selectAll("#distActivity > svg").remove();
+
+            let widthBarChart = document.querySelector("#distActivity").offsetWidth;
+            let heightBarChart = document.querySelector("#distActivity").offsetHeight;
+
+            let leftMargin = 30;
+            let rightMargin = 15;
+            let bottomMargin = 20;
+            let topMargin = 40;
+
+            // Initialize an object to store the counts of each activity
+            const activityCounts = {
+                offpiste: 0,
+                transportation: 0, // This will map to "transportation.corridor"
+                tour: 0,
+                building: 0,
+            };
+
+            // Iterate through the data and count activities
+            filteredData.forEach((entry) => {
+                const activity = entry.activity;
+
+                // Split comma-separated activities and count each one individually
+                const activities = activity.split(',');
+                activities.forEach((act) => {
+                    act = act.trim(); // Remove extra spaces
+                    if (act === 'transportation.corridor') {
+                        activityCounts.transportation += 1;
+                    } else if (activityCounts[act] !== undefined) {
+                        activityCounts[act] += 1;
+                    }
+                });
+            });
+
+            // Create the data object
+            let dataObj = {
+                Offpiste: activityCounts.offpiste,
+                Transportation: activityCounts.transportation,
+                Tour: activityCounts.tour,
+                Building: activityCounts.building,
+            };
+
+            // Create the SVG element with full dimensions
+            let svgBar = d3.select('#distActivity')
+                .append('svg')
+                .attr("width", widthBarChart)
+                .attr("height", heightBarChart);
+
+            // Define inner width and height accounting for margins
+            let innerWidth = widthBarChart - leftMargin - rightMargin;
+            let innerHeight = heightBarChart - topMargin - bottomMargin;
+
+            // X scale and axis
+            let xscale = d3.scaleBand()
+                .domain(Object.keys(dataObj))
+                .range([0, innerWidth])
+                .padding(0.25);
+
+            let x_axis = d3.axisBottom(xscale);
+
+            svgBar.append("g")
+                .attr("transform", `translate(${leftMargin}, ${topMargin + innerHeight})`)
+                .call(x_axis);
+
+            // Y scale and axis
+            let yscale = d3.scaleLinear()
+                .domain([0, Math.max(...Object.values(dataObj))])
+                .range([innerHeight, 0]);
+
+            let y_axis = d3.axisLeft(yscale);
+
+            svgBar.append("g")
+                .attr("transform", `translate(${leftMargin}, ${topMargin})`)
+                .call(y_axis);
+
+            // Draw bars
+            Object.values(dataObj).forEach((value, index) => {
+                let barWidth = xscale.bandwidth();
+                let x = xscale(Object.keys(dataObj)[index]);
+
+                svgBar.append("rect")
+                    .attr("x", x + leftMargin)
+                    .attr("y", yscale(value) + topMargin)
+                    .attr("height", innerHeight - yscale(value))
+                    .attr("width", barWidth)
+                    .attr("fill", "#8B93FF")
+                    .attr("rx", 8)  // Apply border radius to the top corners
+                    .attr("ry", 8);  // No border radius on the bottom corners
+            });
+
+            d3.select("#distActivity").append("div")
+                .text("Activity Distribution")
+                .style("position", "absolute")
+                .style("width", "100%")
+                .style("height", "fit-content")
+                .style("top", "10px")
+                .style("left", "10px")
+                .style("font-weight", "bold")
+                .style("font-size", "1rem")
+                .style("color", "#dfdfdf");
+        }
+
+        drawChart(filteredData);
 
         // Event listener for applying filters
         document.getElementById('applyFilter').addEventListener('click', () => {
@@ -974,6 +1043,7 @@ document.addEventListener("DOMContentLoaded", function () {
             writeCaught(filteredData);
             drawStackedBar(filteredData);
             drawPieChart(filteredData);
+            drawChart(filteredData);
             document.getElementById('filterModal').style.display = 'none';
         });
     }).catch(error => console.error("Error loading data:", error));
