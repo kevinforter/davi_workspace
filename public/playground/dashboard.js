@@ -1010,12 +1010,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 svgBar.append("rect")
                     .attr("x", x + leftMargin)
-                    .attr("y", yscale(value) + topMargin)
-                    .attr("height", innerHeight - yscale(value))
+                    .attr("y", innerHeight + topMargin)
+                    .attr("height", 0)
                     .attr("width", barWidth)
                     .attr("fill", "#8B93FF")
                     .attr("rx", 8)  // Apply border radius to the top corners
-                    .attr("ry", 8);  // No border radius on the bottom corners
+                    .attr("ry", 8)  // No border radius on the bottom corners
+                    .transition() // Add transition
+                    .duration(1000) // Animation duration (in ms)
+                    .ease(d3.easeCubicOut) // Easing function
+                    .attr("y", yscale(value) + topMargin) // Animate to the final Y position
+                    .attr("height", innerHeight - yscale(value)); // Animate to the final height
             });
 
             d3.select("#distActivity").append("div")
