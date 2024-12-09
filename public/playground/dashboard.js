@@ -140,7 +140,7 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
         .style("height", "fit-content")
         .style("top", "calc(1rem + 15px)")
         .style("left", "10px")
-        .style("color", "#dfdfdf")
+        .style("color", "#d1d1d1")
 
 }).catch(error => console.error("Error loading map:", error));
 
@@ -629,7 +629,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
-                .style("color", "#dfdfdf")
+                .style("color", "#d1d1d1")
         }
 
         drawStackedBar(filteredData);
@@ -637,7 +637,7 @@ document.addEventListener("DOMContentLoaded", function () {
             d3.select("#distDangerLevel").selectAll("*").remove();
 
             const widthStackedBar = (document.querySelector("#distDangerLevel").offsetWidth) - 50;
-            const heightStackedBar = (document.querySelector("#distDangerLevel").offsetHeight) * 0.3;
+            const heightStackedBar = (document.querySelector("#distDangerLevel").offsetHeight) * 0.5;
 
             // Define specific colors for each level
             const colorMapping = {
@@ -767,7 +767,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
-                .style("color", "#dfdfdf");
+                .style("color", "#d1d1d1");
         }
 
         drawPieChart(filteredData);
@@ -885,7 +885,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
-                .style("color", "#dfdfdf");
+                .style("color", "#d1d1d1");
 
             d3.select("#distDead").append("div")
                 .text("Dead %")
@@ -895,7 +895,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
-                .style("color", "#dfdfdf");
+                .style("color", "#d1d1d1");
 
             // Draw pie charts
             drawChart("#distBuried", percentageBuried, "Fully Buried");
@@ -923,7 +923,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("top", "10px")
                 .style("left", "10px")
                 .style("font-weight", "initial")
-                .style("color", "#dfdfdf");
+                .style("color", "#d1d1d1");
         }
 
         function drawChart(filteredData) {
@@ -1064,7 +1064,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
-                .style("color", "#dfdfdf");
+                .style("color", "#d1d1d1");
         }
 
         drawChart(filteredData);
