@@ -594,44 +594,34 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
             // Add legend
-            const legend = svg.append("g")
-                .attr("transform", `translate(${widthLineChart / 2 - 80},${heightLineChart - 15})`);
+            const legend = d3.select("#lineChart").append("div")
+                .style("top", "10px")
+                .style("right", "10px")
+                .style("position", "absolute")
+                .style("display", "flex")
+                .style("gap", "20px")
+                .style("align-items", "center");
 
-            legend.append("circle")
-                .attr("cx", 5)
-                .attr("cy", 5)
-                .attr("r", 5)
-                .attr("fill", "black");
+            // Add legend items
+            const legendItems = [
+                { color: "black", label: "Caught" },
+                { color: "blue", label: "Buried" },
+                { color: "#CB9DF0", label: "Dead" }
+            ];
 
-            legend.append("text")
-                .attr("x", 20)
-                .attr("y", 10)
-                .text("Caught")
-                .style("font-size", "12px");
+            legendItems.forEach(item => {
+                const itemDiv = legend.append("div").style("display", "flex").style("gap", "5px").style("align-items", "center");
 
-            legend.append("circle")
-                .attr("cx", 85)
-                .attr("cy", 5)
-                .attr("r", 5)
-                .attr("fill", "blue");
+                itemDiv.append("div")
+                    .style("width", "10px")
+                    .style("height", "10px")
+                    .style("border-radius", "50%")
+                    .style("background-color", item.color);
 
-            legend.append("text")
-                .attr("x", 100)
-                .attr("y", 10)
-                .text("Buried")
-                .style("font-size", "12px");
-
-            legend.append("circle")
-                .attr("cx", 165)
-                .attr("cy", 5)
-                .attr("r", 5)
-                .attr("fill", "#CB9DF0");
-
-            legend.append("text")
-                .attr("x", 180)
-                .attr("y", 10)
-                .text("Dead")
-                .style("font-size", "12px");
+                itemDiv.append("span")
+                    .text(item.label)
+                    .style("font-size", "12px");
+            });
 
             d3.select("#lineChart").append("div")
                 .text("Timeline of Accidents")
