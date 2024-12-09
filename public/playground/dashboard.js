@@ -16,7 +16,7 @@ function checkDataLoaded() {
     }
 }
 
-const margin = {top: 15, right: 0, bottom: 40, left: 30},
+const margin = {top: 15, right: 2.5, bottom: 20, left: 30},
     containerWidth = document.querySelector("#lineChart").offsetWidth,
     containerHeight = document.querySelector("#lineChart").offsetHeight,
     widthLineChart = containerWidth - margin.left - margin.right,
@@ -121,7 +121,6 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
         .style("height", "fit-content")
         .style("top", "10px")
         .style("left", "10px")
-        .style("font-weight", "bold")
         .style("color", "#999")
 
     const date = new Date();
@@ -130,7 +129,7 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
 
-// This arrangement can be altered based on how we want the date's format to appear.
+    // This arrangement can be altered based on how we want the date's format to appear.
     const currentDate = `${day}-${month}-${year}`;
 
     d3.select("#map").append("div")
@@ -141,7 +140,6 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
         .style("height", "fit-content")
         .style("top", "calc(1rem + 15px)")
         .style("left", "10px")
-        .style("font-weight", "bold")
         .style("color", "#dfdfdf")
 
 }).catch(error => console.error("Error loading map:", error));
@@ -631,7 +629,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
-                .style("font-weight", "bold")
                 .style("color", "#dfdfdf")
         }
 
@@ -770,7 +767,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
-                .style("font-weight", "bold")
                 .style("color", "#dfdfdf");
         }
 
@@ -889,7 +885,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
-                .style("font-weight", "bold")
                 .style("color", "#dfdfdf");
 
             d3.select("#distDead").append("div")
@@ -900,7 +895,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
-                .style("font-weight", "bold")
                 .style("color", "#dfdfdf");
 
             // Draw pie charts
@@ -928,7 +922,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
-                .style("font-weight", "bold")
+                .style("font-weight", "initial")
                 .style("color", "#dfdfdf");
         }
 
@@ -1070,7 +1064,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
-                .style("font-weight", "bold")
                 .style("color", "#dfdfdf");
         }
 
