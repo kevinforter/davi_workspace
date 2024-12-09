@@ -154,8 +154,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            top: calc(0vh + 10px);
-            right: 1295px;
             cursor: pointer;
         }
 
@@ -358,6 +356,16 @@
     function funFilter() {
         document.getElementById("filterModal").style.display = "block";
     }
+
+    const mapDiv = document.getElementById('map');
+    const filterButton = document.getElementById('filterButtonDiv');
+
+    // Get map's position and dimensions
+    const mapRect = mapDiv.getBoundingClientRect();
+
+    // Position the button
+    filterButton.style.top = `${mapRect.top + 10}px`;
+    filterButton.style.left = `${mapRect.right - filterButton.offsetWidth - 10}px`;
 </script>
 </body>
 </html>
