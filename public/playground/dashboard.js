@@ -115,24 +115,33 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
 
     d3.select("#map").append("div")
         .text("Last Updated")
+        .attr("class", "smallTitle")
         .style("position", "absolute")
         .style("width", "100%")
         .style("height", "fit-content")
         .style("top", "10px")
         .style("left", "10px")
         .style("font-weight", "bold")
-        .style("font-size", "1rem")
         .style("color", "#999")
 
+    const date = new Date();
+
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+// This arrangement can be altered based on how we want the date's format to appear.
+    const currentDate = `${day}-${month}-${year}`;
+
     d3.select("#map").append("div")
-        .text("Mi. 4 Dez. 2024")
+        .text(`${currentDate}`)
+        .attr("class", "smallTitle")
         .style("position", "absolute")
         .style("width", "100%")
         .style("height", "fit-content")
         .style("top", "calc(1rem + 15px)")
         .style("left", "10px")
         .style("font-weight", "bold")
-        .style("font-size", "1rem")
         .style("color", "#dfdfdf")
 
 }).catch(error => console.error("Error loading map:", error));
@@ -626,13 +635,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             d3.select("#lineChart").append("div")
                 .text("Timeline of Accidents")
+                .attr("class", "smallTitle")
                 .style("position", "absolute")
                 .style("width", "100%")
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
                 .style("font-weight", "bold")
-                .style("font-size", "1rem")
                 .style("color", "#dfdfdf")
         }
 
@@ -765,13 +774,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             d3.select("#distDangerLevel").append("div")
                 .text("Danger Level Distribution")
+                .attr("class", "smallTitle")
                 .style("position", "absolute")
                 .style("width", "100%")
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
                 .style("font-weight", "bold")
-                .style("font-size", "1rem")
                 .style("color", "#dfdfdf");
         }
 
@@ -793,10 +802,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("pointer-events", "none")
                 .style("display", "none");
 
-            var width = 200, height = 200, margin = 35;
+            // Select the div and get its dimensions
+            const chartDiv = document.getElementById("distDead");
+            const { width: divWidth, height: divHeight } = chartDiv.getBoundingClientRect();
+
+            // Define dimensions based on the div
+            const margin = Math.min(divWidth, divHeight) * 0.175; // 10% margin
+            const width = divWidth; // Full width of the div
+            const height = divHeight; // Full height of the div
+
             var radius = Math.min(width, height) / 2 - margin;
 
-            var arc = d3.arc().innerRadius(100).outerRadius(radius);
+            var arc = d3.arc().innerRadius(40).outerRadius(radius);
 
             var totalCaught = d3.sum(filteredData, d => +d['caught']);
             var fullyBuried = d3.sum(filteredData, d => +d['buried']);
@@ -829,7 +846,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     .append("path")
                     .attr("class", "pie")
                     .attr("id", containerId === "#distBuried" ? "distBuried" : "distDead") // Assign id based on the container
-                    .attr("fill", "#8B93FF")
+                    .attr("fill", "#1B5C85")
                     .attr("d", arc({ startAngle: 0, endAngle: 0 })) // Start with no slice
                     .transition()
                     .duration(1000)
@@ -862,9 +879,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     .attr("class", "text")
                     .attr("text-anchor", "middle")
                     .attr("dy", "0.4em")
-                    .style("font-size", "1.75rem")
                     .style("font-weight", "bold")
-                    .style("fill", "#8B93FF")
+                    .style("fill", "#1B5C85")
                     .transition()
                     .duration(1000)
                     .tween("text", function () {
@@ -876,25 +892,25 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             d3.select("#distBuried").append("div")
-                .text("Fully Buried Percentage")
+                .text("Buried %")
+                .attr("class", "smallTitle")
                 .style("position", "absolute")
                 .style("width", "100%")
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
                 .style("font-weight", "bold")
-                .style("font-size", "1rem")
                 .style("color", "#dfdfdf");
 
             d3.select("#distDead").append("div")
-                .text("Dead Percentage")
+                .text("Dead %")
+                .attr("class", "smallTitle")
                 .style("position", "absolute")
                 .style("width", "100%")
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
                 .style("font-weight", "bold")
-                .style("font-size", "1rem")
                 .style("color", "#dfdfdf");
 
             // Draw pie charts
@@ -912,18 +928,17 @@ document.addEventListener("DOMContentLoaded", function () {
             // Display totalCaught in the element with id="total_caught"
             d3.select("#caught").text(totalCaught)
                 .style("font-weight", "bold")
-                .style("color", "#8B93FF")
-                .style("font-size", "8em");
+                .style("color", "#1B5C85");
 
             d3.select("#caught").append("div")
                 .text("Total Caught People")
+                .attr("class", "smallTitle")
                 .style("position", "absolute")
                 .style("width", "100%")
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
                 .style("font-weight", "bold")
-                .style("font-size", "1rem")
                 .style("color", "#dfdfdf");
         }
 
@@ -995,7 +1010,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let xscale = d3.scaleBand()
                 .domain(Object.keys(dataObj))
                 .range([0, innerWidth])
-                .padding(0.25);
+                .padding(0.4);
 
             let x_axis = d3.axisBottom(xscale);
 
@@ -1024,7 +1039,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     .attr("y", innerHeight + topMargin)
                     .attr("height", 0)
                     .attr("width", barWidth)
-                    .attr("fill", "#8B93FF")
+                    .attr("fill", "#1B5C85")
                     .attr("rx", 8)  // Apply border radius to the top corners
                     .attr("ry", 8)  // No border radius on the bottom corners
                     .transition() // Add transition
@@ -1038,7 +1053,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             .on("mouseover", function (event) {
                                 tooltip
                                     .style("display", "block")
-                                    .html(`<strong>${Object.keys(dataObj)[index]}</strong><br>Total: ${value}`);
+                                    .html(`Total: ${value}`);
 
                                 d3.selectAll("#distActivity rect")
                                     .style("opacity", 0.3);
@@ -1059,13 +1074,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             d3.select("#distActivity").append("div")
                 .text("Activity Distribution")
+                .attr("class", "smallTitle")
                 .style("position", "absolute")
                 .style("width", "100%")
                 .style("height", "fit-content")
                 .style("top", "10px")
                 .style("left", "10px")
                 .style("font-weight", "bold")
-                .style("font-size", "1rem")
                 .style("color", "#dfdfdf");
         }
 
@@ -1084,6 +1099,10 @@ document.addEventListener("DOMContentLoaded", function () {
             drawPieChart(filteredData);
             drawChart(filteredData);
             document.getElementById('filterModal').style.display = 'none';
+        });
+
+        window.addEventListener('resize', () => {
+            drawPieChart(filteredData);
         });
     }).catch(error => console.error("Error loading data:", error));
 });
