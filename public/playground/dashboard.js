@@ -650,7 +650,7 @@ document.addEventListener("DOMContentLoaded", function () {
             d3.select("#distDangerLevel").selectAll("*").remove();
 
             const widthStackedBar = (document.querySelector("#distDangerLevel").offsetWidth) - 50;
-            const heightStackedBar = (document.querySelector("#distDangerLevel").offsetHeight) - 75;
+            const heightStackedBar = (document.querySelector("#distDangerLevel").offsetHeight) * 0.3;
 
             // Define specific colors for each level
             const colorMapping = {
