@@ -1069,6 +1069,57 @@ document.addEventListener("DOMContentLoaded", function () {
 
         drawChart(filteredData);
 
+        drawList(filteredData);
+        function drawList(filteredData) {
+            d3.selectAll("#topChart > ul").remove();
+
+            // Step 1: Count the total 'caught' per municipality using d3.rollups()
+            const totalCaughtPerMunicipality = d3.rollups(
+                filteredData,
+                v => d3.sum(v, d => d.caught),  // Sum 'caught' for each municipality
+                d => d.municipality  // Group by municipality
+            );
+
+            // Step 2: Sort the municipalities by total caught in descending order
+            const top5 = totalCaughtPerMunicipality
+                .sort((a, b) => b[1] - a[1])  // Sort by total caught (index 1 is the total)
+                .slice(0, 5);  // Get top 5 municipalities
+
+            // Step 3: Create a list to display the top 5 municipalities
+            const listDiv = d3.select("#topChart")
+                .append("ul")
+                .style("height", "fit-content")
+                .style("width", "100%");
+
+            // Step 4: Loop through the top 5 and create list items
+            top5.forEach((d, i) => {
+                // Add margin to the first 4 items only
+                const marginStyle = i < 4 ? "15px" : "0px"; // Add margin for the first 4 items
+
+                listDiv.append("li")
+                    .style("list-style", "none") // Remove default list-style
+                    .style("position", "relative") // To position the emoji bullet
+                    .html(`<span style="position: absolute; left: -20px;">${getEmoji(i + 1)}</span>${d[0]}: <span style="font-weight: bold">${d[1]}</span>`)
+                    .style("margin-bottom", marginStyle); // Apply margin conditionally
+            });
+
+            // Function to get the emoji for the list item number
+            function getEmoji(index) {
+                const emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"];
+                return emojis[index - 1] || "";
+            }
+
+            d3.select("#topChart").append("div")
+                .text("Top Municipalities Most Caught")
+                .attr("class", "smallTitle")
+                .style("position", "absolute")
+                .style("width", "100%")
+                .style("height", "fit-content")
+                .style("top", "10px")
+                .style("left", "10px")
+                .style("color", "#d1d1d1");
+        }
+
         // Event listener for applying filters
         document.getElementById('applyFilter').addEventListener('click', () => {
             selectedCanton = document.getElementById('cantonFilter').value;
@@ -1081,6 +1132,7 @@ document.addEventListener("DOMContentLoaded", function () {
             drawStackedBar(filteredData);
             drawPieChart(filteredData);
             drawChart(filteredData);
+            drawList(filteredData);
             document.getElementById('filterModal').style.display = 'none';
         });
 
@@ -1091,6 +1143,7 @@ document.addEventListener("DOMContentLoaded", function () {
             drawPieChart(filteredData);
             drawChart(filteredData);
             drawLineChart(filteredData);
+            drawList(filteredData);
         });
     }).catch(error => console.error("Error loading data:", error));
 });
