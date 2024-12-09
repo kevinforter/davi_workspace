@@ -947,9 +947,17 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             // Display totalCaught in the element with id="total_caught"
-            d3.select("#caught").text(totalCaught)
+            d3.select("#caught")
                 .style("font-weight", "bold")
-                .style("color", "#1B5C85");
+                .style("color", "#1B5C85")
+                .transition()
+                .duration(1000)
+                .tween("text", function () {
+                    var interpolate = d3.interpolate(0, totalCaught);
+                    return function (t) {
+                        d3.select(this).text(interpolate(t).toFixed(0));
+                    };
+                });
 
             d3.select("#caught").append("div")
                 .text("Total Caught People")
