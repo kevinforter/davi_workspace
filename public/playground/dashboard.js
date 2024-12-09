@@ -1102,7 +1102,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         window.addEventListener('resize', () => {
+            drawPoints(filteredData);
+            writeCaught(filteredData);
+            drawStackedBar(filteredData);
             drawPieChart(filteredData);
+            drawChart(filteredData);
+            drawLineChart(filteredData);
         });
     }).catch(error => console.error("Error loading data:", error));
 });
