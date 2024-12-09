@@ -1024,8 +1024,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     .attr("height", 0)
                     .attr("width", barWidth)
                     .attr("fill", "#1B5C85")
-                    .attr("rx", 8)  // Apply border radius to the top corners
-                    .attr("ry", 8)  // No border radius on the bottom corners
+                    .attr("rx", 6)  // Apply border radius to the top corners
+                    .attr("ry", 6)  // No border radius on the bottom corners
                     .transition() // Add transition
                     .duration(1000) // Animation duration (in ms)
                     .ease(d3.easeCubicOut) // Easing function
