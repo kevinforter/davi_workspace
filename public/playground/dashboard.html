@@ -94,7 +94,21 @@
             position: relative;
         }
 
-        #distDangerLevel svg{;
+        #distDangerLevel svg{
+            bottom: 10px;
+            position: absolute;
+            left: 0;
+            right: 0;
+            margin-inline: auto;
+        }
+
+        #topChart {
+            display: unset;
+            justify-content: center;
+            position: relative;
+        }
+
+        #topChart ul{
             bottom: 10px;
             position: absolute;
             left: 0;
@@ -245,11 +259,6 @@
             align-items: center;
             gap: 5px; /* Space between checkbox and label text */
             cursor: pointer; /* Change cursor to pointer on hover */
-        }
-
-        /*
-        .pie:hover {
-            scale: 1.05;
         }
 
         /* Loader styles */
