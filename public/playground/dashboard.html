@@ -262,11 +262,11 @@
         }
 
         /* Loader styles */
-        #map, #lineChart, #charts {
+        #map, #lineChart, #charts, #lineChart, #distActivity, #distBuried, #distDead, #topChart {
             position: relative; /* Set relative positioning for the parent */
         }
 
-        #map-loader, #lineChart-loader, #charts-loader {
+        #map-loader, #lineChart-loader, #activity-loader, #buried-loader, #dead-loader, #topChart-loader {
             position: absolute;
             top: 0;
             left: 0;
@@ -362,12 +362,20 @@
     <div class="cell" id="charts" style="background: transparent">
         <!--<div id="charts-loader" class="loader"></div>-->
         <div class="cell-charts" id="caught"></div>
-        <div class="cell-charts" id="distBuried"></div>
-        <div class="cell-charts" id="distDead"></div>
+        <div class="cell-charts" id="distBuried">
+            <div id="buried-loader" class="loader"></div>
+        </div>
+        <div class="cell-charts" id="distDead">
+            <div id="dead-loader" class="loader"></div>
+        </div>
         <div class="cell-charts" id="distDangerLevel"></div>
         <div class="cell-charts" id="charts-charts" style="background: none">
-            <div class="cell-cell-charts" id="distActivity"></div>
-            <div class="cell-cell-charts" id="topChart"></div>
+            <div class="cell-cell-charts" id="distActivity">
+                <div id="activity-loader" class="loader"></div>
+            </div>
+            <div class="cell-cell-charts" id="topChart">
+                <div id="topChart-loader" class="loader"></div>
+            </div>
         </div>
     </div>
     <div class="cell" id="lineChart">

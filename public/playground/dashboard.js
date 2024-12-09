@@ -1,6 +1,10 @@
 // Track loading states
 let mapLoaded = false;
 let dataLoaded = false;
+let activityLoaded = false;
+let buriedLoaded = false;
+let deadLoaded = false;
+let topLoaded = false;
 
 // Function to check if all components are loaded
 function checkMapLoaded() {
@@ -13,6 +17,34 @@ function checkDataLoaded() {
     if (dataLoaded) {
         /*document.getElementById('charts-loader').style.display = 'none';*/
         document.getElementById('lineChart-loader').style.display = 'none';
+    }
+}
+
+function checkActivityLoaded() {
+    if (activityLoaded) {
+        /*document.getElementById('charts-loader').style.display = 'none';*/
+        document.getElementById('activity-loader').style.display = 'none';
+    }
+}
+
+function checkBuriedLoaded() {
+    if (buriedLoaded) {
+        /*document.getElementById('charts-loader').style.display = 'none';*/
+        document.getElementById('buried-loader').style.display = 'none';
+    }
+}
+
+function checkDeadLoaded() {
+    if (deadLoaded) {
+        /*document.getElementById('charts-loader').style.display = 'none';*/
+        document.getElementById('dead-loader').style.display = 'none';
+    }
+}
+
+function checkTopLoaded() {
+    if (topLoaded) {
+        /*document.getElementById('charts-loader').style.display = 'none';*/
+        document.getElementById('topChart-loader').style.display = 'none';
     }
 }
 
@@ -808,6 +840,11 @@ document.addEventListener("DOMContentLoaded", function () {
             var totalDead = d3.sum(filteredData, d => +d['dead']);
             var percentageDead = (totalDead / totalCaught) * 100;
 
+            buriedLoaded = true;
+            deadLoaded = true;
+            checkBuriedLoaded();
+            checkDeadLoaded();
+
             function drawChart(containerId, percentage, label) {
                 var svg = d3.select(containerId)
                     .append("svg")
@@ -1056,6 +1093,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
             });
 
+            activityLoaded = true;
+            checkActivityLoaded();
+
             d3.select("#distActivity").append("div")
                 .text("Activity Distribution")
                 .attr("class", "smallTitle")
@@ -1084,6 +1124,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const top5 = totalCaughtPerMunicipality
                 .sort((a, b) => b[1] - a[1])  // Sort by total caught (index 1 is the total)
                 .slice(0, 5);  // Get top 5 municipalities
+
+            topLoaded = true;
+            checkTopLoaded();
 
             // Step 3: Create a list to display the top 5 municipalities
             const listDiv = d3.select("#topChart")
