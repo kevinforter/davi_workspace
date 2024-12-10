@@ -825,13 +825,13 @@ document.addEventListener("DOMContentLoaded", function () {
             const { width: divWidth, height: divHeight } = chartDiv.getBoundingClientRect();
 
             // Define dimensions based on the div
-            const margin = Math.min(divWidth, divHeight) * 0.175; // 10% margin
+            const margin = Math.min(divWidth, divHeight) * 0.125; // 10% margin
             const width = divWidth; // Full width of the div
             const height = divHeight; // Full height of the div
 
             var radius = Math.min(width, height) / 2 - margin;
 
-            var arc = d3.arc().innerRadius(40).outerRadius(radius);
+            var arc = d3.arc().innerRadius(50).outerRadius(radius);
 
             var totalCaught = d3.sum(filteredData, d => +d['caught']);
             var fullyBuried = d3.sum(filteredData, d => +d['buried']);
