@@ -1173,7 +1173,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     listDiv.append("li")
                         .style("list-style", "none") // Remove default list-style
                         .style("position", "relative") // To position the emoji bullet
-                        .html(`<span style="position: absolute; left: -20px;">${getEmoji(i + 1)}</span>${d[0]}: <span style="font-weight: bold">${d[1]}</span>`)
+                        .html(`${getEmoji(i + 1)} ${d[0]}: ${d[1]}`)
                         .style("margin-bottom", marginStyle); // Apply margin conditionally
                 });
             } else {
@@ -1184,7 +1184,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     listDiv.append("li")
                         .style("list-style", "none") // Remove default list-style
                         .style("position", "relative") // To position the emoji bullet
-                        .html(`<span style="position: absolute; left: -20px;">${getEmoji(i + 1)}</span>${d.municipality}: <span style="font-weight: bold">${d.caught}</span>`)
+                        .html(`${getEmoji(i + 1)} ${d.municipality}: ${d.caught}`)
                         .style("margin-bottom", marginStyle); // Apply margin conditionally
                 });
             }
