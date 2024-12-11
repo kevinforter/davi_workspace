@@ -1110,9 +1110,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
         drawChart(filteredData);
 
+        // Global variable to track checkbox state
+        let showTop5 = false;
+
+        // Add checkbox dynamically (only once)
+        d3.select("#topChart")
+            .append("div")
+            .style("position", "absolute")
+            .style("top", "10px")
+            .style("right", "10px")
+            .style("z-index", "10") // Ensure it's above other elements
+            .html('<label class="smallTitle" for="toggleTop5" style="color: #d1d1d1;">Total</label>')
+            .append("input")
+            .attr("type", "checkbox")
+            .attr("id", "toggleTop5")
+            .on("change", function () {
+                showTop5 = this.checked; // Update showTop5 based on checkbox state
+                console.log("Checkbox is now:", showTop5 ? "Checked" : "Unchecked");
+                drawList(filteredData); // Redraw the list with the updated state
+            });
+
         drawList(filteredData);
         function drawList(filteredData) {
             d3.selectAll("#topChart > ul").remove();
+            d3.selectAll("#topChart > .smallTitle").remove();
 
             // Step 1: Count the total 'caught' per municipality using d3.rollups()
             const totalCaughtPerMunicipality = d3.rollups(
@@ -1121,10 +1142,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 d => d.municipality  // Group by municipality
             );
 
+            var top5;
+
+            if (showTop5) {
             // Step 2: Sort the municipalities by total caught in descending order
-            const top5 = totalCaughtPerMunicipality
-                .sort((a, b) => b[1] - a[1])  // Sort by total caught (index 1 is the total)
-                .slice(0, 5);  // Get top 5 municipalities
+                top5 = totalCaughtPerMunicipality
+                    .sort((a, b) => b[1] - a[1])  // Sort by total caught (index 1 is the total)
+                    .slice(0, 5);  // Get top 5 municipalities
+
+            } else {
+                // Sort the data by 'caught' in descending order and get the top 5
+                top5 = filteredData.sort((a, b) => b.caught - a.caught).slice(0, 5);
+            }
 
             topLoaded = true;
             checkTopLoaded();
@@ -1136,16 +1165,29 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("width", "100%");
 
             // Step 4: Loop through the top 5 and create list items
-            top5.forEach((d, i) => {
-                // Add margin to the first 4 items only
-                const marginStyle = i < 4 ? "15px" : "0px"; // Add margin for the first 4 items
+            if(showTop5) {
+                top5.forEach((d, i) => {
+                    // Add margin to the first 4 items only
+                    const marginStyle = i < 4 ? "15px" : "0px"; // Add margin for the first 4 items
 
-                listDiv.append("li")
-                    .style("list-style", "none") // Remove default list-style
-                    .style("position", "relative") // To position the emoji bullet
-                    .html(`<span style="position: absolute; left: -20px;">${getEmoji(i + 1)}</span>${d[0]}: <span style="font-weight: bold">${d[1]}</span>`)
-                    .style("margin-bottom", marginStyle); // Apply margin conditionally
-            });
+                    listDiv.append("li")
+                        .style("list-style", "none") // Remove default list-style
+                        .style("position", "relative") // To position the emoji bullet
+                        .html(`<span style="position: absolute; left: -20px;">${getEmoji(i + 1)}</span>${d[0]}: <span style="font-weight: bold">${d[1]}</span>`)
+                        .style("margin-bottom", marginStyle); // Apply margin conditionally
+                });
+            } else {
+                top5.forEach((d, i) => {
+                    // Add margin to the first 4 items only
+                    const marginStyle = i < 4 ? "15px" : "0px"; // Add margin for the first 4 items
+
+                    listDiv.append("li")
+                        .style("list-style", "none") // Remove default list-style
+                        .style("position", "relative") // To position the emoji bullet
+                        .html(`<span style="position: absolute; left: -20px;">${getEmoji(i + 1)}</span>${d.municipality}: <span style="font-weight: bold">${d.caught}</span>`)
+                        .style("margin-bottom", marginStyle); // Apply margin conditionally
+                });
+            }
 
             // Function to get the emoji for the list item number
             function getEmoji(index) {
