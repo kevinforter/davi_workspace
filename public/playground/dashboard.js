@@ -99,6 +99,8 @@ const pointsGroup = svgMap.append("g"); // New group for points
 
 // Load the GeoJSON file and display it on the map
 d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads/dev/public/assets/swissBOUNDARIES3D_1_3_TLM_KANTONSGEBIET.json").then(data => {
+    d3.selectAll("#map > .smallTitle").remove();
+
     // Draw each canton as a path
     const cantons = g.selectAll("path")
         .data(data.features)
@@ -442,6 +444,7 @@ document.addEventListener("DOMContentLoaded", function () {
             d3.selectAll("path.area").remove();
             d3.selectAll("path.line").remove();
             d3.selectAll(".title").remove();
+            d3.selectAll("#lineChart > .smallTitle").remove();
 
             // Group by year and aggregate the data
             const yearlyData = Array.from(
@@ -667,6 +670,7 @@ document.addEventListener("DOMContentLoaded", function () {
         drawStackedBar(filteredData);
         function drawStackedBar(filteredData) {
             d3.select("#distDangerLevel").selectAll("*").remove();
+            d3.selectAll("#distDangerLevel > .smallTitle").remove();
 
             const widthStackedBar = (document.querySelector("#distDangerLevel").offsetWidth) - 50;
             const heightStackedBar = (document.querySelector("#distDangerLevel").offsetHeight) * 0.5;
@@ -808,6 +812,8 @@ document.addEventListener("DOMContentLoaded", function () {
             d3.selectAll("text.text").remove();
             d3.selectAll("#distBuried > svg").remove();
             d3.selectAll("#distDead > svg").remove();
+            d3.selectAll("#distBuried > .smallTitle").remove();
+            d3.selectAll("#distDead > .smallTitle").remove();
 
             // Create a tooltip div that is hidden by default
             const tooltip = d3.select("body").append("div")
@@ -941,6 +947,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         writeCaught(filteredData);
         function writeCaught(filteredData) {
+            d3.selectAll("#caught > .smallTitle").remove();
 
             var totalCaught = d3.sum(filteredData, function (d) {
                 return +d['caught'];
@@ -966,6 +973,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         function drawChart(filteredData) {
             d3.selectAll("#distActivity > svg").remove();
+            d3.selectAll("#distActivity > .smallTitle").remove();
 
             let widthBarChart = document.querySelector("#distActivity").offsetWidth;
             let heightBarChart = document.querySelector("#distActivity").offsetHeight;
