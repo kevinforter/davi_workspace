@@ -303,6 +303,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 const canton = row['canton'];
                 const municipality = row['municipality'];
                 const dangerLevel = row['forecasted.dangerlevel.rating1'];
+                const caught = row['caught'];
+                const buried = row['buried'];
+                const dead = row['dead'];
+                const activity = row['activity']
 
                 // Convert the date to a JavaScript Date object for filtering
                 const rowDate = new Date(date);
@@ -352,7 +356,11 @@ document.addEventListener("DOMContentLoaded", function () {
                                         <strong>Canton:</strong> ${canton}<br>
                                         <strong>Municipality:</strong> ${municipality}<br>
                                         <strong>Coordinates:</strong> [${latitude}, ${longitude}]<br>
-                                        <strong>Danger Level:</strong> ${dangerLevel}
+                                        <strong>Danger Level:</strong> ${dangerLevel}<br>
+                                        <strong>Caught:</strong> ${caught}
+                                        <strong>Buried:</strong> ${buried} 
+                                        <strong>Dead:</strong> ${dead}<br>
+                                        <strong>Activity:</strong> ${activity}
                                     `)
                                     .style("left", (event.pageX + 10) + "px")
                                     .style("top", (event.pageY - 28) + "px");

@@ -26,9 +26,7 @@
 <div class="chart" id="chart"></div>
 
 <script>
-    // Load CSV data
     d3.csv("assets/ava36.csv").then(function (data) {
-
         // Parse date and convert columns to numeric
         data.forEach(d => {
             d.date = new Date(d.date);
@@ -53,14 +51,6 @@
         const buried = yearlyData.map(d => ({year: d.year, value: d.buried}));
         const caught = yearlyData.map(d => ({year: d.year, value: d.caught}));
         const dead = yearlyData.map(d => ({year: d.year, value: d.dead}));
-
-        // Smooth the data using cubic spline interpolation
-        function smoothData(data) {
-            return d3.line()
-                .curve(d3.curveBumpX)
-                .x(d => x(d.year))
-                .y(d => y(d.value))(data);
-        }
 
         // Set up SVG dimensions
         const width = 1200;
@@ -90,112 +80,85 @@
             .attr("transform", `translate(${margin.left},0)`)
             .call(d3.axisLeft(y));
 
-        // Define the area generators
-        const areaBuried = d3.area()
+        // Line generator function
+        const lineGenerator = d3.line()
             .curve(d3.curveBumpX)
             .x(d => x(d.year))
-            .y0(height - margin.bottom)
-            .y1(d => y(d.value));
+            .y(d => y(d.value));
 
-        const areaDead = d3.area()
-            .curve(d3.curveBumpX)
-            .x(d => x(d.year))
-            .y0(height - margin.bottom)
-            .y1(d => y(d.value));
+        // Draw lines
+        const lines = [
+            {data: caught, color: "black", class: "caught"},
+            {data: buried, color: "blue", class: "buried"},
+            {data: dead, color: "#CB9DF0", class: "dead"}
+        ];
 
-        // Add the areas for Buried
-        svg.append("path")
-            .datum(buried)
-            .attr("class", "area buried")
-            .attr("fill", "blue")
-            .attr("opacity", 0.075)
-            .attr("d", areaBuried);
+        lines.forEach(line => {
+            svg.append("path")
+                .datum(line.data)
+                .attr("class", `line ${line.class}`)
+                .attr("fill", "none")
+                .attr("stroke", line.color)
+                .attr("stroke-width", 2)
+                .attr("d", lineGenerator);
+        });
 
-        // Add the areas for Dead
-        svg.append("path")
-            .datum(dead)
-            .attr("class", "area dead")
-            .attr("fill", "CB9DF0")
-            .attr("opacity", 0.075)
-            .attr("d", areaDead);
+        // Create focus groups for tooltip
+        const focusGroups = {};
+        lines.forEach(line => {
+            const focus = svg.append("g").attr("class", `focus ${line.class}`).style("display", "none");
+            focus.append("circle").attr("r", 4).style("fill", line.color);
+            focusGroups[line.class] = focus;
+        });
 
-        // Add the smoothed lines
-        svg.append("path")
-            .datum(caught)
-            .attr("class", "line caught")
-            .attr("fill", "none")
-            .attr("stroke", "black")
-            .attr("stroke-width", 2)
-            .attr("opacity", 1)
-            .attr("d", smoothData(caught));
-
-        svg.append("path")
-            .datum(buried)
-            .attr("class", "line buried")
-            .attr("fill", "none")
-            .attr("stroke", "blue")
-            .attr("stroke-width", 2)
-            .attr("opacity", 1)
-            .attr("d", smoothData(buried));
-
-        svg.append("path")
-            .datum(dead)
-            .attr("class", "line dead")
-            .attr("fill", "none")
-            .attr("stroke", "#CB9DF0")
-            .attr("stroke-width", 2)
-            .attr("opacity", 1)
-            .attr("d", smoothData(dead));
-
-        // Add hover effect
-        svg.selectAll(".line")
-            .on("mouseover", function() {
-                d3.selectAll(".line").attr("opacity", 0.15);
-                d3.select(this).attr("opacity", 1);
+        // Hover area
+        svg.append("rect")
+            .attr("x", margin.left)
+            .attr("y", margin.top)
+            .attr("width", width - margin.left - margin.right)
+            .attr("height", height - margin.top - margin.bottom)
+            .style("fill", "none")
+            .style("pointer-events", "all")
+            .on("mouseover", () => {
+                Object.values(focusGroups).forEach(focus => focus.style("display", null));
             })
-            .on("mouseout", function() {
-                d3.selectAll(".line").attr("opacity", 1);
+            .on("mouseout", () => {
+                Object.values(focusGroups).forEach(focus => focus.style("display", "none"));
+            })
+            .on("mousemove", mouseMove);
+
+        function mouseMove(event) {
+            const xPos = d3.pointer(event, this)[0];
+            const year = Math.round(x.invert(xPos));
+
+            lines.forEach(line => {
+                const closest = line.data.reduce((a, b) => {
+                    return Math.abs(b.year - year) < Math.abs(a.year - year) ? b : a;
+                });
+
+                const focus = focusGroups[line.class];
+                focus.attr("transform", `translate(${x(closest.year)},${y(closest.value)})`);
+                focus.select("text").text(`${line.class}: ${closest.value}`);
             });
+        }
 
         // Add legend
         const legend = svg.append("g")
             .attr("transform", `translate(${width / 2 - 80},${height - 15})`);
 
-        legend.append("circle")
-            .attr("cx", 5)
-            .attr("cy", 5)
-            .attr("r", 5)
-            .attr("fill", "black");
+        lines.forEach((line, index) => {
+            legend.append("circle")
+                .attr("cx", index * 80 + 5)
+                .attr("cy", 5)
+                .attr("r", 5)
+                .attr("fill", line.color);
 
-        legend.append("text")
-            .attr("x", 20)
-            .attr("y", 10)
-            .text("Caught")
-            .style("font-size", "12px");
-
-        legend.append("circle")
-            .attr("cx", 85)
-            .attr("cy", 5)
-            .attr("r", 5)
-            .attr("fill", "blue");
-
-        legend.append("text")
-            .attr("x", 100)
-            .attr("y", 10)
-            .text("Buried")
-            .style("font-size", "12px");
-
-        legend.append("circle")
-            .attr("cx", 165)
-            .attr("cy", 5)
-            .attr("r", 5)
-            .attr("fill", "#CB9DF0");
-
-        legend.append("text")
-            .attr("x", 180)
-            .attr("y", 10)
-            .text("Dead")
-            .style("font-size", "12px");
+            legend.append("text")
+                .attr("x", index * 80 + 20)
+                .attr("y", 10)
+                .text(line.class.charAt(0).toUpperCase() + line.class.slice(1))
+                .style("font-size", "12px");
+        });
     });
 </script>
 </body>
