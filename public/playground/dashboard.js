@@ -1151,8 +1151,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     .slice(0, 5);  // Get top 5 municipalities
 
             } else {
-                // Sort the data by 'caught' in descending order and get the top 5
-                top5 = filteredData.sort((a, b) => b.caught - a.caught).slice(0, 5);
+                // Create a copy of filteredData to avoid modifying the original array
+                const sortedData = [...filteredData].sort((a, b) => b.caught - a.caught);
+
+                // Slice the top 5 from the sorted data
+                top5 = sortedData.slice(0, 5);
             }
 
             topLoaded = true;
