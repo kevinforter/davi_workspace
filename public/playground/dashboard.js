@@ -1138,6 +1138,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Add checkbox dynamically (only once)
         d3.select("#topChart")
             .append("div")
+            .attr("id", "divToggle")
             .style("position", "absolute")
             .style("top", "10px")
             .style("right", "10px")

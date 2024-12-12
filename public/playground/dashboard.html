@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grid Layout</title>
     <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <style>
         body {
             font-family: "SF Pro", sans-serif;
@@ -413,6 +415,32 @@
     // Position the button
     filterButton.style.top = `${mapRect.top + 10}px`;
     filterButton.style.left = `${mapRect.right - filterButton.offsetWidth - 10}px`;
+
+    const driver = window.driver.js.driver;
+
+    const driverObj = driver({
+        showProgress: true,
+        steps: [
+            { element: '.cell:nth-child(1)', popover: { title: 'Map', description: 'Every dot represents a accident.', side: "bottom", align: 'start' }},
+            { element: '.cell:nth-child(3)', popover: { title: 'Time chart', description: 'The data is smoothed for better visibility.', side: "bottom", align: 'start' }},
+            { element: '.cell:nth-child(2)', popover: { title: 'Distribution charts', description: 'Shows some distribution charts.', side: "bottom", align: 'start' }},
+            { element: '.cell-charts:nth-child(1)', popover: { title: 'Total caught people', description: 'Shows all caught people in the shown accidents on the map.', side: "bottom", align: 'start' }},
+            { element: '.cell-charts:nth-child(2)', popover: { title: 'Buried people in percentage', description: 'Shows the buried people of the caught people in percent.', side: "bottom", align: 'start' }},
+            { element: '.cell-charts:nth-child(3)', popover: { title: 'Dead people in percentage', description: 'Shows the dead people of the caught people in percent.', side: "bottom", align: 'start' }},
+            { element: '.cell-charts:nth-child(4)', popover: { title: 'Danger level distribution', description: 'Shows the distribution of danger level of the shown accidents.', side: "bottom", align: 'start' }},
+            { element: '.cell-cell-charts:nth-child(1)', popover: { title: 'Activity distribution', description: 'Shows the distribution of activity of the shown accidents.', side: "bottom", align: 'start' }},
+            { element: '.cell-cell-charts:nth-child(2)', popover: { title: 'Top municipalities', description: 'Shows the municipalities with the most caught people on the selected filter.', side: "bottom", align: 'start' }},
+            { element: '#divToggle', popover: { title: 'Toggle', description: 'Toggle between single municipalities or the total of municipalities.', side: "bottom", align: 'start' }},
+            { element: '#filterButtonDiv', popover: { title: 'Filter', description: 'Filter button to filter the dataset.', side: "bottom", align: 'start' }}
+        ]
+    });
+
+    driverObj.drive();
+
+    //TODO
+    // Add percentage tooltip or axis for danger level
+    // add brushing feature
+    // maybe do some heatmap
 </script>
 </body>
 </html>
