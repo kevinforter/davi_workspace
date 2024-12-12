@@ -252,7 +252,20 @@
             gap: 10px; /* Spacing between each checkbox-label pair */
         }
 
+        #activityContainer {
+            display: flex;
+            justify-content: flex-end; /* Align checkboxes to the right */
+            gap: 10px; /* Spacing between each checkbox-label pair */
+        }
+
         #dangerLevelContainer label {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Space between checkbox and label text */
+            cursor: pointer; /* Change cursor to pointer on hover */
+        }
+
+        #activityContainer label {
             display: flex;
             align-items: center;
             gap: 5px; /* Space between checkbox and label text */
@@ -342,6 +355,11 @@
 
             <label for="dangerLevelContainer">Danger Level:</label>
             <div id="dangerLevelContainer"></div>
+
+            <label for="activityFilter">Activity:</label>
+            <select id="activityFilter">
+                <option value="all">All Activities</option>
+            </select>
 
             <label for="fromDate">From Date:</label>
             <input type="date" id="fromDate">

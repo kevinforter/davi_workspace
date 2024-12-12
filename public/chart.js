@@ -151,6 +151,12 @@ document.addEventListener("DOMContentLoaded", function () {
             checkbox.append("span").text(levelText);
         });
 
+        const uniqueActivities = [...new Set(data.map((d) => d["activity"]))].sort();
+        const activityFilter = d3.select("#activityFilter");
+        uniqueActivities.forEach((activity) =>
+            activityFilter.append("option").attr("value", activity).text(activity)
+        );
+
         appendData(filteredData);
 
         function appendData(filteredData) {
@@ -377,17 +383,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.getElementById("applyFilter").addEventListener("click", () => {
             selectedCanton = document.getElementById("cantonFilter").value;
-            selectedMunicipality =
-                document.getElementById("municipalityFilter").value;
+            selectedMunicipality = document.getElementById("municipalityFilter").value;
+            selectedActivity = document.getElementById("activityFilter").value;
             fromDate = document.getElementById("fromDate").value;
             toDate = document.getElementById("toDate").value;
 
             filteredData = data.filter((d) => {
-                const isCantonMatch =
-                    selectedCanton === "all" || d.canton === selectedCanton;
+                const isCantonMatch = selectedCanton === "all" || d.canton === selectedCanton;
                 const isMunicipalityMatch =
-                    selectedMunicipality === "all" ||
-                    d.municipality === selectedMunicipality;
+                    selectedMunicipality === "all" || d.municipality === selectedMunicipality;
+                const isActivityMatch = selectedActivity === "all" || d.activity === selectedActivity;
                 const isDangerLevelMatch =
                     selectedDangerLevels.size === 0 ||
                     selectedDangerLevels.has(String(d["forecasted.dangerlevel.rating1"]));
@@ -397,6 +402,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return (
                     isCantonMatch &&
                     isMunicipalityMatch &&
+                    isActivityMatch &&
                     isDangerLevelMatch &&
                     isDateMatch
                 );
