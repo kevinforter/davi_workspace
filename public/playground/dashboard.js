@@ -147,6 +147,38 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
     // Apply the reset function when clicking outside of cantons
     svgMap.on("click", reset);
 
+    // Add legend
+    const legend = d3.select("#map").append("div")
+        .style("bottom", "10px")
+        .style("right", "10px")
+        .style("position", "absolute")
+        .style("display", "flex")
+        .style("gap", "20px")
+        .style("align-items", "center");
+
+    // Add legend items
+    const legendItems = [
+        { color: "#9FFF64", label: "Gering" },
+        { color: "#F2FF00", label: "Mässig" },
+        { color: "#FFC31E", label: "Erheblich" },
+        { color: "#FF0000", label: "Gross" },
+        { color: "#8B0000", label: "Sehr Gross" }
+    ];
+
+    legendItems.forEach(item => {
+        const itemDiv = legend.append("div").style("display", "flex").style("gap", "5px").style("align-items", "center");
+
+        itemDiv.append("div")
+            .style("width", "10px")
+            .style("height", "10px")
+            .style("border-radius", "50%")
+            .style("background-color", item.color);
+
+        itemDiv.append("span")
+            .text(item.label)
+            .style("font-size", "12px");
+    });
+
     d3.select("#map").append("div")
         .text("Last Updated")
         .attr("class", "smallTitle")
@@ -686,7 +718,7 @@ document.addEventListener("DOMContentLoaded", function () {
             d3.select("#distDangerLevel").selectAll("*").remove();
             d3.selectAll("#distDangerLevel > .smallTitle").remove();
 
-            const widthStackedBar = (document.querySelector("#distDangerLevel").offsetWidth) - 50;
+            const widthStackedBar = (document.querySelector("#distDangerLevel").offsetWidth) - 30;
             const heightStackedBar = (document.querySelector("#distDangerLevel").offsetHeight) * 0.5;
 
             // Define specific colors for each level
@@ -845,13 +877,13 @@ document.addEventListener("DOMContentLoaded", function () {
             const { width: divWidth, height: divHeight } = chartDiv.getBoundingClientRect();
 
             // Define dimensions based on the div
-            const margin = Math.min(divWidth, divHeight) * 0.125; // 10% margin
+            const margin = Math.min(divWidth, divHeight) * 0.1; // 10% margin
             const width = divWidth; // Full width of the div
             const height = divHeight; // Full height of the div
 
             var radius = Math.min(width, height) / 2 - margin;
 
-            var arc = d3.arc().innerRadius(50).outerRadius(radius);
+            var arc = d3.arc().innerRadius(45).outerRadius(radius);
 
             var totalCaught = d3.sum(filteredData, d => +d['caught']);
             var fullyBuried = d3.sum(filteredData, d => +d['buried']);
