@@ -83,7 +83,8 @@ function zoomed(event) {
 // Create an SVG element to hold the map
 const svgMap = d3.select("#map").append("svg")
     .attr("viewBox", `0 0 ${widthMap} ${heightMap}`)
-    .attr("preserveAspectRatio", "xMidYMid meet");
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .attr("id", "swissMap");
 
 // Create a zoom behavior and attach it to the SVG
 const zoom = d3.zoom()
@@ -101,6 +102,8 @@ const pointsGroup = svgMap.append("g"); // New group for points
 d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads/dev/public/assets/swissBOUNDARIES3D_1_3_TLM_KANTONSGEBIET.json").then(data => {
     d3.selectAll("#map > .smallTitle").remove();
 
+    let clickedCanton = null; // Track the currently clicked canton
+
     // Draw each canton as a path
     const cantons = g.selectAll("path")
         .data(data.features)
@@ -110,7 +113,19 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
         .attr("stroke", "black")
         .attr("cursor", "pointer")
         .attr("class", "canton")
-        .on("click", clicked);
+        .on("click", clicked)
+        .on("mouseover", function (event, d) {
+            // Temporarily change fill on hover if not clicked
+            if (clickedCanton !== this) {
+                d3.select(this).style("fill", "#444");
+            }
+        })
+        .on("mouseout", function (event, d) {
+            // Restore fill based on whether the canton is clicked
+            if (clickedCanton !== this) {
+                d3.select(this).style("fill", clickedCanton ? "transparent" : "#D9D9D9");
+            }
+        });
 
     cantons.append("title").text(d => d.properties.NAME);
 
@@ -119,10 +134,14 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
 
     // Click event to zoom into the canton
     function clicked(event, d) {
+        clickedCanton = this;
+        console.log(clickedCanton);
+
         const [[x0, y0], [x1, y1]] = pathMap.bounds(d);
         event.stopPropagation();
-        cantons.transition().style("fill", "transparent");
-        d3.select(this).transition().style("fill", "lightgrey");
+        cantons.transition().style("fill", function () {
+            return this === clickedCanton ? "lightgrey" : "transparent";
+        });
 
         svgMap.transition().duration(750).call(
             zoom.transform,
@@ -136,6 +155,9 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
 
     // Reset function to restore the original view
     function reset() {
+        clickedCanton = null;
+        console.log(clickedCanton);
+
         cantons.transition().style("fill", "#D9D9D9");
         svgMap.transition().duration(750).call(
             zoom.transform,
@@ -236,13 +258,36 @@ document.addEventListener("DOMContentLoaded", function () {
     let fromDate = null;
     let toDate = null;
 
-    /*
-    document
-        .getElementById("filterButton")
-        .addEventListener("click", () => {
-            document.getElementById("filterModal").style.display = "block";
+    drawfilterButton()
+    function drawfilterButton() {
+        // Select Map and add div
+        const divButton = d3.select("#map")
+            .append("div")
+            .attr("id", "filterButtonDiv");
+
+        // Select the div and append the SVG element
+        const svgButton = d3.select("#filterButtonDiv")
+            .append("svg")
+            .attr("width", "24px")
+            .attr("height", "24px")
+            .attr("viewBox", "0 0 24 24")
+            .attr("fill", "none")
+            .attr("xmlns", "http://www.w3.org/2000/svg");
+
+        // Append the path element with the desired attributes
+        svgButton.append("path")
+            .attr("d", "M21 6H19M21 12H16M21 18H16M7 20V13.5612C7 13.3532 7 13.2492 6.97958 13.1497C6.96147 13.0615 6.93151 12.9761 6.89052 12.8958C6.84431 12.8054 6.77934 12.7242 6.64939 12.5617L3.35061 8.43826C3.22066 8.27583 3.15569 8.19461 3.10948 8.10417C3.06849 8.02393 3.03853 7.93852 3.02042 7.85026C3 7.75078 3 7.64677 3 7.43875V5.6C3 5.03995 3 4.75992 3.10899 4.54601C3.20487 4.35785 3.35785 4.20487 3.54601 4.10899C3.75992 4 4.03995 4 4.6 4H13.4C13.9601 4 14.2401 4 14.454 4.10899C14.6422 4.20487 14.7951 4.35785 14.891 4.54601C15 4.75992 15 5.03995 15 5.6V7.43875C15 7.64677 15 7.75078 14.9796 7.85026C14.9615 7.93852 14.9315 8.02393 14.8905 8.10417C14.8443 8.19461 14.7793 8.27583 14.6494 8.43826L11.3506 12.5617C11.2207 12.7242 11.1557 12.8054 11.1095 12.8958C11.0685 12.9761 11.0385 13.0615 11.0204 13.1497C11 13.2492 11 13.3532 11 13.5612V17L7 20Z")
+            .attr("stroke", "#000000")
+            .attr("stroke-width", "1.5")
+            .attr("stroke-linecap", "round")
+            .attr("stroke-linejoin", "round");
+
+        // Add an onclick function
+        d3.select("#filterButtonDiv").on("click", function () {
+            console.log("Filter button clicked!");
+            funFilter(); // Call your custom filter function here
         });
-    */
+    }
 
     document
         .getElementById("closeFilter")
@@ -1333,6 +1378,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         window.addEventListener('resize', () => {
+            drawfilterButton();
             drawPoints(filteredData);
             writeCaught(filteredData);
             drawStackedBar(filteredData);
