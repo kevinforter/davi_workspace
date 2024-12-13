@@ -162,7 +162,8 @@ d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads
         { color: "#F2FF00", label: "Mässig" },
         { color: "#FFC31E", label: "Erheblich" },
         { color: "#FF0000", label: "Gross" },
-        { color: "#8B0000", label: "Sehr Gross" }
+        { color: "#8B0000", label: "Sehr Gross" },
+        { color: "grey", label: "Empty"}
     ];
 
     legendItems.forEach(item => {
@@ -811,6 +812,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("height", heightStackedBar)
                 .attr("fill", d => colorMapping[d.level]) // Use color from mapping based on level
                 .on("mouseover", function (event, d) {
+                    const percentage = ((d.count / totalCaughtStack) * 100).toFixed(2); // Calculate percentage
                     tooltip
                         .style("display", "block")
                         .text("Level: " + (function() {
@@ -822,7 +824,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 case 5: return "sehrGross";
                                 default: return "empty";
                             }
-                        })());
+                        })() + " - " + percentage + "%");
 
                     d3.selectAll("#distDangerLevel rect")
                         .style("opacity", 0.3);
@@ -830,9 +832,24 @@ document.addEventListener("DOMContentLoaded", function () {
                         .style("opacity", 1);
                 })
                 .on("mousemove", function (event) {
-                    tooltip
-                        .style("top", (event.pageY - 10) + "px")
-                        .style("left", (event.pageX + 10) + "px");
+                    // Get the mouse position
+                    const mouseX = event.pageX;
+                    const mouseY = event.pageY;
+
+                    // Check if the tooltip would overflow the screen on the right side
+                    const tooltipWidth = tooltip.node().offsetWidth;
+                    const screenWidth = window.innerWidth;
+
+                    // If the mouse is too close to the right edge, position the tooltip to the left of the cursor
+                    if (mouseX + tooltipWidth > screenWidth) {
+                        tooltip
+                            .style("top", (mouseY - 10) + "px")
+                            .style("left", (mouseX - tooltipWidth - 10) + "px"); // Position to the left of the cursor
+                    } else {
+                        tooltip
+                            .style("top", (mouseY - 10) + "px")
+                            .style("left", (mouseX + 10) + "px"); // Default positioning to the right of the cursor
+                    }
                 })
                 .on("mouseout", function () {
                     tooltip
