@@ -352,7 +352,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 }
                             })
                             .attr("stroke", "black")
-                            .attr("stroke-width", 0.5)
+                            .attr("stroke-width", 0.25)
                             .on("mouseover", (event) => {
                                 tooltip
                                     .style("opacity", 1)
@@ -1135,7 +1135,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Global variable to track checkbox state
         let showTop5 = false;
 
-        // Add checkbox dynamically (only once)
+// Add checkbox dynamically (only once)
         d3.select("#topChart")
             .append("div")
             .attr("id", "divToggle")
@@ -1150,79 +1150,114 @@ document.addEventListener("DOMContentLoaded", function () {
             .on("change", function () {
                 showTop5 = this.checked; // Update showTop5 based on checkbox state
                 console.log("Checkbox is now:", showTop5 ? "Checked" : "Unchecked");
-                drawList(filteredData); // Redraw the list with the updated state
+                drawList(filteredData); // Redraw the treemap with the updated state
             });
 
         drawList(filteredData);
+
         function drawList(filteredData) {
             d3.selectAll("#topChart > ul").remove();
             d3.selectAll("#topChart > .smallTitle").remove();
+            d3.selectAll("#topChart > svg").remove();
 
-            // Step 1: Count the total 'caught' per municipality using d3.rollups()
+            // Prepare data for treemap
             const totalCaughtPerMunicipality = d3.rollups(
                 filteredData,
-                v => d3.sum(v, d => d.caught),  // Sum 'caught' for each municipality
-                d => d.municipality  // Group by municipality
+                v => d3.sum(v, d => d.caught), // Sum 'caught' for each municipality
+                d => d.municipality // Group by municipality
             );
 
-            var top5;
-
+            let top5;
             if (showTop5) {
-            // Step 2: Sort the municipalities by total caught in descending order
                 top5 = totalCaughtPerMunicipality
-                    .sort((a, b) => b[1] - a[1])  // Sort by total caught (index 1 is the total)
-                    .slice(0, 5);  // Get top 5 municipalities
-
+                    .sort((a, b) => b[1] - a[1]) // Sort by total caught
+                    .slice(0, 5); // Get top 5
             } else {
-                // Create a copy of filteredData to avoid modifying the original array
-                const sortedData = [...filteredData].sort((a, b) => b.caught - a.caught);
+                // Create a sorted copy of filteredData to show the top 5
+                const sortedData = [...filteredData]
+                    .sort((a, b) => b.caught - a.caught); // Sort by 'caught' descending
 
-                // Slice the top 5 from the sorted data
-                top5 = sortedData.slice(0, 5);
+                // Aggregate the top 5 municipalities' caught totals
+                const aggregatedTop5 = d3.rollups(
+                    sortedData.slice(0, 5), // Take only the top 5 entries
+                    v => d3.sum(v, d => d.caught), // Sum their caught values
+                    d => d.municipality // Group by municipality
+                );
+
+                top5 = aggregatedTop5;
             }
+
+            const hierarchyData = {
+                name: "root",
+                children: top5.map(d => ({ name: d[0], value: d[1] }))
+            };
+
+            const marginTree = { top: 40, right: 20, bottom: 10, left: 10 };
+            const widthTree = document.querySelector("#topChart").offsetWidth - marginTree.right;
+            const heightTree = document.querySelector("#topChart").offsetHeight - marginTree.top;
+
+            const svg = d3.select("#topChart")
+                .append("svg")
+                .style("margin-bottom", marginTree.bottom)
+                .attr("width", widthTree)
+                .attr("height", heightTree);
+
+            const root = d3.hierarchy(hierarchyData)
+                .sum(d => d.value)
+                .sort((a, b) => b.value - a.value);
+
+            const treemapLayout = d3.treemap()
+                .size([widthTree, heightTree])
+                .padding(2);
+
+            treemapLayout(root);
+
+            // Define a color scale based on the 'value' (total caught)
+            const colorScale = d3.scaleSequential(d3.interpolateBlues)
+                .domain([0, d3.max(top5, d => d[1])]);
+
+            const nodes = svg.selectAll(".node")
+                .data(root.leaves())
+                .join("g")
+                .attr("class", "node")
+                .attr("transform", d => `translate(${d.x0},${d.y0})`);
+
+            nodes.append("rect")
+                .attr("width", d => d.x1 - d.x0)
+                .attr("height", d => d.y1 - d.y0)
+                .attr("fill", d => colorScale(d.data.value)) // Apply color based on value
+                .attr("stroke", "#fff")
+                .attr("rx", 6)  // Apply border radius to the top corners
+                .attr("ry", 6)  // No border radius on the bottom corners
+                .on("mouseover", function (event, d) {
+                    d3.selectAll("#topChart rect")
+                        .style("opacity", 0.3);
+                    d3.select(this)
+                        .style("opacity", 1);
+                })
+                .on("mouseout", function (event, d) {
+                    d3.selectAll("rect").style("opacity", 1);
+                });
+
+            nodes.append("text")
+                .attr("dx", 4)
+                .attr("dy", 14)
+                .style("font-size", "12px")
+                .style("fill", "#fff")
+                .text(d => `${d.data.name}`);
+
+            nodes.append("text")
+                .attr("dx", 4)
+                .attr("dy", 30)
+                .style("font-size", "12px")
+                .style("fill", "#fff")
+                .text(d => `(${d.data.value})`);
 
             topLoaded = true;
             checkTopLoaded();
 
-            // Step 3: Create a list to display the top 5 municipalities
-            const listDiv = d3.select("#topChart")
-                .append("ul")
-                .style("height", "fit-content")
-                .style("width", "100%");
-
-            // Step 4: Loop through the top 5 and create list items
-            if(showTop5) {
-                top5.forEach((d, i) => {
-                    // Add margin to the first 4 items only
-                    const marginStyle = i < 4 ? "15px" : "0px"; // Add margin for the first 4 items
-
-                    listDiv.append("li")
-                        .style("list-style", "none") // Remove default list-style
-                        .style("position", "relative") // To position the emoji bullet
-                        .html(`${getEmoji(i + 1)} ${d[0]}: <span style="font-weight: bold">${d[1]}</span>`)
-                        .style("margin-bottom", marginStyle); // Apply margin conditionally
-                });
-            } else {
-                top5.forEach((d, i) => {
-                    // Add margin to the first 4 items only
-                    const marginStyle = i < 4 ? "15px" : "0px"; // Add margin for the first 4 items
-
-                    listDiv.append("li")
-                        .style("list-style", "none") // Remove default list-style
-                        .style("position", "relative") // To position the emoji bullet
-                        .html(`${getEmoji(i + 1)} ${d.municipality}: <span style="font-weight: bold">${d.caught}</span>`)
-                        .style("margin-bottom", marginStyle); // Apply margin conditionally
-                });
-            }
-
-            // Function to get the emoji for the list item number
-            function getEmoji(index) {
-                const emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"];
-                return emojis[index - 1] || "";
-            }
-
             d3.select("#topChart").append("div")
-                .text("Top Municipalities Most Caught")
+                .text("Top 5 most caught people")
                 .attr("class", "smallTitle")
                 .style("position", "absolute")
                 .style("width", "100%")
