@@ -8,6 +8,10 @@
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: "SF Pro", sans-serif;
             background-color: #efefef;
@@ -17,6 +21,7 @@
             height: 100vh;
             margin: 0;
             padding: 0;
+            overflow: hidden;
         }
 
         .grid-container {
