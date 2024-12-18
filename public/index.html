@@ -1,18 +1,415 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8">
-  <meta name="generator" content="GitLab Pages">
-  <title>Plain HTML site using GitLab Pages</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- <script src="https://d3js.org/d3.v6.min.js"></script> -->
-  <script type="module" src="script.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Layout</title>
+    <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "SF Pro", sans-serif;
+            background-color: #efefef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-rows: 1.5fr 1fr;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            width: 100%;
+            height: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .cell {
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+        }
+
+        .cell:nth-child(3) {
+            grid-column: 1 / -1; /* Span both columns */
+        }
+
+        #charts {
+            display: grid;
+            grid-template-rows: .75fr .4fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 5px;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .cell-charts {
+            position: relative;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            height: 100%;
+        }
+
+        .cell-charts:nth-child(4) {
+            grid-column: 1 / -1; /* Span both columns */
+        }
+
+        .cell-charts:nth-child(5) {
+            grid-column: 1 / -1; /* Span both columns */
+        }
+
+        #charts-charts {
+            display: grid;
+            grid-template-rows: 1fr;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .cell-cell-charts {
+            position: relative;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            height: 100%;
+        }
+
+        #distDangerLevel {
+            display: unset;
+            justify-content: center;
+            position: relative;
+        }
+
+        #distDangerLevel svg{
+            bottom: 10px;
+            position: absolute;
+            left: 0;
+            right: 0;
+            margin-inline: auto;
+        }
+
+        #topChart {
+            align-items: end;
+        }
+
+        /* Responsive SVG */
+        #swissMap {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+        }
+
+        #map .svgButton {
+            width: initial;
+            height: initial;
+        }
+
+        .canton {
+            stroke-width: 0.1px;
+        }
+/*
+        .canton:hover {
+            fill: #444;
+        }
+
+ */
+
+        /* Modal background overlay */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 100; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+        }
+
+        /* Modal content box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto; /* 10% from the top and centered */
+            padding: 30px;
+            border: 1px solid #888;
+            width: fit-content; /* Could be more or less, depending on screen size */
+            border-radius: 15px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+        }
+
+        /* Close button */
+        .close-button {
+            float: right;
+            font-size: 20px;
+            font-weight: bold;
+            color: #888;
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            outline: none;
+        }
+
+        .close-button:hover {
+            color: #333; /* Darker color on hover */
+        }
+
+        #filterButtonDiv {
+            width: 36px;
+            height: 36px;
+            background-color: lightgrey;
+            border-radius: 8px;
+            border: 1px solid white;
+            position: absolute;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            top: 10px;
+            right: 10px;
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-titel {
+            margin: 0;
+        }
+
+        /* Filter content styles with grid layout */
+        .filter-content {
+            display: grid;
+            grid-template-columns: fit-content(100%) auto; /* Labels on the left, inputs on the right */
+            gap: 10px 20px; /* Adjust spacing between rows and columns */
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-content label {
+            text-align: left; /* Align label text to the right */
+            /*padding-right: 10px; /* Add some space between label and input */
+        }
+
+        /* Input, select, and div elements in the filter form */
+        .filter-content select,
+        .filter-content input,
+        .filter-content div {
+            width: 100%; /* Ensure inputs take full width of the right column */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* Include padding in width calculation */
+        }
+
+        /* Button styles */
+        #applyFilter {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #applyFilter:hover {
+            background-color: #555; /* Darker background on hover */
+        }
+
+        #dangerLevelContainer {
+            display: flex;
+            justify-content: flex-end; /* Align checkboxes to the right */
+            gap: 10px; /* Spacing between each checkbox-label pair */
+        }
+
+        #dangerLevelContainer label {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Space between checkbox and label text */
+            cursor: pointer; /* Change cursor to pointer on hover */
+        }
+
+        /* Loader styles */
+        #map, #lineChart, #charts, #lineChart, #distActivity, #distBuried, #distDead, #topChart {
+            position: relative; /* Set relative positioning for the parent */
+        }
+
+        #map-loader, #lineChart-loader, #activity-loader, #buried-loader, #dead-loader, #topChart-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            z-index: 10; /* Ensures it sits on top of the map */
+        }
+
+        .loader::before {
+            content: "";
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ccc;
+            border-top: 5px solid #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        #distDead .text {
+            font-size: clamp(1rem, 1vw, 1.25rem);
+        }
+
+        #distBuried .text {
+            font-size: clamp(1rem, 1vw, 1.25rem);
+        }
+
+        .smallTitle {
+            font-size: clamp(0.5rem, 1vw, 1rem);
+        }
+
+        #caught {
+            font-size: clamp(1rem, 5vw, 8rem);
+        }
+
+        /* Spinner animation */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
-
 <body>
-  <div id="swissmap_container"></div>
-  <div id="piechart_container"></div>
-</body>
 
+<!--
+<button id="filterButton">Open Filter</button>
+-->
+
+<div id="filterModal" class="modal">
+    <div class="modal-content">
+        <div class="filter-header">
+            <h2 class="filter-titel">Add Filter</h2>
+            <span id="closeFilter" class="close-button" aria-label="Close">&times;</span>
+        </div>
+        <div class="filter-content">
+            <label for="cantonFilter">Canton:</label>
+            <select id="cantonFilter"></select>
+
+            <label for="municipalityFilter">Municipality:</label>
+            <select id="municipalityFilter"></select>
+
+            <label for="dangerLevelContainer">Danger Level:</label>
+            <div id="dangerLevelContainer"></div>
+
+            <label for="activityFilter">Activity:</label>
+            <select id="activityFilter">
+                <option value="all">All Activities</option>
+            </select>
+
+            <label for="fromDate">From Date:</label>
+            <input type="date" id="fromDate">
+
+            <label for="toDate">To Date:</label>
+            <input type="date" id="toDate">
+        </div>
+        <button id="applyFilter">Apply Filter</button>
+    </div>
+</div>
+
+<div class="grid-container">
+    <div class="cell" id="map">
+        <div id="map-loader" class="loader"></div>
+    </div>
+    <div class="cell" id="charts" style="background: transparent">
+        <!--<div id="charts-loader" class="loader"></div>-->
+        <div class="cell-charts" id="caught"></div>
+        <div class="cell-charts" id="distBuried">
+            <div id="buried-loader" class="loader"></div>
+        </div>
+        <div class="cell-charts" id="distDead">
+            <div id="dead-loader" class="loader"></div>
+        </div>
+        <div class="cell-charts" id="distDangerLevel"></div>
+        <div class="cell-charts" id="charts-charts" style="background: none">
+            <div class="cell-cell-charts" id="distActivity">
+                <div id="activity-loader" class="loader"></div>
+            </div>
+            <div class="cell-cell-charts" id="topChart">
+                <div id="topChart-loader" class="loader"></div>
+            </div>
+        </div>
+    </div>
+    <div class="cell" id="lineChart">
+        <div id="lineChart-loader" class="loader"></div>
+    </div>
+</div>
+<script src="dashboard.js" type="text/javascript"></script>
+<script>
+    function funFilter() {
+        document.getElementById("filterModal").style.display = "block";
+    }
+
+    const driver = window.driver.js.driver;
+
+    const driverObj = driver({
+        showProgress: true,
+        steps: [
+            { element: '.cell:nth-child(1)', popover: { title: 'Map', description: 'Every dot represents a accident.', side: "bottom", align: 'start' }},
+            { element: '.cell:nth-child(3)', popover: { title: 'Time chart', description: 'The data is smoothed for better visibility.', side: "bottom", align: 'start' }},
+            { element: '.cell:nth-child(2)', popover: { title: 'Distribution charts', description: 'Shows some distribution charts.', side: "bottom", align: 'start' }},
+            { element: '.cell-charts:nth-child(1)', popover: { title: 'Total caught people', description: 'Shows all caught people in the shown accidents on the map.', side: "bottom", align: 'start' }},
+            { element: '.cell-charts:nth-child(2)', popover: { title: 'Buried people in percentage', description: 'Shows the buried people of the caught people in percent.', side: "bottom", align: 'start' }},
+            { element: '.cell-charts:nth-child(3)', popover: { title: 'Dead people in percentage', description: 'Shows the dead people of the caught people in percent.', side: "bottom", align: 'start' }},
+            { element: '.cell-charts:nth-child(4)', popover: { title: 'Danger level distribution', description: 'Shows the distribution of danger level of the shown accidents.', side: "bottom", align: 'start' }},
+            { element: '.cell-cell-charts:nth-child(1)', popover: { title: 'Activity distribution', description: 'Shows the distribution of activity of the shown accidents.', side: "bottom", align: 'start' }},
+            { element: '.cell-cell-charts:nth-child(2)', popover: { title: 'Top municipalities', description: 'Shows the municipalities with the most caught people on the selected filter.', side: "bottom", align: 'start' }},
+            { element: '#divToggle', popover: { title: 'Toggle', description: 'Toggle between single municipalities or the total of municipalities.', side: "bottom", align: 'start' }},
+            { element: '#filterButtonDiv', popover: { title: 'Filter', description: 'Filter button to filter the dataset.', side: "bottom", align: 'start' }}
+        ]
+    });
+
+    driverObj.drive();
+
+    //TODO
+    // Add percentage tooltip or axis for danger level
+    // add brushing feature
+    // maybe do some heatmap
+    // make zoom of map better (dots should not be this big when zommed in
+    // hover effekt of canton when zooming in
+</script>
+</body>
 </html>
