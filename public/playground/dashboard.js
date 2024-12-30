@@ -734,12 +734,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("background", "rgba(0, 0, 0, 0.75)")
                 .style("padding", "8px")
                 .style("color", "#fff")
-                .style("padding", "10px")
                 .style("border-radius", "4px")
                 .style("pointer-events", "none")
                 .style("display", "none");
 
-            // Calculate total caught and group by danger level, ignoring empty or null cells
             const totalCaughtStack = d3.sum(filteredData, d => +d['caught']);
             const dangerLevels = d3.rollup(
                 filteredData.filter(d => d['forecasted.dangerlevel.rating1'] && d['forecasted.dangerlevel.rating1'] !== "NULL"),
@@ -747,42 +745,34 @@ document.addEventListener("DOMContentLoaded", function () {
                 d => d['forecasted.dangerlevel.rating1']
             );
 
-            // Ensure dangerLevels has data before continuing
             if (!dangerLevels || dangerLevels.size === 0) {
                 console.error("No valid data for forecasted danger levels.");
                 return;
             }
 
-            // Calculate the proportional widths for each segment
             const proportionalWidths = Array.from(dangerLevels, ([level, count]) => ({
                 level,
                 count,
-                width: (count / totalCaughtStack) * widthStackedBar // Initial proportional width based on total count
+                width: (count / totalCaughtStack) * widthStackedBar
             }));
 
-            // Calculate the total of proportional widths
             const totalProportionalWidth = proportionalWidths.reduce((sum, d) => sum + d.width, 0);
-
-            // Determine the scaling factor to adjust to exactly 1350px
             const scalingFactor = widthStackedBar / totalProportionalWidth;
 
-            // Apply the scaling factor to each segment to maintain proportionality and fit 1350px
             const stackedData = proportionalWidths.map(d => ({
                 ...d,
                 width: d.width * scalingFactor
             }));
 
-            // Sort the stackedData by the level (convert level to a number for sorting)
             stackedData.sort((a, b) => +a.level - +b.level);
 
-            // Create the stacked bar
             const svgStackedBar = d3.select("#distDangerLevel")
                 .append("svg")
-                .attr("width", widthStackedBar) // Set SVG width to 1350px
+                .attr("width", widthStackedBar)
                 .attr("height", heightStackedBar)
                 .style("border-radius", "8px");
 
-            let xOffset = 0; // Track the x position for each segment
+            let xOffset = 0;
 
             svgStackedBar.selectAll("rect")
                 .data(stackedData)
@@ -804,22 +794,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     return x;
                 })
                 .attr("y", 0)
-                .attr("width", d => d.width)
+                .attr("width", 0) // Start with width 0 for animation
                 .attr("height", heightStackedBar)
-                .attr("fill", d => colorMapping[d.level]) // Verwende die Farbzuordnung basierend auf dem Level
+                .attr("fill", d => colorMapping[d.level])
                 .on("mouseover", function (event, d) {
-                    // Filter die Daten basierend auf dem aktuellen Danger Level
                     const tempFilteredData = filteredData.filter(
                         item => item['forecasted.dangerlevel.rating1'] === d.level
                     );
 
-                    // Aktualisiere die anderen Diagramme
                     writeCaught(tempFilteredData);
-                    drawPoints(tempFilteredData); // Beispiel für Karte
-                    drawPieChart(tempFilteredData); // Beispiel für Tortendiagramm
-                    drawLineChart(tempFilteredData); // Beispiel für Liniendiagramm
-                    drawChart(tempFilteredData); // Beispiel für Balkendiagramm
-                    drawList(tempFilteredData); // Beispiel für Liste
+                    drawPoints(tempFilteredData);
+                    drawPieChart(tempFilteredData);
+                    drawLineChart(tempFilteredData);
+                    drawChart(tempFilteredData);
+                    drawList(tempFilteredData);
 
                     tooltip
                         .style("display", "block")
@@ -837,29 +825,24 @@ document.addEventListener("DOMContentLoaded", function () {
                     d3.select(this).style("opacity", 1);
                 })
                 .on("mousemove", function (event) {
-                    // Get the mouse position
                     const mouseX = event.pageX;
                     const mouseY = event.pageY;
-
-                    // Check if the tooltip would overflow the screen on the right side
                     const tooltipWidth = tooltip.node().offsetWidth;
                     const screenWidth = window.innerWidth;
 
-                    // If the mouse is too close to the right edge, position the tooltip to the left of the cursor
                     if (mouseX + tooltipWidth > screenWidth) {
                         tooltip
                             .style("top", (mouseY - 10) + "px")
-                            .style("left", (mouseX - tooltipWidth - 10) + "px"); // Position to the left of the cursor
+                            .style("left", (mouseX - tooltipWidth - 10) + "px");
                     } else {
                         tooltip
                             .style("top", (mouseY - 10) + "px")
-                            .style("left", (mouseX + 10) + "px"); // Default positioning to the right of the cursor
+                            .style("left", (mouseX + 10) + "px");
                     }
                 })
                 .on("mouseout", function () {
                     tooltip.style("display", "none");
 
-                    // Setze die ursprünglichen Diagramme zurück
                     writeCaught(filteredData);
                     drawPoints(filteredData);
                     drawPieChart(filteredData);
@@ -868,7 +851,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     drawList(filteredData);
 
                     d3.selectAll("rect").style("opacity", 1);
-                });
+                })
+                .transition()
+                .duration(1000) // Animation duration for width
+                .attr("width", d => d.width); // Animate to final width
 
             d3.select("#distDangerLevel").append("div")
                 .text("Danger Level Distribution")
@@ -917,7 +903,6 @@ document.addEventListener("DOMContentLoaded", function () {
             checkDeadLoaded();
 
             function drawChart(containerId, percentage, label, totalValue) {
-                d3.selectAll("#distActivity > .smallTitle").remove();
 
                 const svgPie = d3.select(containerId).selectAll("svg").data([1]).join("svg")
                     .attr("width", width)
@@ -1007,6 +992,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function drawChart(filteredData) {
+            d3.selectAll("#distActivity > .smallTitle").remove();
+
             // Initialisiere die Größe und Ränder
             let widthBarChart = document.querySelector("#distActivity").offsetWidth;
             let heightBarChart = document.querySelector("#distActivity").offsetHeight;
@@ -1268,8 +1255,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Rechtecke für die Liste
             nodes.append("rect")
-                .attr("width", d => d.x1 - d.x0)
-                .attr("height", d => d.y1 - d.y0)
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", 0) // Start width
+                .attr("height", 0) // Start height
                 .attr("fill", d => colorScale(d.data.value)) // Färbe basierend auf Wert
                 .attr("stroke", "#fff")
                 .attr("rx", 6) // Runde Ecken
@@ -1321,7 +1310,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     drawLineChart(filteredData);
                     drawChart(filteredData);
                     drawStackedBar(filteredData);
-                });
+                })
+                .transition()
+                .duration(1000)
+                .attr("width", d => d.x1 - d.x0) // Zielattribut für Breite
+                .attr("height", d => d.y1 - d.y0); // Zielattribut für Höhe
 
             // Namen der Gemeinden anzeigen
             nodes.append("text")
@@ -1330,6 +1323,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("pointer-events", "none")
                 .style("font-size", "12px")
                 .style("fill", "#fff")
+                .transition()
+                .delay(1000)
+                .duration(500)
                 .text(d => `${d.data.name}`);
 
             // Totalwerte anzeigen
@@ -1339,6 +1335,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("pointer-events", "none")
                 .style("font-size", "12px")
                 .style("fill", "#fff")
+                .transition()
+                .delay(1000)
+                .duration(500)
                 .text(d => `(${d.data.value})`);
 
             topLoaded = true;
