@@ -101,7 +101,7 @@
             position: relative;
         }
 
-        #distDangerLevel svg{
+        #distDangerLevel svg {
             bottom: 10px;
             position: absolute;
             left: 0;
@@ -128,12 +128,13 @@
         .canton {
             stroke-width: 0.1px;
         }
-/*
-        .canton:hover {
-            fill: #444;
-        }
 
- */
+        /*
+                .canton:hover {
+                    fill: #444;
+                }
+
+         */
 
         /* Modal background overlay */
         .modal {
@@ -228,7 +229,7 @@
         }
 
         /* Button styles */
-        #applyFilter {
+        #applyFilter, #removeFilter {
             display: block;
             width: 100%;
             padding: 10px;
@@ -242,7 +243,11 @@
         }
 
         #applyFilter:hover {
-            background-color: #555; /* Darker background on hover */
+            background-color: #1B5C85; /* Darker background on hover */
+        }
+
+        #removeFilter:hover {
+            background-color: #861D1D; /* Darker background on hover */
         }
 
         #dangerLevelContainer {
@@ -346,7 +351,10 @@
             <label for="toDate">To Date:</label>
             <input type="date" id="toDate">
         </div>
-        <button id="applyFilter">Apply Filter</button>
+        <div style="display: flex; gap: 15px">
+            <button id="applyFilter">Apply Filter</button>
+            <button id="removeFilter">Remove Filter</button>
+        </div>
     </div>
 </div>
 
@@ -388,17 +396,100 @@
     const driverObj = driver({
         showProgress: true,
         steps: [
-            { element: '.cell:nth-child(1)', popover: { title: 'Map', description: 'Every dot represents a accident.', side: "bottom", align: 'start' }},
-            { element: '.cell:nth-child(3)', popover: { title: 'Time chart', description: 'The data is smoothed for better visibility.', side: "bottom", align: 'start' }},
-            { element: '.cell:nth-child(2)', popover: { title: 'Distribution charts', description: 'Shows some distribution charts.', side: "bottom", align: 'start' }},
-            { element: '.cell-charts:nth-child(1)', popover: { title: 'Total caught people', description: 'Shows all caught people in the shown accidents on the map.', side: "bottom", align: 'start' }},
-            { element: '.cell-charts:nth-child(2)', popover: { title: 'Buried people in percentage', description: 'Shows the buried people of the caught people in percent.', side: "bottom", align: 'start' }},
-            { element: '.cell-charts:nth-child(3)', popover: { title: 'Dead people in percentage', description: 'Shows the dead people of the caught people in percent.', side: "bottom", align: 'start' }},
-            { element: '.cell-charts:nth-child(4)', popover: { title: 'Danger level distribution', description: 'Shows the distribution of danger level of the shown accidents.', side: "bottom", align: 'start' }},
-            { element: '.cell-cell-charts:nth-child(1)', popover: { title: 'Activity distribution', description: 'Shows the distribution of activity of the shown accidents.', side: "bottom", align: 'start' }},
-            { element: '.cell-cell-charts:nth-child(2)', popover: { title: 'Top municipalities', description: 'Shows the municipalities with the most caught people on the selected filter.', side: "bottom", align: 'start' }},
-            { element: '#divToggle', popover: { title: 'Toggle', description: 'Toggle between single municipalities or the total of municipalities.', side: "bottom", align: 'start' }},
-            { element: '#filterButtonDiv', popover: { title: 'Filter', description: 'Filter button to filter the dataset.', side: "bottom", align: 'start' }}
+            {
+                element: '.cell:nth-child(1)',
+                popover: {title: 'Map', description: 'Every dot represents a accident.', side: "bottom", align: 'start'}
+            },
+            {
+                element: '.cell:nth-child(3)',
+                popover: {
+                    title: 'Time chart',
+                    description: 'The data is smoothed for better visibility.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell:nth-child(2)',
+                popover: {
+                    title: 'Distribution charts',
+                    description: 'Shows some distribution charts.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-charts:nth-child(1)',
+                popover: {
+                    title: 'Total caught people',
+                    description: 'Shows all caught people in the shown accidents on the map.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-charts:nth-child(2)',
+                popover: {
+                    title: 'Buried people in percentage',
+                    description: 'Shows the buried people of the caught people in percent.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-charts:nth-child(3)',
+                popover: {
+                    title: 'Dead people in percentage',
+                    description: 'Shows the dead people of the caught people in percent.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-charts:nth-child(4)',
+                popover: {
+                    title: 'Danger level distribution',
+                    description: 'Shows the distribution of danger level of the shown accidents.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-cell-charts:nth-child(1)',
+                popover: {
+                    title: 'Activity distribution',
+                    description: 'Shows the distribution of activity of the shown accidents.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-cell-charts:nth-child(2)',
+                popover: {
+                    title: 'Top municipalities',
+                    description: 'Shows the municipalities with the most caught people on the selected filter.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '#divToggle',
+                popover: {
+                    title: 'Toggle',
+                    description: 'Toggle between single municipalities or the total of municipalities.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '#filterButtonDiv',
+                popover: {
+                    title: 'Filter',
+                    description: 'Filter button to filter the dataset.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            }
         ]
     });
 
