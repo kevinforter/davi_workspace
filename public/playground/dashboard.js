@@ -381,7 +381,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Entferne vorhandene Punkte mit einer Transition
             pointsGroup.selectAll("circle")
                 .transition()
-                .duration(500)
+                .duration(750)
                 .attr("r", 0)
                 .remove();
 
@@ -437,7 +437,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             .attr("stroke", "black")
                             .attr("stroke-width", 0.25)
                             .transition()
-                            .duration(500)
+                            .duration(750)
                             .attr("r", 2) // Final radius after animation
                             .on("end", function () {
                                 // Add event listeners after the animation ends
@@ -612,7 +612,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     path.attr("stroke-dasharray", `${length} ${length}`)
                         .attr("stroke-dashoffset", length)
                         .transition()
-                        .duration(1500)
+                        .duration(1000)
                         .attr("stroke-dashoffset", 0);
                 });
             };
@@ -821,8 +821,14 @@ document.addEventListener("DOMContentLoaded", function () {
                             }[+d.level]} - ${(d.count / totalCaughtStack * 100).toFixed(2)}%`
                         );
 
-                    d3.selectAll("#distDangerLevel rect").style("opacity", 0.3);
-                    d3.select(this).style("opacity", 1);
+                    d3.selectAll("#distDangerLevel rect")
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 0.3);
+                    d3.select(this)
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 1);
                 })
                 .on("mousemove", function (event) {
                     const mouseX = event.pageX;
@@ -850,10 +856,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     drawChart(filteredData);
                     drawList(filteredData);
 
-                    d3.selectAll("rect").style("opacity", 1);
+                    d3.selectAll("distDangerLevel rect")
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 1);
                 })
                 .transition()
-                .duration(1000) // Animation duration for width
+                .duration(750) // Animation duration for width
                 .attr("width", d => d.width); // Animate to final width
 
             d3.select("#distDangerLevel").append("div")
@@ -902,7 +911,7 @@ document.addEventListener("DOMContentLoaded", function () {
             checkBuriedLoaded();
             checkDeadLoaded();
 
-            function drawChart(containerId, percentage, label, totalValue) {
+            function drawChartPie(containerId, percentage, label, totalValue) {
 
                 const svgPie = d3.select(containerId).selectAll("svg").data([1]).join("svg")
                     .attr("width", width)
@@ -925,13 +934,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         .attr("fill", "#1B5C85")
                         .attr("d", arc({ startAngle: 0, endAngle: 0 }))
                         .transition()
-                        .duration(1000)
+                        .duration(750)
                         .attrTween("d", function (d) {
                             const interpolate = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
                             return t => arc(interpolate(t));
                         }),
                     update => update.transition()
-                        .duration(1000)
+                        .duration(750)
                         .attrTween("d", function (d) {
                             const interpolate = d3.interpolate(this._current || { startAngle: 0, endAngle: 0 }, d);
                             this._current = interpolate(1); // Speichere den aktuellen Zustand
@@ -946,7 +955,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     .style("font-weight", "bold")
                     .style("fill", "#1B5C85")
                     .transition()
-                    .duration(1000)
+                    .duration(750)
                     .tween("text", function () {
                         const interpolate = d3.interpolate(+this.textContent.replace('%', '') || 0, percentage);
                         return t => d3.select(this).text(`${interpolate(t).toFixed(2)}%`);
@@ -961,8 +970,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             }
 
-            drawChart("#distBuried", percentageBuried, "Fully Buried", fullyBuried);
-            drawChart("#distDead", percentageDead, "Dead", totalDead);
+            drawChartPie("#distBuried", percentageBuried, "Fully Buried", fullyBuried);
+            drawChartPie("#distDead", percentageDead, "Dead", totalDead);
         }
 
         writeCaught(filteredData);
@@ -1086,16 +1095,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     .attr("rx", 6)
                     .attr("ry", 6)
                     .transition()
-                    .duration(1000)
+                    .duration(750)
                     .attr("y", ([key, value]) => yscale(value) + topMargin)
                     .attr("height", ([key, value]) => innerHeight - yscale(value)),
                 update => update.transition()
-                    .duration(1000)
+                    .duration(750)
                     .attr("x", ([key]) => xscale(key) + leftMargin)
                     .attr("y", ([key, value]) => yscale(value) + topMargin)
                     .attr("height", ([key, value]) => innerHeight - yscale(value)),
                 exit => exit.transition()
-                    .duration(1000)
+                    .duration(750)
                     .attr("height", 0)
                     .attr("y", innerHeight + topMargin)
                     .remove()
@@ -1122,8 +1131,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         .style("display", "block")
                         .html(`Activity: ${key}<br>Total: ${value}`);
 
-                    d3.selectAll("#distActivity rect").style("opacity", 0.3); // Reduziere die Transparenz anderer Balken
-                    d3.select(this).style("opacity", 1); // Markiere den aktuellen Balken
+                    d3.selectAll("#distActivity rect")
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 0.3); // Reduziere die Transparenz anderer Balken
+                    d3.select(this)
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 1); // Markiere den aktuellen Balken
                 })
                 .on("mousemove", function (event) {
                     tooltip
@@ -1143,7 +1158,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     drawList(filteredData);
                     drawStackedBar(filteredData);
 
-                    d3.selectAll("rect").style("opacity", 1); // Setze Transparenz zurück
+                    d3.selectAll("#distActivity rect")
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 1); // Setze Transparenz zurück
                 });
 
             activityLoaded = true;
@@ -1266,10 +1284,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log(`Hovered over municipality: ${d.data.name}, Total: ${d.data.value}`);
 
                     // Reduziere die Transparenz aller Rechtecke
-                    d3.selectAll("#topChart rect").style("opacity", 0.3);
+                    d3.selectAll("#topChart rect")
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 0.3);
 
                     // Setze die Transparenz des aktuellen Rechtecks auf 1
-                    d3.select(this).style("opacity", 1);
+                    d3.select(this)
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 1);
 
                     // Tooltip anzeigen
                     tooltip
@@ -1301,7 +1325,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     tooltip.style("display", "none");
 
                     // Setze Transparenz aller Rechtecke zurück
-                    d3.selectAll("#topChart rect").style("opacity", 1);
+                    d3.selectAll("#topChart rect")
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 1);
 
                     // Setze die Diagramme auf die ursprünglichen Daten zurück
                     writeCaught(filteredData);
@@ -1312,7 +1339,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     drawStackedBar(filteredData);
                 })
                 .transition()
-                .duration(1000)
+                .duration(750)
                 .attr("width", d => d.x1 - d.x0) // Zielattribut für Breite
                 .attr("height", d => d.y1 - d.y0); // Zielattribut für Höhe
 
@@ -1324,8 +1351,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("font-size", "12px")
                 .style("fill", "#fff")
                 .transition()
-                .delay(1000)
-                .duration(500)
+                .delay(500)
+                .duration(750)
                 .text(d => `${d.data.name}`);
 
             // Totalwerte anzeigen
@@ -1336,8 +1363,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("font-size", "12px")
                 .style("fill", "#fff")
                 .transition()
-                .delay(1000)
-                .duration(500)
+                .delay(500)
+                .duration(750)
                 .text(d => `(${d.data.value})`);
 
             topLoaded = true;
