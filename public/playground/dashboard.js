@@ -292,6 +292,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document
         .getElementById("closeFilter")
         .addEventListener("click", () => {
+            console.log("Filter closed!");
             document.getElementById("filterModal").style.display = "none";
         });
 
@@ -837,7 +838,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 .enter()
                 .append("rect")
                 .attr("class", d => {
-                    // Map levels to CSS class names
                     switch (+d.level) {
                         case 1: return "gering";
                         case 2: return "mässig";
@@ -855,26 +855,35 @@ document.addEventListener("DOMContentLoaded", function () {
                 .attr("y", 0)
                 .attr("width", d => d.width)
                 .attr("height", heightStackedBar)
-                .attr("fill", d => colorMapping[d.level]) // Use color from mapping based on level
+                .attr("fill", d => colorMapping[d.level]) // Verwende die Farbzuordnung basierend auf dem Level
                 .on("mouseover", function (event, d) {
-                    const percentage = ((d.count / totalCaughtStack) * 100).toFixed(2); // Calculate percentage
+                    // Filter die Daten basierend auf dem aktuellen Danger Level
+                    const tempFilteredData = filteredData.filter(
+                        item => item['forecasted.dangerlevel.rating1'] === d.level
+                    );
+
+                    // Aktualisiere die anderen Diagramme
+                    writeCaught(tempFilteredData);
+                    drawPoints(tempFilteredData); // Beispiel für Karte
+                    drawPieChart(tempFilteredData); // Beispiel für Tortendiagramm
+                    drawLineChart(tempFilteredData); // Beispiel für Liniendiagramm
+                    drawChart(tempFilteredData); // Beispiel für Balkendiagramm
+                    drawList(tempFilteredData); // Beispiel für Liste
+
                     tooltip
                         .style("display", "block")
-                        .text("Level: " + (function() {
-                            switch (+d.level) {
-                                case 1: return "gering";
-                                case 2: return "mässig";
-                                case 3: return "erheblich";
-                                case 4: return "gross";
-                                case 5: return "sehrGross";
-                                default: return "empty";
-                            }
-                        })() + " - " + percentage + "%");
+                        .html(
+                            `Level: ${{
+                                1: "Gering",
+                                2: "Mässig",
+                                3: "Erheblich",
+                                4: "Gross",
+                                5: "Sehr gross",
+                            }[+d.level]} - ${(d.count / totalCaughtStack * 100).toFixed(2)}%`
+                        );
 
-                    d3.selectAll("#distDangerLevel rect")
-                        .style("opacity", 0.3);
-                    d3.select(this)
-                        .style("opacity", 1);
+                    d3.selectAll("#distDangerLevel rect").style("opacity", 0.3);
+                    d3.select(this).style("opacity", 1);
                 })
                 .on("mousemove", function (event) {
                     // Get the mouse position
@@ -897,8 +906,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 })
                 .on("mouseout", function () {
-                    tooltip
-                        .style("display", "none");
+                    tooltip.style("display", "none");
+
+                    // Setze die ursprünglichen Diagramme zurück
+                    writeCaught(filteredData);
+                    drawPoints(filteredData);
+                    drawPieChart(filteredData);
+                    drawLineChart(filteredData);
+                    drawChart(filteredData);
+                    drawList(filteredData);
 
                     d3.selectAll("rect").style("opacity", 1);
                 });
@@ -1172,31 +1188,46 @@ document.addEventListener("DOMContentLoaded", function () {
                 let barWidth = xscale.bandwidth();
                 let x = xscale(Object.keys(dataObj)[index]);
 
-                svgBar.append("rect")
-                    .attr("x", x + leftMargin)
-                    .attr("y", innerHeight + topMargin)
-                    .attr("height", 0)
-                    .attr("width", barWidth)
+                // Bar Chart: Füge Event Listener für Hover hinzu
+                svgBar.selectAll("rect")
+                    .data(Object.entries(dataObj)) // Nutze die Daten des Bar-Charts
+                    .enter()
+                    .append("rect")
+                    .attr("x", ([key, value]) => xscale(key) + leftMargin)
+                    .attr("y", innerHeight + topMargin) // Startposition
+                    .attr("height", 0) // Höhe initial auf 0 setzen
+                    .attr("width", xscale.bandwidth())
                     .attr("fill", "#1B5C85")
-                    .attr("rx", 6)  // Apply border radius to the top corners
-                    .attr("ry", 6)  // No border radius on the bottom corners
-                    .transition() // Add transition
-                    .duration(1000) // Animation duration (in ms)
-                    .ease(d3.easeCubicOut) // Easing function
-                    .attr("y", yscale(value) + topMargin) // Animate to the final Y position
-                    .attr("height", innerHeight - yscale(value)) // Animate to the final height
+                    .attr("rx", 6) // Runde Ecken oben
+                    .attr("ry", 6)
+                    .transition()
+                    .duration(1000)
+                    .ease(d3.easeCubicOut)
+                    .attr("y", ([key, value]) => yscale(value) + topMargin) // Zielposition
+                    .attr("height", ([key, value]) => innerHeight - yscale(value)) // Zielhöhe
                     .on("end", function () {
-                        // Add mouse events after the transition is complete
+                        // Event Listener hinzufügen nach der Transition
                         d3.select(this)
-                            .on("mouseover", function (event) {
+                            .on("mouseover", function (event, [key, value]) {
+                                console.log(`Hovered over activity: ${key}, Total: ${value}`);
+
+                                // Beispiel: Dynamisches Filtern und Aktualisieren anderer Diagramme
+                                const tempFilteredData = filteredData.filter(
+                                    d => d.activity.includes(key.toLowerCase()) // Filtere basierend auf der Aktivität
+                                );
+
+                                writeCaught(tempFilteredData);
+                                drawPoints(tempFilteredData); // Aktualisiere die Karte
+                                drawPieChart(tempFilteredData); // Aktualisiere das Tortendiagramm
+                                drawLineChart(tempFilteredData); // Aktualisiere das Liniendiagramm
+                                drawList(tempFilteredData); // Aktualisiere die Liste
+
                                 tooltip
                                     .style("display", "block")
-                                    .html(`Total: ${value}`);
+                                    .html(`Activity: ${key}<br>Total: ${value}`);
 
-                                d3.selectAll("#distActivity rect")
-                                    .style("opacity", 0.3);
-                                d3.select(this)
-                                    .style("opacity", 1);
+                                d3.selectAll("#distActivity rect").style("opacity", 0.3); // Reduziere die Transparenz anderer Balken
+                                d3.select(this).style("opacity", 1); // Markiere den aktuellen Balken
                             })
                             .on("mousemove", function (event) {
                                 tooltip
@@ -1204,8 +1235,18 @@ document.addEventListener("DOMContentLoaded", function () {
                                     .style("left", (event.pageX + 10) + "px");
                             })
                             .on("mouseout", function () {
+                                console.log(`Mouse left activity bar: ${d3.select(this).datum()[0]}`);
+
                                 tooltip.style("display", "none");
-                                d3.selectAll("rect").style("opacity", 1);
+
+                                // Setze Diagramme zurück
+                                writeCaught(filteredData);
+                                drawPoints(filteredData);
+                                drawPieChart(filteredData);
+                                drawLineChart(filteredData);
+                                drawList(filteredData);
+
+                                d3.selectAll("rect").style("opacity", 1); // Setze Transparenz zurück
                             });
                     });
             });
@@ -1229,7 +1270,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Global variable to track checkbox state
         let showTop5 = false;
 
-// Add checkbox dynamically (only once)
+        // Add checkbox dynamically (only once)
         d3.select("#topChart")
             .append("div")
             .attr("id", "divToggle")
@@ -1310,39 +1351,82 @@ document.addEventListener("DOMContentLoaded", function () {
             const colorScale = d3.scaleSequential(d3.interpolateBlues)
                 .domain([0, d3.max(top5, d => d[1])]);
 
+            // Liste erstellen
             const nodes = svg.selectAll(".node")
                 .data(root.leaves())
                 .join("g")
                 .attr("class", "node")
                 .attr("transform", d => `translate(${d.x0},${d.y0})`);
 
+            // Rechtecke für die Liste
             nodes.append("rect")
                 .attr("width", d => d.x1 - d.x0)
                 .attr("height", d => d.y1 - d.y0)
-                .attr("fill", d => colorScale(d.data.value)) // Apply color based on value
+                .attr("fill", d => colorScale(d.data.value)) // Färbe basierend auf Wert
                 .attr("stroke", "#fff")
-                .attr("rx", 6)  // Apply border radius to the top corners
-                .attr("ry", 6)  // No border radius on the bottom corners
+                .attr("rx", 6) // Runde Ecken
                 .on("mouseover", function (event, d) {
-                    d3.selectAll("#topChart rect")
-                        .style("opacity", 0.3);
-                    d3.select(this)
-                        .style("opacity", 1);
+                    console.log(`Hovered over municipality: ${d.data.name}, Total: ${d.data.value}`);
+
+                    // Reduziere die Transparenz aller Rechtecke
+                    d3.selectAll("#topChart rect").style("opacity", 0.3);
+
+                    // Setze die Transparenz des aktuellen Rechtecks auf 1
+                    d3.select(this).style("opacity", 1);
+
+                    // Tooltip anzeigen
+                    tooltip
+                        .style("display", "block")
+                        .html(`Municipality: ${d.data.name}<br>Total: ${d.data.value}`);
+
+                    // Filter die Daten basierend auf der Gemeinde
+                    const tempFilteredData = filteredData.filter(
+                        item => item.municipality === d.data.name
+                    );
+
+                    // Aktualisiere andere Diagramme
+                    writeCaught(tempFilteredData);
+                    drawPoints(tempFilteredData);
+                    drawPieChart(tempFilteredData);
+                    drawLineChart(tempFilteredData);
+                    drawChart(tempFilteredData);
                 })
-                .on("mouseout", function (event, d) {
-                    d3.selectAll("rect").style("opacity", 1);
+                .on("mousemove", function (event) {
+                    tooltip
+                        .style("top", (event.pageY - 10) + "px")
+                        .style("left", (event.pageX + 10) + "px");
+                })
+                .on("mouseout", function () {
+                    console.log("Mouse left");
+
+                    // Tooltip ausblenden
+                    tooltip.style("display", "none");
+
+                    // Setze Transparenz aller Rechtecke zurück
+                    d3.selectAll("#topChart rect").style("opacity", 1);
+
+                    // Setze die Diagramme auf die ursprünglichen Daten zurück
+                    writeCaught(filteredData);
+                    drawPoints(filteredData);
+                    drawPieChart(filteredData);
+                    drawLineChart(filteredData);
+                    drawChart(filteredData);
                 });
 
+            // Namen der Gemeinden anzeigen
             nodes.append("text")
                 .attr("dx", 4)
                 .attr("dy", 14)
+                .style("pointer-events", "none")
                 .style("font-size", "12px")
                 .style("fill", "#fff")
                 .text(d => `${d.data.name}`);
 
+            // Totalwerte anzeigen
             nodes.append("text")
                 .attr("dx", 4)
                 .attr("dy", 30)
+                .style("pointer-events", "none")
                 .style("font-size", "12px")
                 .style("fill", "#fff")
                 .text(d => `(${d.data.value})`);
