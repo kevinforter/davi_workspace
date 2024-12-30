@@ -587,9 +587,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 .append("clipPath")
                 .attr("id", "chart-area")
                 .append("rect")
-                .attr("x", margin.left - 5)
+                .attr("x", margin.left)
                 .attr("y", margin.top - 5)
-                .attr("width", width - margin.left - margin.right + 10)
+                .attr("width", width - margin.left - margin.right + 5)
                 .attr("height", height - margin.top - margin.bottom + 10);
 
             // Achsen
