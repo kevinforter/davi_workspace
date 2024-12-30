@@ -547,7 +547,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function drawLineChart(filteredData) {
             d3.select("#lineChart").selectAll("*").remove();
 
-            // Group by year and aggregate the data
+            // Gruppieren nach Jahr und aggregieren der Daten
             const yearlyData = Array.from(
                 d3.group(filteredData, d => d.year),
                 ([key, values]) => ({
@@ -563,111 +563,154 @@ document.addEventListener("DOMContentLoaded", function () {
             const caught = yearlyData.map(d => ({ year: d.year, value: d.caught }));
             const dead = yearlyData.map(d => ({ year: d.year, value: d.dead }));
 
+            // Responsive Dimensions
+            const container = d3.select("#lineChart").node().getBoundingClientRect();
+            const width = container.width;
+            const height = container.height;
+            const margin = { top: 40, right: 20, bottom: 30, left: 40 };
+
             const x = d3.scaleLinear()
                 .domain([d3.min(years), d3.max(years)])
-                .range([margin.left, widthLineChart - margin.right]);
+                .range([margin.left, width - margin.right]);
 
             const y = d3.scaleLinear()
                 .domain([0, d3.max([...buried, ...caught, ...dead], d => d.value)])
-                .range([heightLineChart - margin.bottom, margin.top]);
+                .range([height - margin.bottom, margin.top]);
 
             const svg = d3.select("#lineChart").append("svg")
-                .attr("width", widthLineChart)
-                .attr("height", heightLineChart);
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("viewBox", `0 0 ${width} ${height}`);
 
-            // X-Axis
-            svg.append("g")
-                .attr("transform", `translate(0,${heightLineChart - margin.bottom})`)
-                .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+            // Clip-Path hinzufügen
+            svg.append("defs")
+                .append("clipPath")
+                .attr("id", "chart-area")
+                .append("rect")
+                .attr("x", margin.left - 5)
+                .attr("y", margin.top - 5)
+                .attr("width", width - margin.left - margin.right + 10)
+                .attr("height", height - margin.top - margin.bottom + 10);
 
-            // Y-Axis
-            svg.append("g")
-                .attr("transform", `translate(${margin.left},0)`)
-                .call(d3.axisLeft(y));
+            // Achsen
+            const xAxisGroup = svg.append("g")
+                .attr("transform", `translate(0,${height - margin.bottom})`);
+            const xAxis = d3.axisBottom(x)
+                .tickFormat(d3.format("d")) // Formatierung als Ganzzahlen
+                .ticks(10); // Begrenzung auf 10 Ticks
+            xAxisGroup.call(xAxis);
 
-            // Line generator
+            const yAxisGroup = svg.append("g")
+                .attr("transform", `translate(${margin.left},0)`);
+            const yAxis = d3.axisLeft(y);
+            yAxisGroup.call(yAxis);
+
+            // Linien-Generator
             const lineGenerator = d3.line()
-                .curve(d3.curveBumpX)
+                .curve(d3.curveMonotoneX)
                 .x(d => x(d.year))
                 .y(d => y(d.value));
 
-            // Draw lines
+            // Gruppen für Linien und Punkte mit Clip-Path
+            const chartGroup = svg.append("g")
+                .attr("clip-path", "url(#chart-area)");
+
+            const lineGroup = chartGroup.append("g");
+            const pointGroup = chartGroup.append("g");
+
+            // Funktion zum Zeichnen der Linien mit Animation
             const drawLine = (data, className, color) => {
-                svg.append("path")
+                const path = lineGroup.append("path")
                     .datum(data)
                     .attr("class", className)
                     .attr("fill", "none")
                     .attr("stroke", color)
                     .attr("stroke-width", 2)
-                    .attr("opacity", 1)
-                    .attr("d", lineGenerator(data))
-                    .call(animateLine);
-            };
+                    .attr("d", lineGenerator);
 
-            // Animate line drawing
-            const animateLine = (selection) => {
-                selection.each(function () {
-                    const path = d3.select(this);
-                    const length = path.node().getTotalLength();
-                    path.attr("stroke-dasharray", `${length} ${length}`)
-                        .attr("stroke-dashoffset", length)
-                        .transition()
-                        .duration(1000)
-                        .attr("stroke-dashoffset", 0);
-                });
+                // Animation
+                const totalLength = path.node().getTotalLength();
+
+                path
+                    .attr("stroke-dasharray", `${totalLength} ${totalLength}`)
+                    .attr("stroke-dashoffset", totalLength)
+                    .transition()
+                    .duration(2000) // Dauer der Animation in Millisekunden
+                    .ease(d3.easeLinear)
+                    .attr("stroke-dashoffset", 0);
             };
 
             drawLine(caught, "line caught", "black");
             drawLine(buried, "line buried", "blue");
             drawLine(dead, "line dead", "#CB9DF0");
 
-            // Tooltip
-            const tooltip = d3.select("body").append("div")
-                .attr("class", "tooltip")
-                .style("position", "absolute")
-                .style("background", "rgba(0, 0, 0, 0.75)")
-                .style("color", "#fff")
-                .style("padding", "8px")
-                .style("border-radius", "4px")
-                .style("pointer-events", "none")
-                .style("display", "none");
-
-            // Add circles for tooltips
+            // Tooltip-Kreise hinzufügen
             const addTooltipCircles = (data, color, category) => {
-                svg.selectAll(`.tooltip-circle-${color}`)
+                pointGroup.selectAll(`.tooltip-circle-${category}`)
                     .data(data)
                     .join("circle")
-                    .attr("class", `tooltip-circle-${color}`)
+                    .attr("class", `tooltip-circle-${category}`)
                     .attr("cx", d => x(d.year))
                     .attr("cy", d => y(d.value))
-                    .attr("r", 0) // Start with a radius of 0 for animation
+                    .attr("r", 3)
                     .attr("fill", color)
-                    .attr("stroke", "white")
-                    .attr("stroke-width", 1)
                     .on("mouseover", (event, d) => {
-                        tooltip.style("display", "block")
-                            .html(`
-                    Year: ${d.year}<br>
-                    ${category}: ${d.value}
-                `)
+                        d3.select(".tooltip")
+                            .style("display", "block")
+                            .html(`${category}: ${d.value} <br> Year: ${d.year}`)
                             .style("left", `${event.pageX + 10}px`)
                             .style("top", `${event.pageY - 20}px`);
                     })
-                    .on("mousemove", (event) => {
-                        tooltip.style("left", `${event.pageX + 10}px`)
-                            .style("top", `${event.pageY - 20}px`);
-                    })
                     .on("mouseout", () => {
-                        tooltip.style("display", "none");
-                    })
-                    .transition()
-                    .duration(800) // Adjust duration as needed
-                    .attr("r", 3); // Animate to the final radius
+                        d3.select(".tooltip").style("display", "none");
+                    });
             };
 
             addTooltipCircles(caught, "black", "Caught");
             addTooltipCircles(buried, "blue", "Buried");
             addTooltipCircles(dead, "#CB9DF0", "Dead");
+
+            // Tooltip hinzufügen
+            const tooltip = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("position", "absolute")
+                .style("background", "#333")
+                .style("color", "#fff")
+                .style("padding", "8px")
+                .style("border-radius", "4px")
+                .style("display", "none");
+
+            // Zoom-Handler
+            // Zoom-Handler
+            const zoom = d3.zoom()
+                .scaleExtent([1, 5])
+                .translateExtent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]])
+                .on("zoom", (event) => {
+                    const transform = event.transform;
+
+                    // Reskalieren der Achsen
+                    const newX = transform.rescaleX(x);
+                    xAxisGroup.call(d3.axisBottom(newX).tickFormat(d3.format("d"))); // Format auch beim Zoomen
+
+                    // Aktualisieren der Linien
+                    lineGroup.selectAll("path")
+                        .each(function (d) {
+                            const path = d3.select(this);
+                            const updatedPath = lineGenerator.x(d => newX(d.year))(d);
+                            path.attr("d", updatedPath);
+
+                            // Neu berechnen der Länge für Animationseigenschaften
+                            const totalLength = this.getTotalLength();
+                            path.attr("stroke-dasharray", `${totalLength} ${totalLength}`)
+                                .attr("stroke-dashoffset", 0); // Beim Zoom ist die Linie vollständig sichtbar
+                        });
+
+                    // Aktualisieren der Punkte
+                    pointGroup.selectAll("circle")
+                        .attr("cx", d => newX(d.year));
+                });
+
+            svg.call(zoom);
 
             // Add legend
             const legend = d3.select("#lineChart").append("div")
@@ -699,8 +742,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     .style("font-size", "12px");
             });
 
-            // Title
             d3.select("#lineChart").append("div")
+                .text("Timeline of Accidents")
                 .attr("class", "smallTitle")
                 .style("position", "absolute")
                 .style("width", "100%")
@@ -708,7 +751,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("top", "10px")
                 .style("left", "10px")
                 .style("color", "#d1d1d1")
-                .text("Timeline of Accidents");
         }
 
         drawStackedBar(filteredData);
@@ -802,12 +844,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         item => item['forecasted.dangerlevel.rating1'] === d.level
                     );
 
-                    writeCaught(tempFilteredData);
                     drawPoints(tempFilteredData);
-                    drawPieChart(tempFilteredData);
-                    drawLineChart(tempFilteredData);
-                    drawChart(tempFilteredData);
-                    drawList(tempFilteredData);
 
                     tooltip
                         .style("display", "block")
@@ -849,14 +886,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 .on("mouseout", function () {
                     tooltip.style("display", "none");
 
-                    writeCaught(filteredData);
                     drawPoints(filteredData);
-                    drawPieChart(filteredData);
-                    drawLineChart(filteredData);
-                    drawChart(filteredData);
-                    drawList(filteredData);
 
-                    d3.selectAll("distDangerLevel rect")
+                    d3.selectAll("#distDangerLevel rect")
                         .transition()
                         .duration(300)
                         .style("opacity", 1);
@@ -1120,12 +1152,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         d => d.activity.includes(key.toLowerCase()) // Filtere basierend auf der Aktivität
                     );
 
-                    writeCaught(tempFilteredData);
                     drawPoints(tempFilteredData); // Aktualisiere die Karte
-                    drawPieChart(tempFilteredData); // Aktualisiere das Tortendiagramm
-                    drawLineChart(tempFilteredData); // Aktualisiere das Liniendiagramm
-                    drawList(tempFilteredData); // Aktualisiere die Liste
-                    drawStackedBar(tempFilteredData);
 
                     tooltip
                         .style("display", "block")
@@ -1151,12 +1178,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     tooltip.style("display", "none");
 
                     // Setze Diagramme zurück
-                    writeCaught(filteredData);
                     drawPoints(filteredData);
-                    drawPieChart(filteredData);
-                    drawLineChart(filteredData);
-                    drawList(filteredData);
-                    drawStackedBar(filteredData);
 
                     d3.selectAll("#distActivity rect")
                         .transition()
@@ -1306,12 +1328,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     );
 
                     // Aktualisiere andere Diagramme
-                    writeCaught(tempFilteredData);
                     drawPoints(tempFilteredData);
-                    drawPieChart(tempFilteredData);
-                    drawLineChart(tempFilteredData);
-                    drawChart(tempFilteredData);
-                    drawStackedBar(tempFilteredData);
                 })
                 .on("mousemove", function (event) {
                     tooltip
@@ -1331,12 +1348,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         .style("opacity", 1);
 
                     // Setze die Diagramme auf die ursprünglichen Daten zurück
-                    writeCaught(filteredData);
                     drawPoints(filteredData);
-                    drawPieChart(filteredData);
-                    drawLineChart(filteredData);
-                    drawChart(filteredData);
-                    drawStackedBar(filteredData);
                 })
                 .transition()
                 .duration(750)
