@@ -11,7 +11,10 @@
     <title>DAVI - Dashboard</title>
 
     <!-- stylesheets -->
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/contact.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
 
     <!-- fonts -->
     <style>
@@ -35,7 +38,7 @@
                     <li><a href="#section1">Welcome</a></li>
                     <li><a href="#section2">Dashboard</a></li>
                     <li><a href="#section3">Research</a></li>
-                    <li><a href="#section4">Data source</a></li>
+                    <li><a href="#section4">Data Source</a></li>
                     <li><a href="#section5">Design choices</a></li>
                     <li><a href="#section6">References</a></li>
                     <li><a href="#section7">Contact</a></li>
@@ -47,9 +50,9 @@
         <section class="section_content full_height" id="section1">
             <div>
                 <h1>welcome.</h1>
-                <h2>To Fabrice and Kevin's DAVI project.
-                    Checkout our dashboard about <br>
-                    the avalanche stats in Switzerland.</h2>
+                <h2>To Fabrice and Kevin's DAVI Project. Checkout our
+                    Dashboard about <br> the
+                    Avalanche Stats in Switzerland.</h2>
                 <button class="get_started"><a href="#section2">Get Started</a></button>
             </div>
         </section>
@@ -207,7 +210,7 @@
                 <h2>WSL-Institut für Schnee- und <br> Lawinenforschung SLF</h2>
             </div>
             <article class="section4_article">
-                <h2>Avalanche accidents in Switzerland: Background information</h2>
+                <h3>Avalanche Accidents in Switzerland: Background Information</h3>
                 <p>
                     The datasets on avalanche accidents in Switzerland provide an extensive overview of avalanche
                     incidents involving individuals from two starting points: one dataset documents all known incidents
@@ -216,7 +219,7 @@
                     (October 1 to September 30) to ensure current and comprehensive coverage.
                 </p>
                 <br>
-                <h2>Dataset 1: Avalanche accidents since 1970/71</h2>
+                <h3>Dataset 1: Avalanche Accidents Since 1970/71</h3>
                 <p>
                     This dataset covers all avalanche incidents in Switzerland involving at least one person. The record
                     begins on October 1, 1970, and continues annually. Detailed information available for each incident
@@ -254,7 +257,7 @@
                         href="https://www.envidat.ch/dataset/fatal-avalanche-accidents-in-switzerland-since-1936-37">Avalanche
                     accidents in switzerland since 1936-37</a></p>
                 <br>
-                <h2>Dataset 2: Fatal avalanche accidents since 1936/37</h2>
+                <h3>Dataset 2: Fatal Avalanche Accidents Since 1936/37</h3>
                 <p>
                     The fatal avalanche accident dataset provides records of incidents with at least one fatality,
                     dating back to October 1, 1936. This dataset contains similar fields to the first dataset, with a
@@ -262,23 +265,23 @@
                 </p>
                 <br>
                 <ul>
-                    <li><strong>Avalanche identifier and accident date</strong>: Similar to the general accident
+                    <li><strong>Avalanche Identifier and Accident Date</strong>: Similar to the general accident
                         dataset, with date precision
                     </li>
-                    <li><strong>Hydrological year</strong>: Each record corresponds to a hydrological year from October
+                    <li><strong>Hydrological Year</strong>: Each record corresponds to a hydrological year from October
                         1 to September 30
                     </li>
-                    <li><strong>Geolocation data</strong>: Includes canton, municipality, latitude, longitude, accuracy,
+                    <li><strong>Geolocation Data</strong>: Includes canton, municipality, latitude, longitude, accuracy,
                         and elevation of the start zone
                     </li>
-                    <li><strong>Terrain and slope</strong>: Information on slope aspect and inclination</li>
+                    <li><strong>Terrain and Slope</strong>: Information on slope aspect and inclination</li>
                     <li><strong>Forecasted Danger Levels and Core Zone Presence</strong>: Danger levels and whether the
                         incident occurred in the forecasted core danger zone
                     </li>
-                    <li><strong>Fatalities and other casualties</strong>: Counts of deceased, caught, and fully buried
+                    <li><strong>Fatalities and Other Casualties</strong>: Counts of deceased, caught, and fully buried
                         individuals
                     </li>
-                    <li><strong>Context of accident party</strong>: Description of the activity or location of those
+                    <li><strong>Context of Accident Party</strong>: Description of the activity or location of those
                         involved at the incident time
                     </li>
                 </ul>
@@ -301,38 +304,40 @@
         </section>
         <section class="section_content fit_content" id="section5">
             <article class="section5_article">
-                <h2>Foundations of visual design</h2>
+                <h2>Foundations of Visual Design</h2>
                 <p>
                     Our visualization demonstrates a clean, intuitive layout with clear distinctions between different data sections. The map, charts, and metrics are organized to prioritize usability. The choice of colors is effective, with danger levels transitioning from green to red for intuitive severity grading. Typography is legible, with key statistics prominently highlighted (e.g., total caught people). The use of ample white space reduces cognitive load, while consistent iconography (such as the filter symbol) reinforces understanding and guides user actions.
                 </p>
                 <br>
-                <h2>Fundamental principles of analytical design (Tufte)</h2>
+                <h2>
+                    Fundamental Principles of Analytical Design (Tufte)
+                </h2>
                 <p>
                     Our visualization adheres to Edward Tufte’s principles by maximizing information density while avoiding unnecessary clutter. The map takes center stage, providing spatial context for accidents, while supplementary graphs give temporal, categorical, and quantitative perspectives. The “top 5 most caught people” treemap efficiently combines ranking and proportion in a compact design. Overall, the visualization aligns with Tufte’s emphasis on presenting multi-dimensional data coherently for quick insights and decision-making.
                 </p>
                 <br>
-                <h2>Data-Ink ratio (Tufte)</h2>
+                <h2>Data-Ink Ratio (Tufte)</h2>
                 <p>
                     Our visualization optimizes the data-ink ratio by prioritizing essential data over non-informative elements. Non-essential features, like excessive borders or decorative visuals, are intentionally omitted. Instead, ink is devoted to meaningful elements, such as map points, danger level bars, and trend lines. Titles and legends are concise yet informative. This approach ensures that every graphical element contributes directly to understanding the data without unnecessary distractions.
                 </p>
                 <br>
-                <h2>Human perception</h2>
+                <h2>Human Perception</h2>
                 <p>
                     Our visualization leverages Gestalt principles to enhance comprehension. For instance, proximity and similarity group related elements, such as activity distribution and danger levels. Colors are used to distinguish categories and severity, making patterns easily recognizable. The timeline chart uses line thickness and color variation to emphasize trends and relationships, aligning with how humans perceive contrasts. Additionally, interactions strengthen perception by linking map points with hovered chart elements, encouraging exploration and deeper understanding.
                 </p>
                 <br>
-                <h2>Tasks in data visualization</h2>
+                <h2>Tasks in Data Visualization</h2>
                 <p>
                     Our visualization supports several critical tasks:
                 </p>
                 <ol>
                     <li><strong>Overview:</strong> Users can quickly identify the geographic distribution and severity of accidents across Switzerland.</li>
                     <li><strong>Comparison:</strong> Charts and maps allow users to compare activity types, danger levels, and regions.</li>
-                    <li><strong>Trend identification:</strong> The timeline chart highlights historical trends and anomalies, such as peaks in accidents.</li>
-                    <li><strong>Detail exploration:</strong> Hovering interactions provide detailed insights into specific data points, such as linked map locations or chart values.</li>
+                    <li><strong>Trend Identification:</strong> The timeline chart highlights historical trends and anomalies, such as peaks in accidents.</li>
+                    <li><strong>Detail Exploration:</strong> Hovering interactions provide detailed insights into specific data points, such as linked map locations or chart values.</li>
                 </ol>
                 <br>
-                <h2>Interaction concept</h2>
+                <h2>Interaction Concept</h2>
                 <p>
                     The interactivity in our visualization, particularly the brushing and linking, significantly enhances the user experience. When users hover over charts, corresponding points on the map update dynamically, fostering a deeper understanding of spatial and temporal relationships. The filter icon offers customizable views, empowering users to refine their exploration. This dynamic interaction design ensures our visualization is not only informative but also engaging and adaptable to exploratory data analysis.
                 </p>
@@ -340,7 +345,7 @@
         </section>
         <section class="section_content fit_content" id="section6">
             <article class="section6_article">
-                <h2>Findings in data</h2>
+                <h2>Findings in Data</h2>
                 <p>
                     What is certainly interesting is that the data is very inconsistent. The avalanche danger levels
                     have only been recorded since 2004. One might
@@ -506,26 +511,26 @@
                 </p>
                 <br>
                 <ul>
-                    <li><strong>Temporal trends</strong>: We could analyze fatal avalanche accidents over time
+                    <li><strong>Temporal Trends</strong>: We could analyze fatal avalanche accidents over time
                         to see if there is an increase or decrease in incidents, particularly in relation to
                         weather changes, tourism growth, or safety improvements over the decades.
                     </li>
-                    <li><strong>Geographical patterns</strong>: By examining the "canton" and "municipality"
+                    <li><strong>Geographical Patterns</strong>: By examining the "canton" and "municipality"
                         fields, we can map accident occurrences across different regions in Switzerland. This
                         may reveal high-risk areas, such as certain cantons or municipalities with frequent
                         accidents.
                     </li>
-                    <li><strong>Elevation and aspect</strong>: The data includes information on the elevation
+                    <li><strong>Elevation and Aspect</strong>: The data includes information on the elevation
                         and slope aspect (e.g., north-facing, south-facing slopes). Analysis of these factors
                         could help determine if certain slope orientations or elevations are more prone to
                         avalanches, especially in combination with specific weather conditions.
                     </li>
-                    <li><strong>Activity types</strong>: The "activity" field categorizes accidents based on
+                    <li><strong>Activity Types</strong>: The "activity" field categorizes accidents based on
                         activities like skiing, snowboarding, transportation, and touring. This allows us to
                         identify which activities are most associated with avalanche risks, which could inform
                         safety guidelines or highlight the need for targeted safety campaigns.
                     </li>
-                    <li><strong>Severity indicators</strong>: The "number.dead," "number.caught," and
+                    <li><strong>Severity Indicators</strong>: The "number.dead," "number.caught," and
                         "number.fully.buried" fields provide insights into the severity of incidents. Analyzing
                         these metrics might uncover patterns in accident outcomes, such as higher fatalities in
                         certain conditions or for specific activities.
@@ -548,11 +553,11 @@
                 <div class="section6_article_img">
                     <figure>
                         <img id="img_04" src="https://www.slf.ch/fileadmin/_processed_/9/8/csm_Lawinengefahr_Bandbreite_DE_neu_c422d0b84a.jpg" onclick="showImage(this)">
-                        <figcaption>Img. 4: Exponential gradient</figcaption>
+                        <figcaption>Img. 4: Exponentielle Steigung</figcaption>
                     </figure>
                     <figure>
                         <img src="https://www.slf.ch/fileadmin/_processed_/a/d/csm_gefahrenstufe_stabilitaet_DE_905d0074fe.png" onclick="showImage(this)">
-                        <figcaption>Img. 5: Stability distribution</figcaption>
+                        <figcaption>Img. 5: Stabilitätsverteilung</figcaption>
                     </figure>
                 </div>
                 <br>
@@ -563,18 +568,6 @@
                     <br>
                     Source: <a href="https://www.slf.ch/de/lawinenbulletin-und-schneesituation/wissen-zum-lawinenbulletin/zusatzbelastung/">Zusatzbelastung</a>
                 </p>
-                <br>
-                <h2>Code sources</h2>
-                <p>For the various visualisations, we took inspiration from existing projects. The following links show which resource was used for which diagram.</p>
-                <br>
-                <ul>
-                    <li><a href="https://codepen.io/newamsterdamn/pen/VqwZJK">Piechart</a> </li>
-                    <li><a href="https://sharkcoder.com/data-visualization/d3-line-chart">Linechart</a></li>
-                    <li><a href="https://d3-graph-gallery.com/graph/treemap_basic.html">Treemap</a></li>
-                    <li><a href="https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html">Stacked-Barchart</a></li>
-                    <li><a href="https://medium.com/@christy.perozzi/creating-a-bar-chart-in-d3-d5fe865c632c">Barchart</a></li>
-                    <li><a href="https://observablehq.com/@d3/zoom-to-bounding-box">Zoom-Map</a></li>
-                </ul>
             </article>
         </section>
         <section class="section_content full_height" id="section7">
@@ -631,7 +624,230 @@
     </main>
 </div>
 
-<script src="js/dashboard.js" type="text/javascript"></script>
+<script src="linechart.js" type="text/javascript"></script>
+<script src="piecharts.js" type="text/javascript"></script>
+<script src="writeNumber.js" type="text/javascript"></script>
+<script src="stackedBarChart.js" type="text/javascript"></script>
+<script src="barChart.js" type="text/javascript"></script>
+<script src="treeMap.js" type="text/javascript"></script>
+<script src="map.js" type="text/javascript"></script>
+<script src="points.js" type="text/javascript"></script>
+<script src="loadSVG.js" type="text/javascript"></script>
 
+<script>
+    let driverExe = 0;
+
+    function funFilter() {
+        document.getElementById("filterModal").style.display = "block";
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+
+            setTimeout(() => {
+                if(driverExe < 1) {
+                    driverObj.drive();
+                    driverExe++;
+                }
+            }, 750);
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebar = document.querySelector('.sidebar_content');
+        const sections = document.querySelectorAll('.section_content');
+
+        let observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.target.id === 'section1' && entry.isIntersecting) {
+                    sidebar.classList.add('hidden');
+                } else if (entry.target.id !== 'section1' && entry.isIntersecting) {
+                    sidebar.classList.remove('hidden');
+                }
+            });
+        }, {
+            root: null, // observing in relation to the viewport
+            rootMargin: '0px',
+            threshold: 0.5 // trigger when 50% of the section is visible
+        });
+
+        sections.forEach(section => {
+            observer.observe(section); // Observe each section
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const navLinks = document.querySelectorAll('.nav_sidebar a');
+        const sections = document.querySelectorAll('.section_content');
+
+        let observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    let activeIndex = Array.from(sections).indexOf(entry.target);
+                    console.log(activeIndex);
+                    updateNavLinks(activeIndex);
+                }
+            });
+        }, {
+            root: null, // observing in relation to the viewport
+            rootMargin: '0px',
+            threshold: 0.5 // trigger when 50% of the section is visible
+        });
+
+        sections.forEach(section => {
+            observer.observe(section); // Observe each section
+        });
+
+        function updateNavLinks(activeIndex) {
+            navLinks.forEach((link, index) => {
+                link.style.color = (index === activeIndex) ? 'white' : '#818181';
+            });
+        }
+    });
+
+    function funNav() {
+        const gridContainer = document.getElementById("grid_container");
+        const collapsible = document.getElementById("collapsible");
+        const main = document.getElementById("main");
+
+        document.getElementById("section2").scrollIntoView({behavior: "smooth"});
+        gridContainer.classList.toggle("collapse");
+        collapsible.classList.toggle("rotate");
+
+        setTimeout(() => {
+            main.classList.toggle("stop-scrolling");
+        }, 750);
+    }
+
+    function showImage(imgElement) {
+        const overlay = document.getElementById("imageOverlay");
+        const fullImage = document.getElementById("fullImage");
+        fullImage.src = imgElement.src; // Set full image source to a clicked image source
+        overlay.style.display = "flex"; // Show the overlay
+    }
+
+    document.getElementById("closeBtn").onclick = function () {
+        document.getElementById("imageOverlay").style.display = "none"; // Hide the overlay
+    };
+
+    const driver = window.driver.js.driver;
+
+    const driverObj = driver({
+        showProgress: true,
+        steps: [
+            {
+                popover: { title: "Let's start the tour", description: 'Go ahead and start the tour for our DAVI project 🚀.' }
+            },
+            {
+                element: '.cell:nth-child(1)',
+                popover: {title: 'Map', description: 'Every dot represents a accident.', side: "bottom", align: 'start'}
+            },
+            {
+                element: '.cell:nth-child(3)',
+                popover: {
+                    title: 'Time chart',
+                    description: 'The data is smoothed for better visibility.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell:nth-child(2)',
+                popover: {
+                    title: 'Distribution charts',
+                    description: 'Shows some distribution charts.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-charts:nth-child(1)',
+                popover: {
+                    title: 'Total caught people',
+                    description: 'Shows all caught people in the shown accidents on the map.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-charts:nth-child(2)',
+                popover: {
+                    title: 'Buried people in percentage',
+                    description: 'Shows the buried people of the caught people in percent.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-charts:nth-child(3)',
+                popover: {
+                    title: 'Dead people in percentage',
+                    description: 'Shows the dead people of the caught people in percent.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-charts:nth-child(4)',
+                popover: {
+                    title: 'Danger level distribution',
+                    description: 'Shows the distribution of danger level of the shown accidents.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-cell-charts:nth-child(1)',
+                popover: {
+                    title: 'Activity distribution',
+                    description: 'Shows the distribution of activity of the shown accidents.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-cell-charts:nth-child(2)',
+                popover: {
+                    title: 'Top municipalities',
+                    description: 'Shows the municipalities with the most caught people on the selected filter.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '#divToggle',
+                popover: {
+                    title: 'Toggle',
+                    description: 'Toggle between single municipalities or the total of municipalities.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '#filterButtonDiv',
+                popover: {
+                    title: 'Filter',
+                    description: 'Filter button to filter the dataset.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.collapsible',
+                popover: {
+                    title: 'Collapsible',
+                    description: 'To make the nav bar collaps in',
+                    side: "bottom",
+                    align: 'start'
+                }
+            }
+        ]
+    });
+</script>
 </body>
 </html>

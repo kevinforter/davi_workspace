@@ -292,6 +292,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document
         .getElementById("closeFilter")
         .addEventListener("click", () => {
+            console.log("Filter closed!");
             document.getElementById("filterModal").style.display = "none";
         });
 
@@ -377,8 +378,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Function to draw points on the map
         function drawPoints(data) {
-            // Clear any existing points
-            pointsGroup.selectAll("circle").remove();
+            // Entferne vorhandene Punkte mit einer Transition
+            pointsGroup.selectAll("circle")
+                .transition()
+                .duration(750)
+                .attr("r", 0)
+                .remove();
 
             data.forEach(row => {
                 const latitude = parseFloat(row['start.zone.coordinates.latitude']);
@@ -390,11 +395,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 const caught = row['caught'];
                 const buried = row['buried'];
                 const dead = row['dead'];
-                const activity = row['activity']
+                const activity = row['activity'];
 
                 // Convert the date to a JavaScript Date object for filtering
                 const rowDate = new Date(date);
-                const options = {weekday: 'short', year: 'numeric', month: 'short'};
+                const options = { weekday: 'short', year: 'numeric', month: 'short' };
                 const formattedDate = date.toLocaleDateString('de-CH', options);
 
                 // Check if the data matches the selected filters
@@ -412,30 +417,36 @@ document.addEventListener("DOMContentLoaded", function () {
                         pointsGroup.append("circle")
                             .attr("cx", projectedCoordinates[0])
                             .attr("cy", projectedCoordinates[1])
-                            .attr("r", 2)
+                            .attr("r", 0) // Start radius for animation
                             .attr("fill", function () {
-                                // Check if the dangerLevels array contains 3, 4, or 1
+                                // Check dangerLevel for appropriate color
                                 if (dangerLevel.includes(3)) {
-                                    return "orange"; // Red if dangerLevel array includes 3
+                                    return "orange";
                                 } else if (dangerLevel.includes(4)) {
-                                    return "red"; // Orange if dangerLevel array includes 4
+                                    return "red";
                                 } else if (dangerLevel.includes(1)) {
-                                    return "#9FFF64"; // Green if dangerLevel array includes 1
+                                    return "#9FFF64";
                                 } else if (dangerLevel.includes(2)) {
-                                    return "yellow"; // Green if dangerLevel array includes 2
+                                    return "yellow";
                                 } else if (dangerLevel.includes(5)) {
-                                    return "#A11B1B"; // Green if dangerLevel array includes 5
+                                    return "#A11B1B";
                                 } else {
-                                    return "grey"; // Default grey if no relevant dangerLevel is present
+                                    return "grey";
                                 }
                             })
                             .attr("stroke", "black")
                             .attr("stroke-width", 0.25)
-                            .on("mouseover", (event) => {
-                                tooltip
-                                    .style("opacity", 1)
-                                    .style("z-index", 100)
-                                    .html(`
+                            .transition()
+                            .duration(750)
+                            .attr("r", 2) // Final radius after animation
+                            .on("end", function () {
+                                // Add event listeners after the animation ends
+                                d3.select(this)
+                                    .on("mouseover", (event) => {
+                                        tooltip
+                                            .style("opacity", 1)
+                                            .style("z-index", 100)
+                                            .html(`
                                         <strong>Date:</strong> ${formattedDate}<br>
                                         <strong>Canton:</strong> ${canton}<br>
                                         <strong>Municipality:</strong> ${municipality}<br>
@@ -446,21 +457,23 @@ document.addEventListener("DOMContentLoaded", function () {
                                         <strong>Dead:</strong> ${dead}<br>
                                         <strong>Activity:</strong> ${activity}
                                     `)
-                                    .style("left", (event.pageX + 10) + "px")
-                                    .style("top", (event.pageY - 28) + "px");
-                            })
-                            .on("mousemove", (event) => {
-                                tooltip
-                                    .style("left", (event.pageX + 10) + "px")
-                                    .style("top", (event.pageY - 28) + "px");
-                            })
-                            .on("mouseout", () => {
-                                tooltip.style("opacity", 0);
+                                            .style("left", (event.pageX + 10) + "px")
+                                            .style("top", (event.pageY - 28) + "px");
+                                    })
+                                    .on("mousemove", (event) => {
+                                        tooltip
+                                            .style("left", (event.pageX + 10) + "px")
+                                            .style("top", (event.pageY - 28) + "px");
+                                    })
+                                    .on("mouseout", () => {
+                                        tooltip.style("opacity", 0);
+                                    });
                             });
                     }
                 }
             });
         }
+
 
         // Draw initial points
         drawPoints(data, projection);
@@ -533,12 +546,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         function drawLineChart(filteredData) {
             d3.select("#lineChart").selectAll("*").remove();
-            d3.selectAll("path.area").remove();
-            d3.selectAll("path.line").remove();
-            d3.selectAll(".title").remove();
-            d3.selectAll("#lineChart > .smallTitle").remove();
 
-            // Group by year and aggregate the data
+            // Gruppieren nach Jahr und aggregieren der Daten
             const yearlyData = Array.from(
                 d3.group(filteredData, d => d.year),
                 ([key, values]) => ({
@@ -550,173 +559,158 @@ document.addEventListener("DOMContentLoaded", function () {
             );
 
             const years = yearlyData.map(d => d.year);
-            const buried = yearlyData.map(d => ({year: d.year, value: d.buried}));
-            const caught = yearlyData.map(d => ({year: d.year, value: d.caught}));
-            const dead = yearlyData.map(d => ({year: d.year, value: d.dead}));
+            const buried = yearlyData.map(d => ({ year: d.year, value: d.buried }));
+            const caught = yearlyData.map(d => ({ year: d.year, value: d.caught }));
+            const dead = yearlyData.map(d => ({ year: d.year, value: d.dead }));
 
-            // Smooth the data using cubic spline interpolation
-            function smoothData(filteredData) {
-                return d3.line()
-                    .curve(d3.curveBumpX)
-                    .x(d => x(d.year))
-                    .y(d => y(d.value))(filteredData);
-            }
-
-            // Create SVG container
-            const svg = d3.select("#lineChart").append("svg")
-                .attr("width", widthLineChart)
-                .attr("height", heightLineChart);
+            // Responsive Dimensions
+            const container = d3.select("#lineChart").node().getBoundingClientRect();
+            const width = container.width;
+            const height = container.height;
+            const margin = { top: 40, right: 20, bottom: 30, left: 40 };
 
             const x = d3.scaleLinear()
                 .domain([d3.min(years), d3.max(years)])
-                .range([margin.left, widthLineChart - margin.right]);
+                .range([margin.left, width - margin.right]);
 
             const y = d3.scaleLinear()
                 .domain([0, d3.max([...buried, ...caught, ...dead], d => d.value)])
-                .range([heightLineChart - margin.bottom, margin.top]);
+                .range([height - margin.bottom, margin.top]);
 
-            // Add x-axis
-            svg.append("g")
-                .attr("transform", `translate(0,${heightLineChart - margin.bottom})`)
-                .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+            const svg = d3.select("#lineChart").append("svg")
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("viewBox", `0 0 ${width} ${height}`);
 
-            // Add y-axis
-            svg.append("g")
-                .attr("transform", `translate(${margin.left},0)`)
-                .call(d3.axisLeft(y));
+            // Clip-Path hinzufügen
+            svg.append("defs")
+                .append("clipPath")
+                .attr("id", "chart-area")
+                .append("rect")
+                .attr("x", margin.left)
+                .attr("y", margin.top - 5)
+                .attr("width", width - margin.left - margin.right + 5)
+                .attr("height", height - margin.top - margin.bottom + 10);
 
-            // Define the area generators
-            const areaCaught = d3.area()
-                .curve(d3.curveBumpX)
+            // Achsen
+            const xAxisGroup = svg.append("g")
+                .attr("transform", `translate(0,${height - margin.bottom})`);
+            const xAxis = d3.axisBottom(x)
+                .tickFormat(d3.format("d")) // Formatierung als Ganzzahlen
+                .ticks(10); // Begrenzung auf 10 Ticks
+            xAxisGroup.call(xAxis);
+
+            const yAxisGroup = svg.append("g")
+                .attr("transform", `translate(${margin.left},0)`);
+            const yAxis = d3.axisLeft(y);
+            yAxisGroup.call(yAxis);
+
+            // Linien-Generator
+            const lineGenerator = d3.line()
+                .curve(d3.curveMonotoneX)
                 .x(d => x(d.year))
-                .y0(heightLineChart - margin.bottom)
-                .y1(d => y(d.value));
+                .y(d => y(d.value));
 
-            const areaBuried = d3.area()
-                .curve(d3.curveBumpX)
-                .x(d => x(d.year))
-                .y0(heightLineChart - margin.bottom)
-                .y1(d => y(d.value));
+            // Gruppen für Linien und Punkte mit Clip-Path
+            const chartGroup = svg.append("g")
+                .attr("clip-path", "url(#chart-area)");
 
-            const areaDead = d3.area()
-                .curve(d3.curveBumpX)
-                .x(d => x(d.year))
-                .y0(heightLineChart - margin.bottom)
-                .y1(d => y(d.value));
+            const lineGroup = chartGroup.append("g");
+            const pointGroup = chartGroup.append("g");
 
-            // Add the smoothed lines
-            const lineCaught = svg
-                .append("path")
-                .datum(caught)
-                .attr("class", "line caught")
-                .attr("fill", "none")
-                .attr("stroke", "black")
-                .attr("stroke-width", 2)
-                .attr("opacity", 1)
-                .attr("d", smoothData(caught));
+            // Funktion zum Zeichnen der Linien mit Animation
+            const drawLine = (data, className, color) => {
+                const path = lineGroup.append("path")
+                    .datum(data)
+                    .attr("class", className)
+                    .attr("fill", "none")
+                    .attr("stroke", color)
+                    .attr("stroke-width", 2)
+                    .attr("d", lineGenerator);
 
-            const lineBuried = svg
-                .append("path")
-                .datum(buried)
-                .attr("class", "line buried")
-                .attr("fill", "none")
-                .attr("stroke", "blue")
-                .attr("stroke-width", 2)
-                .attr("opacity", 1)
-                .attr("d", smoothData(buried));
+                // Animation
+                const totalLength = path.node().getTotalLength();
 
-            const lineDead = svg
-                .append("path")
-                .datum(dead)
-                .attr("class", "line dead")
-                .attr("fill", "none")
-                .attr("stroke", "#CB9DF0")
-                .attr("stroke-width", 2)
-                .attr("opacity", 1)
-                .attr("d", smoothData(dead));
+                path
+                    .attr("stroke-dasharray", `${totalLength} ${totalLength}`)
+                    .attr("stroke-dashoffset", totalLength)
+                    .transition()
+                    .duration(2000) // Dauer der Animation in Millisekunden
+                    .ease(d3.easeLinear)
+                    .attr("stroke-dashoffset", 0);
+            };
 
-            // Add animation for the lineCaught
-            const caughtLength = lineCaught.node().getTotalLength();
-            lineCaught
-                .attr("stroke-dasharray", caughtLength)
-                .attr("stroke-dashoffset", caughtLength)
-                .transition()
-                .duration(1500)
-                .attr("stroke-dashoffset", 0);
+            drawLine(caught, "line caught", "black");
+            drawLine(buried, "line buried", "blue");
+            drawLine(dead, "line dead", "#CB9DF0");
 
-            // Add animation for the lineBuried
-            const buriedLength = lineBuried.node().getTotalLength();
-            lineBuried
-                .attr("stroke-dasharray", buriedLength)
-                .attr("stroke-dashoffset", buriedLength)
-                .transition()
-                .duration(1500)
-                .attr("stroke-dashoffset", 0);
+            // Tooltip-Kreise hinzufügen
+            const addTooltipCircles = (data, color, category) => {
+                pointGroup.selectAll(`.tooltip-circle-${category}`)
+                    .data(data)
+                    .join("circle")
+                    .attr("class", `tooltip-circle-${category}`)
+                    .attr("cx", d => x(d.year))
+                    .attr("cy", d => y(d.value))
+                    .attr("r", 3)
+                    .attr("fill", color)
+                    .on("mouseover", (event, d) => {
+                        d3.select(".tooltip")
+                            .style("display", "block")
+                            .html(`${category}: ${d.value} <br> Year: ${d.year}`)
+                            .style("left", `${event.pageX + 10}px`)
+                            .style("top", `${event.pageY - 20}px`);
+                    })
+                    .on("mouseout", () => {
+                        d3.select(".tooltip").style("display", "none");
+                    });
+            };
 
-            // Add animation for the lineDead
-            const deadLength = lineDead.node().getTotalLength();
-            lineDead
-                .attr("stroke-dasharray", deadLength)
-                .attr("stroke-dashoffset", deadLength)
-                .transition()
-                .duration(1500)
-                .attr("stroke-dashoffset", 0);
+            addTooltipCircles(caught, "black", "Caught");
+            addTooltipCircles(buried, "blue", "Buried");
+            addTooltipCircles(dead, "#CB9DF0", "Dead");
 
-            // Add the areas for Caught
-            svg.append("path")
-                .datum(caught)
-                .attr("class", "area caught")
-                .attr("fill", "transparent")
-                .attr("d", areaCaught);
+            // Tooltip hinzufügen
+            const tooltip = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("position", "absolute")
+                .style("background", "#333")
+                .style("color", "#fff")
+                .style("padding", "8px")
+                .style("border-radius", "4px")
+                .style("display", "none");
 
-            // Add the areas for Buried
-            svg.append("path")
-                .datum(buried)
-                .attr("class", "area buried")
-                .attr("fill", "blue")
-                .attr("opacity", 0.0)
-                .attr("d", areaBuried);
+            // Zoom-Handler
+            // Zoom-Handler
+            const zoom = d3.zoom()
+                .scaleExtent([1, 5])
+                .translateExtent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]])
+                .on("zoom", (event) => {
+                    const transform = event.transform;
 
-            // Add the areas for Dead
-            svg.append("path")
-                .datum(dead)
-                .attr("class", "area dead")
-                .attr("fill", "#CB9DF0")
-                .attr("opacity", 0.0)
-                .attr("d", areaDead);
+                    // Reskalieren der Achsen
+                    const newX = transform.rescaleX(x);
+                    xAxisGroup.call(d3.axisBottom(newX).tickFormat(d3.format("d"))); // Format auch beim Zoomen
 
-            svg.selectAll(".line, .area")
-                .on("mouseover", function () {
-                    // Reset all opacities first
-                    //d3.selectAll(".line, .area").attr("opacity", 1);
+                    // Aktualisieren der Linien
+                    lineGroup.selectAll("path")
+                        .each(function (d) {
+                            const path = d3.select(this);
+                            const updatedPath = lineGenerator.x(d => newX(d.year))(d);
+                            path.attr("d", updatedPath);
 
-                    // Handle hover on different areas/lines
-                    if (d3.select(this).classed("area dead") || d3.select(this).classed("line dead")) {
-                        // When hovering over death area/line
-                        d3.selectAll(".line.buried")
-                            .attr("opacity", 0.05);
-                        d3.select(".area.dead")
-                            .attr("opacity", 0.25)
-                    } else if (d3.select(this).classed("area caught") || d3.select(this).classed("line caught")) {
-                        // When hovering over caught area/line
-                        d3.selectAll(".line.buried, .line.dead")
-                            .attr("opacity", 0.05);
-                    } else if (d3.select(this).classed("area buried") || d3.select(this).classed("line buried")) {
-                        // When hovering over buried area/line
-                        d3.selectAll(".line.dead")
-                            .attr("opacity", 0.05);
-                        d3.select(".area.buried")
-                            .attr("opacity", 0.25)
-                    }
+                            // Neu berechnen der Länge für Animationseigenschaften
+                            const totalLength = this.getTotalLength();
+                            path.attr("stroke-dasharray", `${totalLength} ${totalLength}`)
+                                .attr("stroke-dashoffset", 0); // Beim Zoom ist die Linie vollständig sichtbar
+                        });
 
-                    // Always keep the hovered element at full opacity
-                    // d3.select(this).attr("opacity", 1);
-                })
-                .on("mouseout", function () {
-                    // Reset all opacities to full when mouse leaves
-                    d3.selectAll(".line").attr("opacity", 1);
-                    d3.selectAll(".area").attr("opacity", 0.0);
+                    // Aktualisieren der Punkte
+                    pointGroup.selectAll("circle")
+                        .attr("cx", d => newX(d.year));
                 });
+
+            svg.call(zoom);
 
             // Add legend
             const legend = d3.select("#lineChart").append("div")
@@ -782,12 +776,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("background", "rgba(0, 0, 0, 0.75)")
                 .style("padding", "8px")
                 .style("color", "#fff")
-                .style("padding", "10px")
                 .style("border-radius", "4px")
                 .style("pointer-events", "none")
                 .style("display", "none");
 
-            // Calculate total caught and group by danger level, ignoring empty or null cells
             const totalCaughtStack = d3.sum(filteredData, d => +d['caught']);
             const dangerLevels = d3.rollup(
                 filteredData.filter(d => d['forecasted.dangerlevel.rating1'] && d['forecasted.dangerlevel.rating1'] !== "NULL"),
@@ -795,49 +787,40 @@ document.addEventListener("DOMContentLoaded", function () {
                 d => d['forecasted.dangerlevel.rating1']
             );
 
-            // Ensure dangerLevels has data before continuing
             if (!dangerLevels || dangerLevels.size === 0) {
                 console.error("No valid data for forecasted danger levels.");
                 return;
             }
 
-            // Calculate the proportional widths for each segment
             const proportionalWidths = Array.from(dangerLevels, ([level, count]) => ({
                 level,
                 count,
-                width: (count / totalCaughtStack) * widthStackedBar // Initial proportional width based on total count
+                width: (count / totalCaughtStack) * widthStackedBar
             }));
 
-            // Calculate the total of proportional widths
             const totalProportionalWidth = proportionalWidths.reduce((sum, d) => sum + d.width, 0);
-
-            // Determine the scaling factor to adjust to exactly 1350px
             const scalingFactor = widthStackedBar / totalProportionalWidth;
 
-            // Apply the scaling factor to each segment to maintain proportionality and fit 1350px
             const stackedData = proportionalWidths.map(d => ({
                 ...d,
                 width: d.width * scalingFactor
             }));
 
-            // Sort the stackedData by the level (convert level to a number for sorting)
             stackedData.sort((a, b) => +a.level - +b.level);
 
-            // Create the stacked bar
             const svgStackedBar = d3.select("#distDangerLevel")
                 .append("svg")
-                .attr("width", widthStackedBar) // Set SVG width to 1350px
+                .attr("width", widthStackedBar)
                 .attr("height", heightStackedBar)
                 .style("border-radius", "8px");
 
-            let xOffset = 0; // Track the x position for each segment
+            let xOffset = 0;
 
             svgStackedBar.selectAll("rect")
                 .data(stackedData)
                 .enter()
                 .append("rect")
                 .attr("class", d => {
-                    // Map levels to CSS class names
                     switch (+d.level) {
                         case 1: return "gering";
                         case 2: return "mässig";
@@ -853,55 +836,66 @@ document.addEventListener("DOMContentLoaded", function () {
                     return x;
                 })
                 .attr("y", 0)
-                .attr("width", d => d.width)
+                .attr("width", 0) // Start with width 0 for animation
                 .attr("height", heightStackedBar)
-                .attr("fill", d => colorMapping[d.level]) // Use color from mapping based on level
+                .attr("fill", d => colorMapping[d.level])
                 .on("mouseover", function (event, d) {
-                    const percentage = ((d.count / totalCaughtStack) * 100).toFixed(2); // Calculate percentage
+                    const tempFilteredData = filteredData.filter(
+                        item => item['forecasted.dangerlevel.rating1'] === d.level
+                    );
+
+                    drawPoints(tempFilteredData);
+
                     tooltip
                         .style("display", "block")
-                        .text("Level: " + (function() {
-                            switch (+d.level) {
-                                case 1: return "gering";
-                                case 2: return "mässig";
-                                case 3: return "erheblich";
-                                case 4: return "gross";
-                                case 5: return "sehrGross";
-                                default: return "empty";
-                            }
-                        })() + " - " + percentage + "%");
+                        .html(
+                            `Level: ${{
+                                1: "Gering",
+                                2: "Mässig",
+                                3: "Erheblich",
+                                4: "Gross",
+                                5: "Sehr gross",
+                            }[+d.level]} - ${(d.count / totalCaughtStack * 100).toFixed(2)}%`
+                        );
 
                     d3.selectAll("#distDangerLevel rect")
+                        .transition()
+                        .duration(300)
                         .style("opacity", 0.3);
                     d3.select(this)
+                        .transition()
+                        .duration(300)
                         .style("opacity", 1);
                 })
                 .on("mousemove", function (event) {
-                    // Get the mouse position
                     const mouseX = event.pageX;
                     const mouseY = event.pageY;
-
-                    // Check if the tooltip would overflow the screen on the right side
                     const tooltipWidth = tooltip.node().offsetWidth;
                     const screenWidth = window.innerWidth;
 
-                    // If the mouse is too close to the right edge, position the tooltip to the left of the cursor
                     if (mouseX + tooltipWidth > screenWidth) {
                         tooltip
                             .style("top", (mouseY - 10) + "px")
-                            .style("left", (mouseX - tooltipWidth - 10) + "px"); // Position to the left of the cursor
+                            .style("left", (mouseX - tooltipWidth - 10) + "px");
                     } else {
                         tooltip
                             .style("top", (mouseY - 10) + "px")
-                            .style("left", (mouseX + 10) + "px"); // Default positioning to the right of the cursor
+                            .style("left", (mouseX + 10) + "px");
                     }
                 })
                 .on("mouseout", function () {
-                    tooltip
-                        .style("display", "none");
+                    tooltip.style("display", "none");
 
-                    d3.selectAll("rect").style("opacity", 1);
-                });
+                    drawPoints(filteredData);
+
+                    d3.selectAll("#distDangerLevel rect")
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 1);
+                })
+                .transition()
+                .duration(750) // Animation duration for width
+                .attr("width", d => d.width); // Animate to final width
 
             d3.select("#distDangerLevel").append("div")
                 .text("Danger Level Distribution")
@@ -916,15 +910,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         drawPieChart(filteredData);
         function drawPieChart(filteredData) {
-            d3.selectAll("path.pie").remove();
-            d3.selectAll("text.text").remove();
-            d3.selectAll("#distBuried > svg").remove();
-            d3.selectAll("#distDead > svg").remove();
-            d3.selectAll("#distBuried > .smallTitle").remove();
-            d3.selectAll("#distDead > .smallTitle").remove();
-
-            // Create a tooltip div that is hidden by default
-            const tooltip = d3.select("body").append("div")
+            const tooltip = d3.select("body").selectAll(".tooltip").data([1]).join("div")
+                .attr("class", "tooltip")
                 .style("position", "absolute")
                 .style("background", "rgba(0, 0, 0, 0.75)")
                 .style("padding", "8px")
@@ -934,98 +921,85 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("pointer-events", "none")
                 .style("display", "none");
 
-            // Select the div and get its dimensions
             const chartDiv = document.getElementById("distDead");
             const { width: divWidth, height: divHeight } = chartDiv.getBoundingClientRect();
 
-            // Define dimensions based on the div
-            const margin = Math.min(divWidth, divHeight) * 0.1; // 10% margin
-            const width = divWidth; // Full width of the div
-            const height = divHeight; // Full height of the div
+            const margin = Math.min(divWidth, divHeight) * 0.1;
+            const width = divWidth;
+            const height = divHeight;
+            const radius = Math.min(width, height) / 2 - margin;
 
-            var radius = Math.min(width, height) / 2 - margin;
+            const arc = d3.arc().innerRadius(45).outerRadius(radius);
 
-            var arc = d3.arc().innerRadius(45).outerRadius(radius);
+            const totalCaught = d3.sum(filteredData, d => +d['caught']);
+            const fullyBuried = d3.sum(filteredData, d => +d['buried']);
+            const percentageBuried = (fullyBuried / totalCaught) * 100;
 
-            var totalCaught = d3.sum(filteredData, d => +d['caught']);
-            var fullyBuried = d3.sum(filteredData, d => +d['buried']);
-            var percentageBuried = (fullyBuried / totalCaught) * 100;
-
-            var totalDead = d3.sum(filteredData, d => +d['dead']);
-            var percentageDead = (totalDead / totalCaught) * 100;
+            const totalDead = d3.sum(filteredData, d => +d['dead']);
+            const percentageDead = (totalDead / totalCaught) * 100;
 
             buriedLoaded = true;
             deadLoaded = true;
             checkBuriedLoaded();
             checkDeadLoaded();
 
-            function drawChart(containerId, percentage, label) {
-                var svg = d3.select(containerId)
-                    .append("svg")
+            function drawChartPie(containerId, percentage, label, totalValue) {
+
+                const svgPie = d3.select(containerId).selectAll("svg").data([1]).join("svg")
                     .attr("width", width)
-                    .attr("height", height)
-                    .append("g")
+                    .attr("height", height);
+
+                const group = svgPie.selectAll("g").data([1]).join("g")
                     .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-                // Draw static white background (full circle)
-                svg.append("path")
+                group.selectAll(".background-circle").data([1]).join("path")
+                    .attr("class", "background-circle")
                     .attr("d", arc({ startAngle: 0, endAngle: 2 * Math.PI }))
                     .attr("fill", "#ffffff")
                     .style("opacity", 0.7);
 
-                // Define data for the blue slice
-                var blueData = [{ startAngle: 0, endAngle: 0 }, { startAngle: 0, endAngle: (percentage / 100) * 2 * Math.PI }];
+                const blueData = [{ startAngle: 0, endAngle: (percentage / 100) * 2 * Math.PI }];
 
-                // Draw the blue slice with animation
-                svg.selectAll("path.slice")
-                    .data(blueData.slice(1)) // Only use the overlay slice
-                    .enter()
-                    .append("path")
-                    .attr("class", "pie")
-                    .attr("id", containerId === "#distBuried" ? "distBuried" : "distDead") // Assign id based on the container
-                    .attr("fill", "#1B5C85")
-                    .attr("d", arc({ startAngle: 0, endAngle: 0 })) // Start with no slice
-                    .transition()
-                    .duration(1000)
-                    .attrTween("d", function (d) {
-                        var interpolate = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
-                        return function (t) {
-                            return arc(interpolate(t));
-                        };
-                    })
-                    .on("end", function () {
-                        // Attach tooltip event listeners after transition
-                        d3.select(this)
-                            .on("mouseover", function (event) {
-                                tooltip
-                                    .style("display", "block")
-                                    .text("Total: " + (d3.select(this).attr("id") === "distBuried" ? fullyBuried : totalDead));
-                            })
-                            .on("mousemove", function (event) {
-                                tooltip
-                                    .style("top", (event.pageY - 10) + "px")
-                                    .style("left", (event.pageX + 10) + "px");
-                            })
-                            .on("mouseout", function () {
-                                tooltip.style("display", "none");
-                            });
-                    });
+                group.selectAll(".slice").data(blueData).join(
+                    enter => enter.append("path")
+                        .attr("class", "slice")
+                        .attr("fill", "#1B5C85")
+                        .attr("d", arc({ startAngle: 0, endAngle: 0 }))
+                        .transition()
+                        .duration(750)
+                        .attrTween("d", function (d) {
+                            const interpolate = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
+                            return t => arc(interpolate(t));
+                        }),
+                    update => update.transition()
+                        .duration(750)
+                        .attrTween("d", function (d) {
+                            const interpolate = d3.interpolate(this._current || { startAngle: 0, endAngle: 0 }, d);
+                            this._current = interpolate(1); // Speichere den aktuellen Zustand
+                            return t => arc(interpolate(t));
+                        })
+                );
 
-                // Add text percentage in the center
-                svg.append("text")
-                    .attr("class", "text")
+                group.selectAll(".percentage-text").data([1]).join("text")
+                    .attr("class", "percentage-text")
                     .attr("text-anchor", "middle")
                     .attr("dy", "0.4em")
                     .style("font-weight", "bold")
                     .style("fill", "#1B5C85")
                     .transition()
-                    .duration(1000)
+                    .duration(750)
                     .tween("text", function () {
-                        var interpolate = d3.interpolate(0, percentage);
-                        return function (t) {
-                            d3.select(this).text(interpolate(t).toFixed(2) + "%");
-                        };
+                        const interpolate = d3.interpolate(+this.textContent.replace('%', '') || 0, percentage);
+                        return t => d3.select(this).text(`${interpolate(t).toFixed(2)}%`);
                     });
+
+                svgPie.on("mouseover", function () {
+                    tooltip.style("display", "block").text(`Total: ${totalValue}`);
+                }).on("mousemove", function (event) {
+                    tooltip.style("top", `${event.pageY - 10}px`).style("left", `${event.pageX + 10}px`);
+                }).on("mouseout", function () {
+                    tooltip.style("display", "none");
+                });
             }
 
             d3.select("#distBuried").append("div")
@@ -1048,9 +1022,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("left", "10px")
                 .style("color", "#d1d1d1");
 
-            // Draw pie charts
-            drawChart("#distBuried", percentageBuried, "Fully Buried");
-            drawChart("#distDead", percentageDead, "Dead");
+            drawChartPie("#distBuried", percentageBuried, "Fully Buried", fullyBuried);
+            drawChartPie("#distDead", percentageDead, "Dead", totalDead);
         }
 
         writeCaught(filteredData);
@@ -1080,9 +1053,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function drawChart(filteredData) {
-            d3.selectAll("#distActivity > svg").remove();
             d3.selectAll("#distActivity > .smallTitle").remove();
 
+            // Initialisiere die Größe und Ränder
             let widthBarChart = document.querySelector("#distActivity").offsetWidth;
             let heightBarChart = document.querySelector("#distActivity").offsetHeight;
 
@@ -1091,8 +1064,9 @@ document.addEventListener("DOMContentLoaded", function () {
             let bottomMargin = 20;
             let topMargin = 40;
 
-            // Create a tooltip div that is hidden by default
-            const tooltip = d3.select("body").append("div")
+            // Tooltip initialisieren
+            const tooltip = d3.select("body").selectAll(".tooltip").data([1]).join("div")
+                .attr("class", "tooltip")
                 .style("position", "absolute")
                 .style("background", "rgba(0, 0, 0, 0.75)")
                 .style("padding", "8px")
@@ -1102,22 +1076,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("pointer-events", "none")
                 .style("display", "none");
 
-            // Initialize an object to store the counts of each activity
+            // Aktivitätsdaten vorbereiten
             const activityCounts = {
                 offpiste: 0,
-                transportation: 0, // This will map to "transportation.corridor"
+                transportation: 0,
                 tour: 0,
                 building: 0,
             };
 
-            // Iterate through the data and count activities
             filteredData.forEach((entry) => {
                 const activity = entry.activity;
-
-                // Split comma-separated activities and count each one individually
-                const activities = activity.split(',');
+                const activities = activity.split(',').map(act => act.trim());
                 activities.forEach((act) => {
-                    act = act.trim(); // Remove extra spaces
                     if (act === 'transportation.corridor') {
                         activityCounts.transportation += 1;
                     } else if (activityCounts[act] !== undefined) {
@@ -1126,7 +1096,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             });
 
-            // Create the data object
             let dataObj = {
                 Offpiste: activityCounts.offpiste,
                 Transportation: activityCounts.transportation,
@@ -1134,81 +1103,108 @@ document.addEventListener("DOMContentLoaded", function () {
                 Building: activityCounts.building,
             };
 
-            // Create the SVG element with full dimensions
-            let svgBar = d3.select('#distActivity')
-                .append('svg')
+            // SVG erstellen oder aktualisieren
+            let svgBar = d3.select("#distActivity").selectAll("svg").data([1]).join("svg")
                 .attr("width", widthBarChart)
                 .attr("height", heightBarChart);
 
-            // Define inner width and height accounting for margins
             let innerWidth = widthBarChart - leftMargin - rightMargin;
             let innerHeight = heightBarChart - topMargin - bottomMargin;
 
-            // X scale and axis
+            // Skalen
             let xscale = d3.scaleBand()
                 .domain(Object.keys(dataObj))
                 .range([0, innerWidth])
                 .padding(0.4);
 
-            let x_axis = d3.axisBottom(xscale);
-
-            svgBar.append("g")
-                .attr("transform", `translate(${leftMargin}, ${topMargin + innerHeight})`)
-                .call(x_axis);
-
-            // Y scale and axis
             let yscale = d3.scaleLinear()
                 .domain([0, Math.max(...Object.values(dataObj))])
                 .range([innerHeight, 0]);
 
-            let y_axis = d3.axisLeft(yscale);
+            // Achsen
+            svgBar.selectAll(".x-axis").data([1]).join("g")
+                .attr("class", "x-axis")
+                .attr("transform", `translate(${leftMargin}, ${topMargin + innerHeight})`)
+                .call(d3.axisBottom(xscale));
 
-            svgBar.append("g")
+            svgBar.selectAll(".y-axis").data([1]).join("g")
+                .attr("class", "y-axis")
                 .attr("transform", `translate(${leftMargin}, ${topMargin})`)
-                .call(y_axis);
+                .call(d3.axisLeft(yscale));
 
-            // Draw bars
-            Object.values(dataObj).forEach((value, index) => {
-                let barWidth = xscale.bandwidth();
-                let x = xscale(Object.keys(dataObj)[index]);
+            // Balken zeichnen oder aktualisieren
+            const bars = svgBar.selectAll(".bar")
+                .data(Object.entries(dataObj), d => d[0]); // Schlüssel für Datenbindung
 
-                svgBar.append("rect")
-                    .attr("x", x + leftMargin)
+            bars.join(
+                enter => enter.append("rect")
+                    .attr("class", "bar")
+                    .attr("x", ([key]) => xscale(key) + leftMargin)
                     .attr("y", innerHeight + topMargin)
                     .attr("height", 0)
-                    .attr("width", barWidth)
+                    .attr("width", xscale.bandwidth())
                     .attr("fill", "#1B5C85")
-                    .attr("rx", 6)  // Apply border radius to the top corners
-                    .attr("ry", 6)  // No border radius on the bottom corners
-                    .transition() // Add transition
-                    .duration(1000) // Animation duration (in ms)
-                    .ease(d3.easeCubicOut) // Easing function
-                    .attr("y", yscale(value) + topMargin) // Animate to the final Y position
-                    .attr("height", innerHeight - yscale(value)) // Animate to the final height
-                    .on("end", function () {
-                        // Add mouse events after the transition is complete
-                        d3.select(this)
-                            .on("mouseover", function (event) {
-                                tooltip
-                                    .style("display", "block")
-                                    .html(`Total: ${value}`);
+                    .attr("rx", 6)
+                    .attr("ry", 6)
+                    .transition()
+                    .duration(750)
+                    .attr("y", ([key, value]) => yscale(value) + topMargin)
+                    .attr("height", ([key, value]) => innerHeight - yscale(value)),
+                update => update.transition()
+                    .duration(750)
+                    .attr("x", ([key]) => xscale(key) + leftMargin)
+                    .attr("y", ([key, value]) => yscale(value) + topMargin)
+                    .attr("height", ([key, value]) => innerHeight - yscale(value)),
+                exit => exit.transition()
+                    .duration(750)
+                    .attr("height", 0)
+                    .attr("y", innerHeight + topMargin)
+                    .remove()
+            );
 
-                                d3.selectAll("#distActivity rect")
-                                    .style("opacity", 0.3);
-                                d3.select(this)
-                                    .style("opacity", 1);
-                            })
-                            .on("mousemove", function (event) {
-                                tooltip
-                                    .style("top", (event.pageY - 10) + "px")
-                                    .style("left", (event.pageX + 10) + "px");
-                            })
-                            .on("mouseout", function () {
-                                tooltip.style("display", "none");
-                                d3.selectAll("rect").style("opacity", 1);
-                            });
-                    });
-            });
+            // Hover-Interaktionen hinzufügen
+            svgBar.selectAll(".bar")
+                .on("mouseover", function (event, [key, value]) {
+                    console.log(`Hovered over activity: ${key}, Total: ${value}`);
+
+                    // Beispiel: Dynamisches Filtern und Aktualisieren anderer Diagramme
+                    const tempFilteredData = filteredData.filter(
+                        d => d.activity.includes(key.toLowerCase()) // Filtere basierend auf der Aktivität
+                    );
+
+                    drawPoints(tempFilteredData); // Aktualisiere die Karte
+
+                    tooltip
+                        .style("display", "block")
+                        .html(`Activity: ${key}<br>Total: ${value}`);
+
+                    d3.selectAll("#distActivity rect")
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 0.3); // Reduziere die Transparenz anderer Balken
+                    d3.select(this)
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 1); // Markiere den aktuellen Balken
+                })
+                .on("mousemove", function (event) {
+                    tooltip
+                        .style("top", (event.pageY - 10) + "px")
+                        .style("left", (event.pageX + 10) + "px");
+                })
+                .on("mouseout", function () {
+                    console.log(`Mouse left activity bar: ${d3.select(this).datum()[0]}`);
+
+                    tooltip.style("display", "none");
+
+                    // Setze Diagramme zurück
+                    drawPoints(filteredData);
+
+                    d3.selectAll("#distActivity rect")
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 1); // Setze Transparenz zurück
+                });
 
             activityLoaded = true;
             checkActivityLoaded();
@@ -1229,15 +1225,15 @@ document.addEventListener("DOMContentLoaded", function () {
         // Global variable to track checkbox state
         let showTop5 = false;
 
-// Add checkbox dynamically (only once)
+        // Add checkbox dynamically (only once)
         d3.select("#topChart")
             .append("div")
             .attr("id", "divToggle")
             .style("position", "absolute")
             .style("top", "10px")
             .style("right", "10px")
-            .style("z-index", "10") // Ensure it's above other elements
-            .html('<label class="smallTitle" for="toggleTop5" style="color: #d1d1d1;">Total</label>')
+            .style("z-index", "1") // Ensure it's above other elements
+            .html('<label class="smallTitle" for="toggleTop5" style="color: #d1d1d1;">Total </label>')
             .append("input")
             .attr("type", "checkbox")
             .attr("id", "toggleTop5")
@@ -1286,7 +1282,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 children: top5.map(d => ({ name: d[0], value: d[1] }))
             };
 
-            const marginTree = { top: 40, right: 20, bottom: 10, left: 10 };
+            const marginTree = { top: 50, right: 20, bottom: 10, left: 10 };
             const widthTree = document.querySelector("#topChart").offsetWidth - marginTree.right;
             const heightTree = document.querySelector("#topChart").offsetHeight - marginTree.top;
 
@@ -1310,41 +1306,97 @@ document.addEventListener("DOMContentLoaded", function () {
             const colorScale = d3.scaleSequential(d3.interpolateBlues)
                 .domain([0, d3.max(top5, d => d[1])]);
 
+            // Liste erstellen
             const nodes = svg.selectAll(".node")
                 .data(root.leaves())
                 .join("g")
                 .attr("class", "node")
                 .attr("transform", d => `translate(${d.x0},${d.y0})`);
 
+            // Rechtecke für die Liste
             nodes.append("rect")
-                .attr("width", d => d.x1 - d.x0)
-                .attr("height", d => d.y1 - d.y0)
-                .attr("fill", d => colorScale(d.data.value)) // Apply color based on value
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", 0) // Start width
+                .attr("height", 0) // Start height
+                .attr("fill", d => colorScale(d.data.value)) // Färbe basierend auf Wert
                 .attr("stroke", "#fff")
-                .attr("rx", 6)  // Apply border radius to the top corners
-                .attr("ry", 6)  // No border radius on the bottom corners
+                .attr("rx", 6) // Runde Ecken
                 .on("mouseover", function (event, d) {
-                    d3.selectAll("#topChart rect")
-                        .style("opacity", 0.3);
-                    d3.select(this)
-                        .style("opacity", 1);
-                })
-                .on("mouseout", function (event, d) {
-                    d3.selectAll("rect").style("opacity", 1);
-                });
+                    console.log(`Hovered over municipality: ${d.data.name}, Total: ${d.data.value}`);
 
+                    // Reduziere die Transparenz aller Rechtecke
+                    d3.selectAll("#topChart rect")
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 0.3);
+
+                    // Setze die Transparenz des aktuellen Rechtecks auf 1
+                    d3.select(this)
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 1);
+
+                    // Tooltip anzeigen
+                    tooltip
+                        .style("display", "block")
+                        .html(`Municipality: ${d.data.name}<br>Total: ${d.data.value}`);
+
+                    // Filter die Daten basierend auf der Gemeinde
+                    const tempFilteredData = filteredData.filter(
+                        item => item.municipality === d.data.name
+                    );
+
+                    // Aktualisiere andere Diagramme
+                    drawPoints(tempFilteredData);
+                })
+                .on("mousemove", function (event) {
+                    tooltip
+                        .style("top", (event.pageY - 10) + "px")
+                        .style("left", (event.pageX + 10) + "px");
+                })
+                .on("mouseout", function () {
+                    console.log("Mouse left");
+
+                    // Tooltip ausblenden
+                    tooltip.style("display", "none");
+
+                    // Setze Transparenz aller Rechtecke zurück
+                    d3.selectAll("#topChart rect")
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 1);
+
+                    // Setze die Diagramme auf die ursprünglichen Daten zurück
+                    drawPoints(filteredData);
+                })
+                .transition()
+                .duration(750)
+                .attr("width", d => d.x1 - d.x0) // Zielattribut für Breite
+                .attr("height", d => d.y1 - d.y0); // Zielattribut für Höhe
+
+            // Namen der Gemeinden anzeigen
             nodes.append("text")
                 .attr("dx", 4)
                 .attr("dy", 14)
+                .style("pointer-events", "none")
                 .style("font-size", "12px")
                 .style("fill", "#fff")
+                .transition()
+                .delay(500)
+                .duration(750)
                 .text(d => `${d.data.name}`);
 
+            // Totalwerte anzeigen
             nodes.append("text")
                 .attr("dx", 4)
                 .attr("dy", 30)
+                .style("pointer-events", "none")
                 .style("font-size", "12px")
                 .style("fill", "#fff")
+                .transition()
+                .delay(500)
+                .duration(750)
                 .text(d => `(${d.data.value})`);
 
             topLoaded = true;
@@ -1376,6 +1428,62 @@ document.addEventListener("DOMContentLoaded", function () {
             drawList(filteredData);
             document.getElementById('filterModal').style.display = 'none';
         });
+
+        document.getElementById("removeFilter").addEventListener("click", () => {
+            // Setze alle Filter-Inputs auf ihren Standardwert zurück
+            document.getElementById("cantonFilter").value = "all";
+            document.getElementById("municipalityFilter").value = "all";
+            document.getElementById("activityFilter").value = "all";
+            document.getElementById("fromDate").value = "";
+            document.getElementById("toDate").value = "";
+
+            // Leere die gesetzten Filtervariablen
+            selectedCanton = "all";
+            selectedMunicipality = "all";
+            selectedActivity = "all";
+            fromDate = "";
+            toDate = "";
+            selectedDangerLevels.clear(); // Leert die gesetzten Gefahrstufen
+
+            // Setze gefilterte Daten auf die Originaldaten zurück
+            filteredData = data;
+
+            // Checkboxen im dangerLevelContainer zurücksetzen
+            const checkboxes = document.querySelectorAll("#dangerLevelContainer input[type='checkbox']");
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = false; // Uncheck all checkboxes
+            });
+
+            // Aktualisiere die Municipality-Optionen
+            updateMunicipalityOptions();
+
+            console.log("Filter und Checkboxen zurückgesetzt, Diagramme neu gezeichnet.");
+        });
+
+        // Funktion zum Aktualisieren der Municipality-Optionen
+        function updateMunicipalityOptions() {
+            const uniqueMunicipalities = [...new Set(data.map((d) => d.municipality))].sort();
+
+            // Entferne alte Optionen
+            const municipalityFilter = document.getElementById("municipalityFilter");
+            municipalityFilter.innerHTML = "";
+
+            // Füge die "all"-Option hinzu
+            const allOption = document.createElement("option");
+            allOption.value = "all";
+            allOption.textContent = "All Municipalities";
+            municipalityFilter.appendChild(allOption);
+
+            // Füge die gefilterten Municipalities hinzu
+            uniqueMunicipalities.forEach((municipality) => {
+                const option = document.createElement("option");
+                option.value = municipality;
+                option.textContent = municipality;
+                municipalityFilter.appendChild(option);
+            });
+
+            console.log("Municipality-Optionen zurückgesetzt.");
+        }
 
         window.addEventListener('resize', () => {
             drawfilterButton();
