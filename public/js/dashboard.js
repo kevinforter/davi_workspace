@@ -109,13 +109,18 @@ const driverObj = driver({
         },
         {
             element: '.cell:nth-child(1)',
-            popover: {title: 'Map', description: 'Every dot represents a accident.', side: "bottom", align: 'start'}
+            popover: {
+                title: 'Map',
+                description: 'Every dot represents an accident.<br>Hover over a dot to get more information about an accident.',
+                side: "bottom",
+                align: 'start'
+            }
         },
         {
             element: '.cell:nth-child(3)',
             popover: {
                 title: 'Time chart',
-                description: 'The data is smoothed for better visibility.',
+                description: "The data grouped per year.<br>Hover over the dot to get the year and the number of people caught, buried or died in this year.<br>Scroll inside the linechart to zoom in or out.",
                 side: "bottom",
                 align: 'start'
             }
@@ -133,7 +138,7 @@ const driverObj = driver({
             element: '.cell-charts:nth-child(1)',
             popover: {
                 title: 'Total caught people',
-                description: 'Shows all caught people in the shown accidents on the map.',
+                description: 'Shows all caught people for the filter that is activated.',
                 side: "bottom",
                 align: 'start'
             }
@@ -141,8 +146,8 @@ const driverObj = driver({
         {
             element: '.cell-charts:nth-child(2)',
             popover: {
-                title: 'Buried people in percentage',
-                description: 'Shows the buried people of the caught people in percent.',
+                title: 'Buried people percentage',
+                description: 'Shows the percentage buried rate of the people caught.<br>Hover to get the total number.',
                 side: "bottom",
                 align: 'start'
             }
@@ -150,8 +155,8 @@ const driverObj = driver({
         {
             element: '.cell-charts:nth-child(3)',
             popover: {
-                title: 'Dead people in percentage',
-                description: 'Shows the dead people of the caught people in percent.',
+                title: 'Dead people percentage',
+                description: 'Shows the percentage dead rate of the people caught.<br>Hover to get the total number.',
                 side: "bottom",
                 align: 'start'
             }
@@ -160,7 +165,7 @@ const driverObj = driver({
             element: '.cell-charts:nth-child(4)',
             popover: {
                 title: 'Danger level distribution',
-                description: 'Shows the distribution of danger level of the shown accidents.',
+                description: 'Shows the distribution of danger level of the activated filter.<br>Hover to get the percentage and to activate the brushing feature.',
                 side: "bottom",
                 align: 'start'
             }
@@ -169,7 +174,7 @@ const driverObj = driver({
             element: '.cell-cell-charts:nth-child(1)',
             popover: {
                 title: 'Activity distribution',
-                description: 'Shows the distribution of activity of the shown accidents.',
+                description: 'Shows the distribution of activity of the activated filter.<br>Hover to get the total and to activate the brushing feature.',
                 side: "bottom",
                 align: 'start'
             }
@@ -178,7 +183,7 @@ const driverObj = driver({
             element: '.cell-cell-charts:nth-child(2)',
             popover: {
                 title: 'Top municipalities',
-                description: 'Shows the municipalities with the most caught people on the selected filter.',
+                description: 'Shows the municipalities with the most caught people on the selected filter.<br>Hover to activate the brushing feature.',
                 side: "bottom",
                 align: 'start'
             }
@@ -187,7 +192,7 @@ const driverObj = driver({
             element: '#divToggle',
             popover: {
                 title: 'Toggle',
-                description: 'Toggle between single municipalities or the total of municipalities.',
+                description: 'Toggle between caught of single activities or the total of caught of municipalities.',
                 side: "bottom",
                 align: 'start'
             }
@@ -381,11 +386,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
             const levelText = {
-                1: "Gering",
-                2: "Mässig",
-                3: "Erheblich",
-                4: "Gross",
-                5: "Sehr gross",
+                1: "Low",
+                2: "Moderate",
+                3: "Considerable",
+                4: "High",
+                5: "Very high",
             }[+level] || "Empty";
 
             checkbox.append("span").text(levelText);
@@ -616,11 +621,11 @@ function drawMap() {
 
         // Add legend items
         const legendItems = [
-            {color: "#9FFF64", label: "Gering"},
-            {color: "#F2FF00", label: "Mässig"},
-            {color: "#FFC31E", label: "Erheblich"},
-            {color: "#FF0000", label: "Gross"},
-            {color: "#8B0000", label: "Sehr Gross"},
+            {color: "#9FFF64", label: "Low"},
+            {color: "#F2FF00", label: "Moderate"},
+            {color: "#FFC31E", label: "Considerable"},
+            {color: "#FF0000", label: "High"},
+            {color: "#8B0000", label: "Very high"},
             {color: "grey", label: "Empty"}
         ];
 
@@ -639,7 +644,7 @@ function drawMap() {
         });
 
         d3.select("#map").append("div")
-            .text("Last Updated")
+            .text("Last updated")
             .attr("class", "smallTitle")
             .style("position", "absolute")
             .style("width", "100%")
@@ -763,7 +768,17 @@ function drawPoints(data) {
                                         <strong>Canton:</strong> ${canton}<br>
                                         <strong>Municipality:</strong> ${municipality}<br>
                                         <strong>Coordinates:</strong> [${latitude}, ${longitude}]<br>
-                                        <strong>Danger Level:</strong> ${dangerLevel}<br>
+                                        <strong>Danger Level:</strong> ${(() => {
+                                        const level = Number(dangerLevel); // Ensure it's a number
+                                        switch (level) {
+                                            case 1: return "(1) Low";
+                                            case 2: return "(2) Moderate";
+                                            case 3: return "(3) Considerable";
+                                            case 4: return "(4) High";
+                                            case 5: return "(5) Very High";
+                                            default: return "";
+                                        }
+                                        })()}<br>
                                         <strong>Caught:</strong> ${caught}
                                         <strong>Buried:</strong> ${buried} 
                                         <strong>Dead:</strong> ${dead}<br>
@@ -801,7 +816,7 @@ function writeCaught(filteredData) {
         .style("color", "#1B5C85");
 
     d3.select("#caught").append("div")
-        .text("Total Caught People")
+        .text("Total caught people")
         .attr("class", "smallTitle")
         .style("position", "absolute")
         .style("width", "100%")
@@ -932,7 +947,7 @@ function drawPieChart(filteredData) {
         .style("color", "#d1d1d1");
 
     d3.select("#distDead").append("div")
-        .text("Dead %")
+        .text("Deaths %")
         .attr("class", "smallTitle")
         .style("position", "absolute")
         .style("width", "100%")
@@ -1014,11 +1029,11 @@ function drawStackedBar(filteredData) {
         .append("rect")
         .attr("class", d => {
             switch (+d.level) {
-                case 1: return "gering";
-                case 2: return "mässig";
-                case 3: return "erheblich";
-                case 4: return "gross";
-                case 5: return "sehrGross";
+                case 1: return "low";
+                case 2: return "moderate";
+                case 3: return "considerable";
+                case 4: return "high";
+                case 5: return "veryHigh";
                 default: return "empty";
             }
         })
@@ -1042,11 +1057,11 @@ function drawStackedBar(filteredData) {
                 .style("display", "block")
                 .html(
                     `Level: ${{
-                        1: "Gering",
-                        2: "Mässig",
-                        3: "Erheblich",
-                        4: "Gross",
-                        5: "Sehr gross",
+                        1: "Low",
+                        2: "Moderate",
+                        3: "Considerable",
+                        4: "High",
+                        5: "Very high",
                     }[+d.level]} - ${(d.count / totalCaughtStack * 100).toFixed(2)}%`
                 );
 
@@ -1090,7 +1105,7 @@ function drawStackedBar(filteredData) {
         .attr("width", d => d.width); // Animate to final width
 
     d3.select("#distDangerLevel").append("div")
-        .text("Danger Level Distribution")
+        .text("Danger level distribution")
         .attr("class", "smallTitle")
         .style("position", "absolute")
         .style("width", "100%")
@@ -1266,7 +1281,7 @@ function drawChart(filteredData) {
     checkActivityLoaded();
 
     d3.select("#distActivity").append("div")
-        .text("Activity Distribution")
+        .text("Activity distribution")
         .attr("class", "smallTitle")
         .style("position", "absolute")
         .style("width", "100%")
@@ -1463,7 +1478,7 @@ function drawList(filteredData) {
     checkTopLoaded();
 
     d3.select("#topChart").append("div")
-        .text("Top 5 most caught people")
+        .text("Most caught people")
         .attr("class", "smallTitle")
         .style("position", "absolute")
         .style("width", "100%")
@@ -1674,7 +1689,7 @@ function drawLineChart(filteredData) {
     });
 
     d3.select("#lineChart").append("div")
-        .text("Timeline of Accidents")
+        .text("Timeline of accidents")
         .attr("class", "smallTitle")
         .style("position", "absolute")
         .style("width", "100%")
