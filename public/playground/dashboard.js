@@ -1002,6 +1002,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             }
 
+            d3.select("#distBuried").append("div")
+                .text("Buried %")
+                .attr("class", "smallTitle")
+                .style("position", "absolute")
+                .style("width", "100%")
+                .style("height", "fit-content")
+                .style("top", "10px")
+                .style("left", "10px")
+                .style("color", "#d1d1d1");
+
+            d3.select("#distDead").append("div")
+                .text("Dead %")
+                .attr("class", "smallTitle")
+                .style("position", "absolute")
+                .style("width", "100%")
+                .style("height", "fit-content")
+                .style("top", "10px")
+                .style("left", "10px")
+                .style("color", "#d1d1d1");
+
             drawChartPie("#distBuried", percentageBuried, "Fully Buried", fullyBuried);
             drawChartPie("#distDead", percentageDead, "Dead", totalDead);
         }
@@ -1212,8 +1232,8 @@ document.addEventListener("DOMContentLoaded", function () {
             .style("position", "absolute")
             .style("top", "10px")
             .style("right", "10px")
-            .style("z-index", "10") // Ensure it's above other elements
-            .html('<label class="smallTitle" for="toggleTop5" style="color: #d1d1d1;">Total</label>')
+            .style("z-index", "1") // Ensure it's above other elements
+            .html('<label class="smallTitle" for="toggleTop5" style="color: #d1d1d1;">Total </label>')
             .append("input")
             .attr("type", "checkbox")
             .attr("id", "toggleTop5")
@@ -1262,7 +1282,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 children: top5.map(d => ({ name: d[0], value: d[1] }))
             };
 
-            const marginTree = { top: 40, right: 20, bottom: 10, left: 10 };
+            const marginTree = { top: 50, right: 20, bottom: 10, left: 10 };
             const widthTree = document.querySelector("#topChart").offsetWidth - marginTree.right;
             const heightTree = document.querySelector("#topChart").offsetHeight - marginTree.top;
 

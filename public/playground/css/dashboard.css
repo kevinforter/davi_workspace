@@ -1,0 +1,298 @@
+.grid-container {
+    display: grid;
+    grid-template-rows: 1.5fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.cell {
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+}
+
+.cell:nth-child(3) {
+    grid-column: 1 / -1; /* Span both columns */
+}
+
+#charts {
+    display: grid;
+    grid-template-rows: .75fr .4fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.cell-charts {
+    position: relative;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    height: 100%;
+}
+
+.cell-charts:nth-child(4) {
+    grid-column: 1 / -1; /* Span both columns */
+}
+
+.cell-charts:nth-child(5) {
+    grid-column: 1 / -1; /* Span both columns */
+}
+
+#charts-charts {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.cell-cell-charts {
+    position: relative;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    height: 100%;
+}
+
+#distDangerLevel {
+    display: unset;
+    justify-content: center;
+    position: relative;
+}
+
+#distDangerLevel svg{
+    bottom: 10px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-inline: auto;
+}
+
+#topChart {
+    align-items: end;
+}
+
+/* Responsive SVG */
+#map {
+    overflow: hidden; /* Verhindert Überlauf */
+    position: relative;
+    background-color: #ffffff; /* Optional: Hintergrundfarbe */
+}
+
+#swissMap {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+}
+
+#map .svgButton {
+    width: initial;
+    height: initial;
+}
+
+.canton {
+    stroke-width: 0.1px;
+}
+/*
+        .canton:hover {
+            fill: #444;
+        }
+
+ */
+
+/* Modal background overlay */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 100; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100% !important;/* Full width */
+    height: 100% !important;/* Full height */
+    overflow: hidden; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5) !important;/* Black background with opacity */
+    border-radius: initial !important;
+}
+
+/* Modal content box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto; /* 10% from the top and centered */
+    padding: 30px;
+    border: 1px solid #888;
+    width: fit-content; /* Could be more or less, depending on screen size */
+    border-radius: 15px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+/* Close button */
+.close-button {
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    color: #888;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+.close-button:hover {
+    color: #333; /* Darker color on hover */
+}
+
+#filterButtonDiv {
+    width: 36px;
+    height: 36px;
+    background-color: lightgrey;
+    border-radius: 8px;
+    border: 1px solid white;
+    position: absolute;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    top: 10px;
+    right: 10px;
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.filter-titel {
+    margin: 0;
+}
+
+/* Filter content styles with grid layout */
+.filter-content {
+    display: grid;
+    grid-template-columns: fit-content(100%) auto; /* Labels on the left, inputs on the right */
+    gap: 10px 20px; /* Adjust spacing between rows and columns */
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.filter-content label {
+    text-align: left; /* Align label text to the right */
+    /*padding-right: 10px; /* Add some space between label and input */
+}
+
+/* Input, select, and div elements in the filter form */
+.filter-content select,
+.filter-content input,
+.filter-content div {
+    /* width: 100%; /* Ensure inputs take full width of the right column */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+/* Button styles */
+#applyFilter, #removeFilter {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#applyFilter:hover {
+    background-color: #1B5C85; /* Darker background on hover */
+}
+
+#removeFilter:hover {
+    background-color: #861D1D; /* Darker background on hover */
+}
+
+#dangerLevelContainer {
+    display: flex;
+    justify-content: flex-end; /* Align checkboxes to the right */
+    gap: 10px; /* Spacing between each checkbox-label pair */
+}
+
+#dangerLevelContainer label {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Space between checkbox and label text */
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+/* Loader styles */
+#map, #lineChart, #charts, #lineChart, #distActivity, #distBuried, #distDead, #topChart {
+    position: relative; /* Set relative positioning for the parent */
+}
+
+#map-loader, #lineChart-loader, #activity-loader, #buried-loader, #dead-loader, #topChart-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    z-index: 10; /* Ensures it sits on top of the map */
+}
+
+.loader::before {
+    content: "";
+    width: 50px;
+    height: 50px;
+    border: 5px solid #ccc;
+    border-top: 5px solid #333;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+#distDead .text {
+    font-size: clamp(1rem, 1vw, 1.25rem);
+}
+
+#distBuried .text {
+    font-size: clamp(1rem, 1vw, 1.25rem);
+}
+
+.smallTitle {
+    font-size: clamp(0.5rem, 1vw, 1rem);
+}
+
+#caught {
+    font-size: clamp(1rem, 5vw, 8rem);
+}
+
+/* Spinner animation */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

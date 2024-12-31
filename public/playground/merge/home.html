@@ -11,7 +11,10 @@
     <title>DAVI - Dashboard</title>
 
     <!-- stylesheets -->
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/contact.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
 
     <!-- fonts -->
     <style>
@@ -621,8 +624,6 @@
     </main>
 </div>
 
-<script src="js/dashboard.js" type="text/javascript"></script>
-
 <script src="linechart.js" type="text/javascript"></script>
 <script src="piecharts.js" type="text/javascript"></script>
 <script src="writeNumber.js" type="text/javascript"></script>
@@ -633,5 +634,220 @@
 <script src="points.js" type="text/javascript"></script>
 <script src="loadSVG.js" type="text/javascript"></script>
 
+<script>
+    let driverExe = 0;
+
+    function funFilter() {
+        document.getElementById("filterModal").style.display = "block";
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+
+            setTimeout(() => {
+                if(driverExe < 1) {
+                    driverObj.drive();
+                    driverExe++;
+                }
+            }, 750);
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebar = document.querySelector('.sidebar_content');
+        const sections = document.querySelectorAll('.section_content');
+
+        let observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.target.id === 'section1' && entry.isIntersecting) {
+                    sidebar.classList.add('hidden');
+                } else if (entry.target.id !== 'section1' && entry.isIntersecting) {
+                    sidebar.classList.remove('hidden');
+                }
+            });
+        }, {
+            root: null, // observing in relation to the viewport
+            rootMargin: '0px',
+            threshold: 0.5 // trigger when 50% of the section is visible
+        });
+
+        sections.forEach(section => {
+            observer.observe(section); // Observe each section
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const navLinks = document.querySelectorAll('.nav_sidebar a');
+        const sections = document.querySelectorAll('.section_content');
+
+        let observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    let activeIndex = Array.from(sections).indexOf(entry.target);
+                    console.log(activeIndex);
+                    updateNavLinks(activeIndex);
+                }
+            });
+        }, {
+            root: null, // observing in relation to the viewport
+            rootMargin: '0px',
+            threshold: 0.5 // trigger when 50% of the section is visible
+        });
+
+        sections.forEach(section => {
+            observer.observe(section); // Observe each section
+        });
+
+        function updateNavLinks(activeIndex) {
+            navLinks.forEach((link, index) => {
+                link.style.color = (index === activeIndex) ? 'white' : '#818181';
+            });
+        }
+    });
+
+    function funNav() {
+        const gridContainer = document.getElementById("grid_container");
+        const collapsible = document.getElementById("collapsible");
+        const main = document.getElementById("main");
+
+        document.getElementById("section2").scrollIntoView({behavior: "smooth"});
+        gridContainer.classList.toggle("collapse");
+        collapsible.classList.toggle("rotate");
+
+        setTimeout(() => {
+            main.classList.toggle("stop-scrolling");
+        }, 750);
+    }
+
+    function showImage(imgElement) {
+        const overlay = document.getElementById("imageOverlay");
+        const fullImage = document.getElementById("fullImage");
+        fullImage.src = imgElement.src; // Set full image source to a clicked image source
+        overlay.style.display = "flex"; // Show the overlay
+    }
+
+    document.getElementById("closeBtn").onclick = function () {
+        document.getElementById("imageOverlay").style.display = "none"; // Hide the overlay
+    };
+
+    const driver = window.driver.js.driver;
+
+    const driverObj = driver({
+        showProgress: true,
+        steps: [
+            {
+                popover: { title: "Let's start the tour", description: 'Go ahead and start the tour for our DAVI project 🚀.' }
+            },
+            {
+                element: '.cell:nth-child(1)',
+                popover: {title: 'Map', description: 'Every dot represents a accident.', side: "bottom", align: 'start'}
+            },
+            {
+                element: '.cell:nth-child(3)',
+                popover: {
+                    title: 'Time chart',
+                    description: 'The data is smoothed for better visibility.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell:nth-child(2)',
+                popover: {
+                    title: 'Distribution charts',
+                    description: 'Shows some distribution charts.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-charts:nth-child(1)',
+                popover: {
+                    title: 'Total caught people',
+                    description: 'Shows all caught people in the shown accidents on the map.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-charts:nth-child(2)',
+                popover: {
+                    title: 'Buried people in percentage',
+                    description: 'Shows the buried people of the caught people in percent.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-charts:nth-child(3)',
+                popover: {
+                    title: 'Dead people in percentage',
+                    description: 'Shows the dead people of the caught people in percent.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-charts:nth-child(4)',
+                popover: {
+                    title: 'Danger level distribution',
+                    description: 'Shows the distribution of danger level of the shown accidents.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-cell-charts:nth-child(1)',
+                popover: {
+                    title: 'Activity distribution',
+                    description: 'Shows the distribution of activity of the shown accidents.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.cell-cell-charts:nth-child(2)',
+                popover: {
+                    title: 'Top municipalities',
+                    description: 'Shows the municipalities with the most caught people on the selected filter.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '#divToggle',
+                popover: {
+                    title: 'Toggle',
+                    description: 'Toggle between single municipalities or the total of municipalities.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '#filterButtonDiv',
+                popover: {
+                    title: 'Filter',
+                    description: 'Filter button to filter the dataset.',
+                    side: "bottom",
+                    align: 'start'
+                }
+            },
+            {
+                element: '.collapsible',
+                popover: {
+                    title: 'Collapsible',
+                    description: 'To make the nav bar collaps in',
+                    side: "bottom",
+                    align: 'start'
+                }
+            }
+        ]
+    });
+</script>
 </body>
 </html>
