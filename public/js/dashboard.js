@@ -316,7 +316,7 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("filterModal").style.display = "none";
         });
 
-    d3.csv("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads/dev/public/assets/ava36.csv").then((data) => {
+    d3.csv("assets/ava36.csv").then((data) => {
         data.forEach((d) => {
             d.date = new Date(d.date);
             d.year = d.date.getFullYear();
@@ -540,7 +540,7 @@ function checkDataLoaded() {
 function drawMap() {
 
     // Load the GeoJSON file and display it on the map
-    d3.json("https://raw.githubusercontent.com/kevinforter/davi_workspace/refs/heads/dev/public/assets/swissBOUNDARIES3D_1_3_TLM_KANTONSGEBIET.json").then(data => {
+    d3.json("assets/swissBOUNDARIES3D_1_3_TLM_KANTONSGEBIET.json").then(data => {
         d3.selectAll("#map > .smallTitle").remove();
 
         let clickedCanton = null; // Track the currently clicked canton
@@ -1159,7 +1159,7 @@ function drawChart(filteredData) {
         const activity = entry.activity;
         const activities = activity.split(',').map(act => act.trim());
         activities.forEach((act) => {
-            if (act === 'transportation.corridor') {
+            if (act === 'transportation') {
                 activityCounts.transportation += 1;
             } else if (activityCounts[act] !== undefined) {
                 activityCounts[act] += 1;
